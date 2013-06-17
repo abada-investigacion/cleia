@@ -17,8 +17,12 @@
         <qualifier value="jbpm-txm"/>
     </bean>
 
-    <bean id="entityManager" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+    <bean id="entityManager" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="com.abada.drools.persistence.jpa" />
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />            
+        </property>
+        <property name="dataSource" ref="ds1" />
     </bean>
     
     <bean id="transactionManager2" class="org.springframework.orm.jpa.JpaTransactionManager">
@@ -26,15 +30,19 @@
         <qualifier value="jbpm-task-txm"/>
     </bean>
 
-    <bean id="entityManager2" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+    <bean id="entityManager2" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="com.abada.jbpm.task" />
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />            
+        </property>
+        <property name="dataSource" ref="ds1" />
     </bean>
 
    <!-- Jbpm Console  -->
    <bean id="taskServiceFactory" class="com.abada.jbpm.task.service.TaskServiceFactory">
        <property name="type" value="HORNETQ" />
        <!--property name="groupTaskManagement" ref="groupTaskManagement"/--><!--LDAP -->
-        <property name="groupTaskManagement" ref="userDao"/><!--BBDD --> 
+        <!--property name="groupTaskManagement" ref="userDao"/--><!--BBDD --> 
    </bean>
    
     <bean id="graphViewerPlugin" class="com.abada.jbpm.integration.console.graph.GraphViewerPluginImpl">
@@ -56,8 +64,7 @@
     <bean id="taskManagement" class="com.abada.jbpm.integration.console.TaskManagement">        
         <property name="taskDao" ref="taskJbpmDao" />
         <!--property name="groupTaskManagement" ref="groupTaskManagement"/--><!--LDAP -->
-        <property name="groupTaskManagement" ref="userDao"/><!--BBDD -->        
-        <!--property name="taskService" ref="taskService" /-->
+        <!--property name="groupTaskManagement" ref="userDao"/--><!--BBDD -->                
         <property name="taskClientFactory" ref="taskServiceFactory" />
         <property name="patientTaskManagement" ref="PInstancePatientDao" />
         <property name="processManagement" ref="processManagement" />
@@ -86,19 +93,6 @@
         <property name="taskService" ref="taskService" />        
         <property name="taskClientFactory" ref="taskServiceFactory"/>
     </bean>
-    
-    <!--Alert WorkItemHandler -->
-    
-    <!--bean id="alertDao" class="com.abada.alert.persistence.impl.AlertDaoImpl">        
-    </bean>
-    
-    <bean id="alertWorkItem" class="com.abada.alert.workitem.CreateAlertWorkItemHandler">
-        <property name="alertDao" ref="alertDao" />
-    </bean-->
-
-    <!-- Workitems Handler definitions. Test propose. -->
-    <!--bean id="patientReport" class="com.abada.handler.workitem.PatientReportHandler" init-method="register"/>    
-    <bean id="helloback" class="com.abada.handler.workitem.HelloBackHandler" /-->              
 
     <!-- Knowledge Base definition. Process knowledge -->
     <drools:kbase id="kbase1" >
@@ -107,15 +101,6 @@
             <drools:mbeans enabled="true"/>
             <drools:event-processing-mode mode="STREAM"/>
         </drools:configuration>
-        <!-- Uncomment for Manual mode -->
-         <!--drools:resources>           
-             <drools:resource  type="DRF" source="classpath:/process/test.rf"/>
-            <drools:resource  type="BPMN2" source="classpath:/process/principal.bpmn"/>
-            <drools:resource  type="BPMN2" source="classpath:/process/subproceso.bpmn"/>
-            <drools:resource  type="BPMN2" source="classpath:/process/subsubproceso.bpmn"/>
-            <drools:resource  type="BPMN2" source="classpath:/process/subsubprocesofinal.bpmn"/>
-            <drools:resource  type="BPMN2" source="classpath:/process/EarlyDetectionForm.bpmn"/>           
-        </drools:resources-->
     </drools:kbase>    
           
     <!-- Knowledge Session definition. Persist changes in database -->
@@ -124,12 +109,7 @@
             <drools:jpa-persistence>
                 <drools:transaction-manager ref="transactionManager" />
                 <drools:entity-manager-factory ref="entityManager" />
-            </drools:jpa-persistence>
-            <!--drools:work-item-handlers>                
-                <drools:work-item-handler name="helloback" ref="helloback" />
-                <drools:work-item-handler name="Abada Alert Task" ref="alertWorkItem" />
-                <drools:work-item-handler name="Abada Timer Task" ref="timerHandler" />                
-            </drools:work-item-handlers-->            
+            </drools:jpa-persistence>      
             <drools:keep-reference enabled="false" />      
         </drools:configuration>
     </drools:ksession>        

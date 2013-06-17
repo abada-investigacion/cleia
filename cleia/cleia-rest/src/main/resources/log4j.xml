@@ -11,7 +11,7 @@
     </appender>
 
     <root>        
-        <priority value="ERROR" />
+        <priority value="ALL" />
         <appender-ref ref="CONSOLE.OUT" /> 
     </root>
 

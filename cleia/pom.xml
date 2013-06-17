@@ -25,6 +25,13 @@
                         </bean>
                     ]]>
                 </db.configuration>
+                <jbpm.console.guvnor.changeset>
+                    <![CDATA[
+                    <resource source='http://imasd.abadasoft.com:8080/guvnor/org.drools.guvnor.Guvnor/package/com.abada.sate.mmse/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />
+                    <resource source='http://imasd.abadasoft.com:8080/guvnor/org.drools.guvnor.Guvnor/package/com.abada.sate.gds/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />
+                    <resource source='http://imasd.abadasoft.com:8080/guvnor/org.drools.guvnor.Guvnor/package/com.abada.sate.cdt/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />
+                    ]]>
+                </jbpm.console.guvnor.changeset>
                 <deploy.path.rest>/cleia-rest</deploy.path.rest>
                 <deploy.path.web>/cleia-web</deploy.path.web>
                 <cleia.server.url>http://localhost:8080/cleia-rest/</cleia.server.url>
@@ -46,7 +53,14 @@
                         <cloud:data-source id="ds1" >        
                         </cloud:data-source>
                     ]]>
-                </db.configuration>  
+                </db.configuration>
+                <jbpm.console.guvnor.changeset>
+                    <![CDATA[
+                    <resource source='http://imasd.abadasoft.com:8080/guvnor/org.drools.guvnor.Guvnor/package/com.abada.sate.mmse/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />
+                    <resource source='http://imasd.abadasoft.com:8080/guvnor/org.drools.guvnor.Guvnor/package/com.abada.sate.gds/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />
+                    <resource source='http://imasd.abadasoft.com:8080/guvnor/org.drools.guvnor.Guvnor/package/com.abada.sate.cdt/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />
+                    ]]>
+                </jbpm.console.guvnor.changeset>  
                 <deploy.path.rest>/cleia-rest</deploy.path.rest>
                 <deploy.path.web>/cleia-web</deploy.path.web>
                 <cleia.server.url>http://cleia-rest.cfimasd.abadasoft.com/</cleia.server.url>
