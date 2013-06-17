@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"       
+       xmlns:drools="http://drools.org/schema/drools-spring"        
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd                    
+          http://drools.org/schema/drools-spring http://drools.org/schema/drools-spring.xsd                    
+">
+
+    <!-- Transaction Manager para el data source que estamos utilizando -->
+    <tx:annotation-driven proxy-target-class="true" />
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManager" />
+        <qualifier value="jbpm-txm"/>
+    </bean>
+
+    <bean id="entityManager" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="com.abada.drools.persistence.jpa" />
+    </bean>
+    
+    <bean id="transactionManager2" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManager2" />
+        <qualifier value="jbpm-task-txm"/>
+    </bean>
+
+    <bean id="entityManager2" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="com.abada.jbpm.task" />
+    </bean>
+
+   <!-- Jbpm Console  -->
+   <bean id="taskServiceFactory" class="com.abada.jbpm.task.service.TaskServiceFactory">
+       <property name="type" value="HORNETQ" />
+       <!--property name="groupTaskManagement" ref="groupTaskManagement"/--><!--LDAP -->
+        <property name="groupTaskManagement" ref="userDao"/><!--BBDD --> 
+   </bean>
+   
+    <bean id="graphViewerPlugin" class="com.abada.jbpm.integration.console.graph.GraphViewerPluginImpl">
+        <constructor-arg ref="processInstanceDbLog"/>
+        <property name="kbase" ref="kbase1"/>
+        <!--property name="processInstanceDbLog" ref="processInstanceDbLog" /-->
+    </bean> 
+    <bean id="formDispatcherPlugin" class="com.abada.jbpm.integration.console.form.FormDispatcherComposite">        
+        <property name="processManagement" ref="processManagement" />               
+        <!--property name="taskService" ref="taskService" /-->
+        <property name="taskClientFactory" ref="taskServiceFactory"/>
+    </bean>
+    
+    <bean id="taskJbpmDao" class="com.abada.jbpm.task.dao.impl.TaskDaoImpl" />    
+    
+    <!--bean class="com.abada.jbpm.ldap.JbpmGroupTaskManagement" id="groupTaskManagement">
+        <property name="contextSource" ref="contextSource"/>
+    </bean-->
+    <bean id="taskManagement" class="com.abada.jbpm.integration.console.TaskManagement">        
+        <property name="taskDao" ref="taskJbpmDao" />
+        <!--property name="groupTaskManagement" ref="groupTaskManagement"/--><!--LDAP -->
+        <property name="groupTaskManagement" ref="userDao"/><!--BBDD -->        
+        <!--property name="taskService" ref="taskService" /-->
+        <property name="taskClientFactory" ref="taskServiceFactory" />
+        <property name="patientTaskManagement" ref="PInstancePatientDao" />
+        <property name="processManagement" ref="processManagement" />
+    </bean>
+    
+    <bean id="processInstanceDbLog" class="com.abada.jbpm.process.audit.ProcessInstanceDbLog">
+    </bean>
+    <bean id="processManagement" class="com.abada.jbpm.integration.console.ProcessManagement">
+        <constructor-arg ref="ksession1" index="0"/>
+        <constructor-arg ref="processInstanceDbLog" index="1"/>
+    </bean>        
+    
+    <!-- Dao to version -->
+    <bean id="processInstanceInfoDao" class="com.abada.jbpm.version.dao.impl.ProcessInstanceInfoDaoImpl" >
+    </bean>
+
+    <!-- Jbpm -->
+    
+    <!-- Human Task Service -->
+    <bean id="taskService" class="com.abada.jbpm.task.spring.TaskService">
+        <property name="entityManagerFactory" ref="entityManager2" />        
+        <property name="taskServiceFactory" ref="taskServiceFactory"/>        
+    </bean>
+    <!-- Register human task handler in the knowledge session -->
+    <bean id="human-task-register-service" class="com.abada.jbpm.task.spring.HumanTaskRegistrationService" >        
+        <property name="taskService" ref="taskService" />        
+        <property name="taskClientFactory" ref="taskServiceFactory"/>
+    </bean>
+    
+    <!--Alert WorkItemHandler -->
+    
+    <!--bean id="alertDao" class="com.abada.alert.persistence.impl.AlertDaoImpl">        
+    </bean>
+    
+    <bean id="alertWorkItem" class="com.abada.alert.workitem.CreateAlertWorkItemHandler">
+        <property name="alertDao" ref="alertDao" />
+    </bean-->
+
+    <!-- Workitems Handler definitions. Test propose. -->
+    <!--bean id="patientReport" class="com.abada.handler.workitem.PatientReportHandler" init-method="register"/>    
+    <bean id="helloback" class="com.abada.handler.workitem.HelloBackHandler" /-->              
+
+    <!-- Knowledge Base definition. Process knowledge -->
+    <drools:kbase id="kbase1" >
+        <!--Uncomment for Guvnor mode -->
+        <drools:configuration>
+            <drools:mbeans enabled="true"/>
+            <drools:event-processing-mode mode="STREAM"/>
+        </drools:configuration>
+        <!-- Uncomment for Manual mode -->
+         <!--drools:resources>           
+             <drools:resource  type="DRF" source="classpath:/process/test.rf"/>
+            <drools:resource  type="BPMN2" source="classpath:/process/principal.bpmn"/>
+            <drools:resource  type="BPMN2" source="classpath:/process/subproceso.bpmn"/>
+            <drools:resource  type="BPMN2" source="classpath:/process/subsubproceso.bpmn"/>
+            <drools:resource  type="BPMN2" source="classpath:/process/subsubprocesofinal.bpmn"/>
+            <drools:resource  type="BPMN2" source="classpath:/process/EarlyDetectionForm.bpmn"/>           
+        </drools:resources-->
+    </drools:kbase>    
+          
+    <!-- Knowledge Session definition. Persist changes in database -->
+    <drools:ksession id="ksession1" type="stateful"  kbase="kbase1">
+        <drools:configuration>
+            <drools:jpa-persistence>
+                <drools:transaction-manager ref="transactionManager" />
+                <drools:entity-manager-factory ref="entityManager" />
+            </drools:jpa-persistence>
+            <!--drools:work-item-handlers>                
+                <drools:work-item-handler name="helloback" ref="helloback" />
+                <drools:work-item-handler name="Abada Alert Task" ref="alertWorkItem" />
+                <drools:work-item-handler name="Abada Timer Task" ref="timerHandler" />                
+            </drools:work-item-handlers-->            
+            <drools:keep-reference enabled="false" />      
+        </drools:configuration>
+    </drools:ksession>        
+            
+    <!--Uncomment for Guvnor mode -->
+    <!-- Knowledge Agent definition. Give acess to Guvnor -->
+    <drools:kagent id="kagent1" kbase="kbase1" new-instance="false">
+        <drools:resources>
+            <drools:resource type="CHANGE_SET" source="classpath:ChangeSet.xml" />
+        </drools:resources>
+    </drools:kagent>
+            
+    <!-- Force refresh from Guvnor -->
+    <bean class="com.abada.jbpm.io.ResourceChangeScannerStarter" depends-on="scanInterval" destroy-method="dispose"/>
+    <drools:resource-change-scanner id="scanInterval" interval="60" />
+            
+    <!-- Activate logging in the Knowledge session -->
+    <bean id="ksessionlog1" class="com.abada.jbpm.process.audit.JPAWorkingMemoryDbLogger" destroy-method="dispose">
+        <constructor-arg ref="ksession1" />
+    </bean>
+</beans>
+

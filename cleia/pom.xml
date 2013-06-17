@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.abada</groupId>
+    <artifactId>cleia</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>cleia</name>  
+    <profiles>
+        <profile>
+            <id>local</id>    
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>                 
+            <properties>
+                <db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>
+                <db.autogenerate>update</db.autogenerate>
+                <db.configuration>
+                    <![CDATA[
+                        <bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="ds1">
+                            <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+                            <property name="url" value="jdbc:mysql://imasd.abadasoft.com:3306/cleia" />
+                            <property name="username" value="mysql" />
+                            <property name="password" value="4b4D4." />
+                        </bean>
+                    ]]>
+                </db.configuration>
+                <deploy.path.rest>/cleia-rest</deploy.path.rest>
+                <deploy.path.web>/cleia-web</deploy.path.web>
+                <cleia.server.url>http://localhost:8080/cleia-rest/</cleia.server.url>
+                <cleia.server.secure.url>https://localhost:8443/cleia-rest/</cleia.server.secure.url>
+                <cleia.server.url.roles>/rs/identity/user/roles/list</cleia.server.url.roles>              
+                <cleia.server.url.dni.roles>/rs/identity/user/dni/roles/list</cleia.server.url.dni.roles>
+            </properties>
+        </profile>
+        <profile>
+            <id>cloud Abada</id>    
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>                 
+            <properties>
+                <db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>
+                <db.autogenerate>update</db.autogenerate>
+                <db.configuration>
+                    <![CDATA[
+                        <cloud:data-source id="ds1" >        
+                        </cloud:data-source>
+                    ]]>
+                </db.configuration>  
+                <deploy.path.rest>/cleia-rest</deploy.path.rest>
+                <deploy.path.web>/cleia-web</deploy.path.web>
+                <cleia.server.url>http://cleia-rest.cfimasd.abadasoft.com/</cleia.server.url>
+                <cleia.server.secure.url>http://cleia-rest.cfimasd.abadasoft.com/</cleia.server.secure.url>
+                <cleia.server.url.roles>/rs/identity/user/roles/list</cleia.server.url.roles>            
+                <cleia.server.url.dni.roles>/rs/identity/user/dni/roles/list</cleia.server.url.dni.roles>
+            </properties>
+        </profile>
+    </profiles>
+  <modules>
+    <module>cleia-api</module>
+    <module>cleia-entities</module>
+    <module>cleia-dao</module>
+    <module>cleia-rest</module>
+    <module>cleia-web</module>
+    <module>jbpm-rest</module>
+    <module>abada-jbpm</module>
+  </modules>
+</project>

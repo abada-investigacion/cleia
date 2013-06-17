@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd        
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+">
+    <!-- Web Security -->  
+     <security:http  auto-config='false' use-expressions="true">
+        <security:intercept-url pattern="/login.htm"  access="permitAll" requires-channel="any"/>
+        <security:intercept-url pattern="/j_spring_security_check"  access="permitAll" requires-channel="any"/>
+        <security:intercept-url pattern="/quit.htm"  access="isAuthenticated()" requires-channel="any"/>
+        <security:intercept-url pattern="/**"  access="isAuthenticated()" requires-channel="https"/>  
+        <security:form-login login-page="/login.htm" default-target-url="/main.htm"  always-use-default-target="false" authentication-failure-url="/quit.htm" />                
+        <security:custom-filter position="PRE_AUTH_FILTER" ref="x509filter"/>        <!-- -->
+    </security:http>
+    
+    <bean id="x509filter" class="com.abada.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter">
+        <property name="filterSubject" value="serialNumber=(.*?),"/>
+        <property name="authenticationManager" ref="authenticationManager"/>
+    </bean>
+    
+    <bean id="dniAuthenticationProvider" class="com.abada.springframework.security.authentication.dni.DniAuthenticationProvider">
+        <property name="dniAuthenticationDao">
+            <bean class="com.abada.springframework.security.authentication.dni.HttpDniAuthenticationDao">
+                <property name="url" ref="serverUrlDniRoles"/>
+                <property name="username" value="dnie_user"/>
+                <property name="password" value="dnie_user_1234"/>                
+            </bean>
+        </property>
+    </bean>
+
+    <security:authentication-manager alias="authenticationManager" erase-credentials="false">
+        <security:authentication-provider ref="dniAuthenticationProvider" /> <!-- DNIe x509 -->
+        <security:authentication-provider ref="loginProvider" />
+    </security:authentication-manager>
+
+    <bean id="loginProvider" class="com.abada.springframework.security.authentication.HtmlAuthenticationProvider" >
+        <property name="url" ref="serverUrlRoles" />
+    </bean>
+
+    <!--security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider>
+            <security:user-service>
+                <security:user name="katsu" password="katsu" authorities="ROLE_USER, ROLE_ADMIN" />                
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager-->      
+    
+    <bean id="confFactory" class="com.abada.cleia.web.url.URLFactory" >
+        <property name="messageSource" ref="messageSource" />
+    </bean>
+    
+    <bean id="serverUrl" class="java.net.URL" factory-bean="confFactory" factory-method="getServerUrl" />
+    <bean id="serverUrlRoles" class="java.lang.String" factory-bean="confFactory" factory-method="getServerUrlRole" />
+    <bean id="serverUrlDniRoles" class="java.lang.String" factory-bean="confFactory" factory-method="getServerUrlDniRole" />
+   <!--
+            Mensages para internalizacion, errores y configuracion, posee errores predeterminados
+    -->
+    <bean id="messageSource"
+          class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="messages" />
+    </bean>
+</beans>
