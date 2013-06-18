@@ -10,8 +10,13 @@
         </layout>
     </appender>
 
+    <logger name="org.hibernate">        
+        <level value="ALL" />
+        <appender-ref ref="CONSOLE.OUT"/>
+    </logger>
+
     <root>        
-        <priority value="ALL" />
+        <priority value="ERROR" />
         <appender-ref ref="CONSOLE.OUT" /> 
     </root>
 

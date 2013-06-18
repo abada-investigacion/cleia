@@ -11,10 +11,9 @@
           http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.1.xsd                  
           http://schema.cloudfoundry.org/spring http://schema.cloudfoundry.org/spring/cloudfoundry-spring.xsd
 ">
-   <tx:annotation-driven /> <!-- proxy-target-class="true"-->
     
-   ${db.configuration}
-   
+    <tx:annotation-driven /> <!-- proxy-target-class="true"-->   
+       
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManager" />
         <qualifier value="cleia-txm"/>
@@ -26,8 +25,7 @@
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />            
         </property>
         <property name="dataSource" ref="ds1" />
-    </bean> 
-    
-    <bean id="sampleDao" class="com.abada.cleia.dao.impl.SampleDaoImpl" />
+    </bean>
+
 </beans>
 

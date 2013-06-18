@@ -22,6 +22,8 @@
                             <property name="url" value="jdbc:mysql://imasd.abadasoft.com:3306/cleia" />
                             <property name="username" value="mysql" />
                             <property name="password" value="4b4D4." />
+                            <property name="testOnBorrow" value="true" />
+                            <property name="validationQuery" value="SELECT 1" />
                         </bean>
                     ]]>
                 </db.configuration>
@@ -76,7 +78,6 @@
     <module>cleia-dao</module>
     <module>cleia-rest</module>
     <module>cleia-web</module>
-    <module>jbpm-rest</module>
     <module>abada-jbpm</module>
   </modules>
 </project>

@@ -38,6 +38,17 @@
             <artifactId>cleia-entities</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>abada-jbpm</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.abada</groupId>
+            <artifactId>abada-common-spring-mvc</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

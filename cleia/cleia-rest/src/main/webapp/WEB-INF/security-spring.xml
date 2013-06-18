@@ -35,85 +35,44 @@
     </bean>
     
     <bean id="dniAuthenticationProvider" class="com.abada.springframework.security.authentication.dni.DniAuthenticationProvider">
-        <property name="dniAuthenticationDao" ref="dniAuthenticationDao" />
-    </bean>
-    
-    <bean id="dniAuthenticationDao" class="com.abada.springframework.security.authentication.dni.HashDniAuthenticationDao">
-        <property name="users">
-            <map>
-                <entry key="0123456789Z">
-                    <list>
-                        <value>ROLE_ADMIN</value>
-                    </list>
-                </entry>
-            </map>
-        </property>
+        <property name="dniAuthenticationDao" ref="loginDao" />
     </bean>
     
     <security:authentication-manager alias="authenticationManager">        
         <security:authentication-provider ref="dniAuthenticationProvider" /> <!-- DNIe x509 -->
-        <!--security:authentication-provider ref="userDaoAuthenticationProvider" /--><!-- BBDD -->
-        <!--security:authentication-provider ref="ldapAuthProvider" /--><!--LDAP -->
+        <security:authentication-provider ref="userDaoAuthenticationProvider" /><!-- BBDD -->        
         <!-- LOCAL -->
         <security:authentication-provider>
             <security:user-service>
-                <security:user name="dnie_user" password="dnie_user_1234" authorities="ROLE_DNI_CONSULT" /><!-- Usuario necesario para el dni, si se usa otro modo de authentication se debe meter este usuario o asegurarse que en la parte web se configure un usuario valido para esto, notese que no tiene permisos para casi nada -->
-                <security:user name="admin" password="admin" authorities="ROLE_ADMIN" />
+                <security:user name="dnie_user" password="dnie_user_1234" authorities="ROLE_DNI_CONSULT" /><!-- Usuario necesario para el dni, si se usa otro modo de authentication se debe meter este usuario o asegurarse que en la parte web se configure un usuario valido para esto, notese que no tiene permisos para casi nada -->                
             </security:user-service>
         </security:authentication-provider>
-    </security:authentication-manager>
-        
-    <!-- LDAP -->
-    <!--bean id="contextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
-        <constructor-arg value="ldap://192.168.1.58:389/dc=example,dc=local"/>
-        <property name="userDn" value="cn=manager,dc=example,dc=local"/>
-        <property name="password" value="secret"/>
-    </bean>
-    <bean id="ldapAuthProvider" class="org.springframework.security.ldap.authentication.LdapAuthenticationProvider">
-        <constructor-arg>
-            <bean class="org.springframework.security.ldap.authentication.BindAuthenticator">
-                <constructor-arg ref="contextSource"/>
-                <property name="userDnPatterns">
-                    <list>
-                        <value>cn={0},ou=Users</value>
-                    </list>
-                </property>                
-            </bean>
-        </constructor-arg>
-        <constructor-arg>
-            <bean class="org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator">
-                <constructor-arg ref="contextSource"/>
-                <constructor-arg value="ou=Roles"/>
-                <property name="rolePrefix" value=""/>
-            </bean>
-        </constructor-arg>
-        <property name="userDetailsContextMapper" ref="ldapUserDetailsContextMapper"/>  
-    </bean>
-    
-    <bean class="com.abada.jbpmserver.security.ldap.userdetails.LdapUserDetailsMapper" id="ldapUserDetailsContextMapper">
-        <property name="groupSearchBase" value="ou=Groups"/>
-        <property name="contextSource" ref="contextSource"/>
-    </bean-->
+    </security:authentication-manager>            
     
     <!-- BBDD -->        
-    <!--bean id="userDaoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
-        <property name="userDetailsService" ref="userDao" />
-        <property name="passwordEncoder" ref="md5PasswordEncoder" />
+    <bean id="userDaoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="loginDao" />
+        <property name="passwordEncoder" ref="sha1PasswordEncoder" />
     </bean>  
     
-    <bean id="md5PasswordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+    <bean id="sha1PasswordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder" />
     
-    <bean id="userDao" class="com.abada.jbpmserver.persistence.dao.impl.UserDaoImpl" >
-        <property name="entityManagerFactory" ref="entityManagerOggiLogin" />
-    </bean>        
+    ${db.configuration}       
     
-    <bean id="transactionManagerOggiLogin" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerOggiLogin" />
-        <qualifier value="oggi-login-txm"/>
+    <bean id="transactionManagerLogin" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerLogin" />
+        <qualifier value="cleia-login-txm"/>
     </bean>
-
-    <bean id="entityManagerOggiLogin" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="persistenceUnitName" value="oggi-persistence-entitiesPU" />        
-    </bean-->
+    
+    <bean id="entityManagerLogin" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="cleiaPU" />
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />            
+        </property>
+        <property name="dataSource" ref="ds1" />
+    </bean> 
+    
+    <bean id="loginDao" class="com.abada.cleia.dao.impl.LoginDaoImpl" />
+    
 </beans>
 
