@@ -4,6 +4,7 @@
  */
 package com.abada.cleia.entity.user;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,8 +14,9 @@ import javax.persistence.Id;
  * @author katsu
  */
 @Entity
-public class IdType {
+public class IdType implements Serializable {
     @Id    
+    @Column(name = "value1")
     private String value;
     @Column(length = 1024)
     private String description;

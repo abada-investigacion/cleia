@@ -7,6 +7,9 @@
     <class>com.abada.cleia.entity.user.User</class>
     <class>com.abada.cleia.entity.user.Id</class>
     <class>com.abada.cleia.entity.user.IdType</class>
+    <class>com.abada.cleia.entity.user.Medical</class>
+    <class>com.abada.cleia.entity.user.Patient</class>
+    <class>com.abada.cleia.entity.user.PatientHasProcessInstance</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.dialect" value="${db.dialect}"/>

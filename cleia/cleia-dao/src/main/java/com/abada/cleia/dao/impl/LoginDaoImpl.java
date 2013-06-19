@@ -25,7 +25,7 @@ public class LoginDaoImpl extends JpaDaoUtils implements GroupTaskManagement, Us
     @PersistenceContext(unitName = "cleiaPU")
     private EntityManager entityManager;
 
-    @Transactional(value = "cleia-txm", readOnly = true)
+    @Transactional(value = "cleia-login-txm", readOnly = true)
     public User getUserByDNI(String dni) {
         User result = (User) entityManager.createQuery("select id.user from Id id where id.value = :dni and id.type.value =  'DNI'").setParameter("dni", dni).getSingleResult();
         if (result != null) {

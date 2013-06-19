@@ -5,6 +5,7 @@
 package com.abada.cleia.entity.user;
 
 import com.abada.gson.exclusionstrategy.JsonExclude;
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,11 +19,11 @@ import javax.persistence.ManyToOne;
  * @author katsu
  */
 @Entity
-public class Id {
+public class Id implements Serializable {
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @Column(nullable = false,length = 1024)
+    @Column(nullable = false,length = 1024,name = "value1")
     private String value;
     @ManyToOne(fetch = FetchType.EAGER,optional = false)
     private IdType type;

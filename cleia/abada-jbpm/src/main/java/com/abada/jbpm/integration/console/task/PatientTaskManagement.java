@@ -11,5 +11,10 @@ import java.util.List;
  * @author katsu
  */
 public interface PatientTaskManagement {
+    /**
+     * Return the process instances of BPM for a patientId
+     * @param patientId
+     * @return 
+     */
     public List<Long> getProcessInstancesIdsForPatient(Long patientId);
 }

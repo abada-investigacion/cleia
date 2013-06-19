@@ -8,9 +8,10 @@ import java.util.Collection;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -23,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  * @author katsu
  */
 @Entity(name = "user1")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User implements UserDetails{
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,12 +44,12 @@ public class User implements UserDetails{
     @ManyToMany
     @JoinTable(name = "user_has_role",
             joinColumns = {@JoinColumn(nullable = false,name = "user_id",referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(nullable = false,name="role_id",referencedColumnName = "value")})
+            inverseJoinColumns = {@JoinColumn(nullable = false,name="role_id",referencedColumnName = "value1")})
     private List<Role> roles;    
     @ManyToMany
     @JoinTable(name = "user_has_group",
             joinColumns = {@JoinColumn(nullable = false,name = "user_id",referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(nullable = false,name="group_id",referencedColumnName = "value")})
+            inverseJoinColumns = {@JoinColumn(nullable = false,name="group_id",referencedColumnName = "value1")})
     private List<Group> groups;
     @OneToMany(mappedBy = "user")
     private List<Id> ids;

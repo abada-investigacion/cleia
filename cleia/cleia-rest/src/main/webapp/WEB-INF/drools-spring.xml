@@ -42,7 +42,7 @@
    <bean id="taskServiceFactory" class="com.abada.jbpm.task.service.TaskServiceFactory">
        <property name="type" value="HORNETQ" />
        <!--property name="groupTaskManagement" ref="groupTaskManagement"/--><!--LDAP -->
-        <!--property name="groupTaskManagement" ref="userDao"/--><!--BBDD --> 
+        <property name="groupTaskManagement" ref="loginDao"/><!--BBDD --> 
    </bean>
    
     <bean id="graphViewerPlugin" class="com.abada.jbpm.integration.console.graph.GraphViewerPluginImpl">
@@ -64,9 +64,9 @@
     <bean id="taskManagement" class="com.abada.jbpm.integration.console.TaskManagement">        
         <property name="taskDao" ref="taskJbpmDao" />
         <!--property name="groupTaskManagement" ref="groupTaskManagement"/--><!--LDAP -->
-        <!--property name="groupTaskManagement" ref="userDao"/--><!--BBDD -->                
+        <property name="groupTaskManagement" ref="loginDao"/><!--BBDD -->                
         <property name="taskClientFactory" ref="taskServiceFactory" />
-        <property name="patientTaskManagement" ref="PInstancePatientDao" />
+        <property name="patientTaskManagement" ref="processInstancesDao" />
         <property name="processManagement" ref="processManagement" />
     </bean>
     

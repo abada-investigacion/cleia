@@ -19,7 +19,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Entity(name = "role1")
 public class Role implements GrantedAuthority{
     @Id
-    @Column(length = 1024)
+    @Column(length = 1024,name = "value1")
     private String value;    
     @JsonExclude
     @ManyToMany(mappedBy = "roles")

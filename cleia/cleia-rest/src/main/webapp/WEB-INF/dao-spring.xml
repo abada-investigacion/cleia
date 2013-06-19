@@ -27,5 +27,7 @@
         <property name="dataSource" ref="ds1" />
     </bean>
 
+    <bean id="processInstancesDao" class="com.abada.cleia.dao.impl.ProcessInstanceDaoImpl"/>
+
 </beans>
 
