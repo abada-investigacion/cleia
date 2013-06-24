@@ -43,6 +43,12 @@
        <property name="type" value="HORNETQ" />
        <!--property name="groupTaskManagement" ref="groupTaskManagement"/--><!--LDAP -->
         <property name="groupTaskManagement" ref="loginDao"/><!--BBDD --> 
+        <property name="properties">
+            <props>
+                <prop key="jbpm.task.hornetq.host">${jbpm.task.hornetq.host}</prop>
+                <prop key="jbpm.task.hornetq.port">${jbpm.task.hornetq.port}</prop>
+            </props>
+        </property>
    </bean>
    
     <bean id="graphViewerPlugin" class="com.abada.jbpm.integration.console.graph.GraphViewerPluginImpl">

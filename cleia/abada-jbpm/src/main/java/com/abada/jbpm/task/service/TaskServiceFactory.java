@@ -46,6 +46,10 @@ public class TaskServiceFactory {
         this.groupTaskManagement = groupTaskManagement;
     }
 
+    public Properties getProperties() {
+        return properties;
+    }
+
     public TaskClient getTaskClient() {
         switch (type) {
             case JMS:

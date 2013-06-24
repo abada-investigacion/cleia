@@ -5,6 +5,7 @@
 package com.abada.jbpm.task.spring;
 
 import com.abada.jbpm.task.service.TaskClient;
+import com.abada.jbpm.task.service.TaskConfigurationProperties;
 import com.abada.jbpm.task.service.TaskServiceFactory;
 import java.util.Observable;
 import java.util.Observer;
@@ -42,7 +43,9 @@ public class HumanTaskRegistrationService extends ApplicationObjectSupport imple
                 if (session != null) {
                     handler = new AsyncGenericHTWorkItemHandler(session);
                     TaskClient client=taskClientFactory.getTaskClient();
-                    handler.setClient(client);
+                    handler.setClient(client);                    
+                    handler.setIpAddress(taskClientFactory.getProperties().getProperty(TaskConfigurationProperties.HORNET_HOST));
+                    handler.setPort(Integer.parseInt(taskClientFactory.getProperties().getProperty(TaskConfigurationProperties.HORNET_PORT)));
 
                     if (client.connect()) {
                         session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);

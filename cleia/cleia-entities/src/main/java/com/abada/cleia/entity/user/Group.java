@@ -19,7 +19,7 @@ import javax.persistence.ManyToMany;
 @Entity(name = "groups1")
 public class Group implements Serializable {
     @Id
-    @Column(length = 1024,name = "value1")
+    @Column(name = "value1")
     private String value;
     @JsonExclude
     @ManyToMany(mappedBy = "groups")
