@@ -4,6 +4,8 @@
  */
 package com.abada.cleia.rest.identity;
 
+import com.abada.cleia.entity.user.Group;
+import com.abada.cleia.entity.user.User;
 import com.abada.springframework.security.authentication.dni.DniAuthenticationDao;
 import java.security.Principal;
 import java.util.Collection;
@@ -23,18 +25,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author katsu
  */
 @Controller
+@RequestMapping("/rs/identity/user")
 public class IdentityController {
 
     @Resource
     private ApplicationContext context;
-    
     /**
      * Returns all roles of logged users.
      *
      * @param request Do nothing.
      * @return Return all roles of logged users.
      */
-    @RequestMapping(value = "/rs/identity/user/roles/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/roles/list", method = RequestMethod.GET)
     public Collection<? extends GrantedAuthority> getRoles(HttpServletRequest request) {
         Principal p = request.getUserPrincipal();
         if (p instanceof UsernamePasswordAuthenticationToken) {
@@ -54,7 +56,7 @@ public class IdentityController {
      * @return Returns all roles for a user by dni
      */
     @RolesAllowed(value = {"ROLE_ADMIN","ROLE_DNI_CONSULT"})
-    @RequestMapping(value = "/rs/identity/user/dni/roles/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/dni/roles/list", method = RequestMethod.GET)
     public Collection<? extends GrantedAuthority> getRolesByDni(String dni) throws Exception {   
         DniAuthenticationDao dniAuthenticationDao=context.getBean(DniAuthenticationDao.class);
         if (dniAuthenticationDao!=null){
@@ -66,4 +68,23 @@ public class IdentityController {
         }
         throw new Exception("No DniAuthenticationDao bean found.");
     }
+    
+    /**
+     * Returns all roles of logged users.
+     *
+     * @param request Do nothing.
+     * @return Return all roles of logged users.
+     */
+    @RequestMapping(value = "/groups/list", method = RequestMethod.GET)
+    public Collection<Group> getGroups(HttpServletRequest request) {
+        Principal p = request.getUserPrincipal();
+        if (p instanceof UsernamePasswordAuthenticationToken) {
+            UsernamePasswordAuthenticationToken u = (UsernamePasswordAuthenticationToken) p;
+            if (u.getPrincipal() instanceof User) {
+                User user = (User) u.getPrincipal();                
+                return user.getGroups();
+            }
+        }
+        return null;
+    }       
 }

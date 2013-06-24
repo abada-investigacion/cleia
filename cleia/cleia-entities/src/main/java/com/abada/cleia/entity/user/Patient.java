@@ -5,12 +5,15 @@
 package com.abada.cleia.entity.user;
 
 import com.abada.gson.exclusionstrategy.JsonExclude;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -34,12 +37,23 @@ public class Patient extends User{
     @Column(length = 255)
     private String tlf;
     @Embedded
-    private Address address;  
+    private Address address;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Genre genre;
     @JsonExclude
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "patients")
     private List<Medical> medicals;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "patientId")
     private List<PatientHasProcessInstance> processInstances;
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
 
     public List<PatientHasProcessInstance> getProcessInstances() {
         return processInstances;
@@ -103,5 +117,12 @@ public class Patient extends User{
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+    
+    public void addPatientHasProcessInstance(PatientHasProcessInstance instance){
+        if (this.getProcessInstances()==null)
+            this.setProcessInstances(new ArrayList<PatientHasProcessInstance>());
+        this.getProcessInstances().add(instance);
+        instance.setPatientId(this);
     }
 }

@@ -4,6 +4,7 @@
  */
 package com.abada.cleia.dao.impl;
 
+import com.abada.cleia.dao.ProcessInstanceDao;
 import com.abada.cleia.entity.user.Patient;
 import com.abada.cleia.entity.user.PatientHasProcessInstance;
 import com.abada.jbpm.integration.console.task.PatientTaskManagement;
@@ -19,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author katsu
  */
-public class ProcessInstanceDaoImpl implements PatientTaskManagement{
+public class ProcessInstanceDaoImpl implements PatientTaskManagement, ProcessInstanceDao{
 
     private static final Log logger = LogFactory.getLog(ProcessInstanceDaoImpl.class);
     @PersistenceContext(unitName = "cleiaPU")
@@ -36,6 +37,15 @@ public class ProcessInstanceDaoImpl implements PatientTaskManagement{
             return result;
         }
         return null;
+    }
+
+    @Transactional(value = "cleia-txm", readOnly = true)
+    public void addPInstancePatient(Long patientId, Long processInstanceId) {
+        PatientHasProcessInstance add=new PatientHasProcessInstance();        
+        add.setProcessInstanceId(processInstanceId);
+        Patient patient=entityManager.find(Patient.class, patientId);
+        patient.addPatientHasProcessInstance(add);
+        entityManager.persist(add);
     }
     
 }
