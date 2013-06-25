@@ -1,12 +1,16 @@
 package com.abada.cleia.dao.impl;
 
+import com.abada.cleia.dao.UserDao;
 import com.abada.cleia.entity.user.Group;
+import com.abada.cleia.entity.user.Patient;
+import com.abada.cleia.entity.user.Role;
 import com.abada.cleia.entity.user.User;
 import com.abada.jbpm.integration.console.task.GroupTaskManagement;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import com.abada.springframework.orm.jpa.support.JpaDaoUtils;
 import com.abada.springframework.security.authentication.dni.DniAuthenticationDao;
+import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.logging.Log;
@@ -19,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author katsu
  */
-public class LoginDaoImpl extends JpaDaoUtils implements GroupTaskManagement, UserDetailsService,DniAuthenticationDao {
+public class LoginDaoImpl extends JpaDaoUtils implements GroupTaskManagement, UserDetailsService,DniAuthenticationDao,UserDao {
 
     private static final Log logger = LogFactory.getLog(LoginDaoImpl.class);
     @PersistenceContext(unitName = "cleiaPU")
@@ -72,5 +76,69 @@ public class LoginDaoImpl extends JpaDaoUtils implements GroupTaskManagement, Us
         result.getGroups().size();
         result.getRoles().size();
         return result;
+    }
+
+    public User getAll(GridRequest filters, String username) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void addPatient2User(String username, Patient p) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public List<User> getAllUsers() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Long loadSizeAll(GridRequest filters) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public User getUserById(Long iduser) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void postUser(User user) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void putUser(Long iduser, User user) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void enableDisableUser(Long iduser, boolean enable) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public List<User> getAll(GridRequest filters) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public List<Group> getGroupsByIdUser(Long iduser) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public List<Role> getRolesByIdUser(Long iduser) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void putUserGroup(Long iduser, Long idgroup) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void deleteUserGroup(Long iduser, Long idgroup) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void putUserRole(Long iduser, Integer idrole) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void deleteUserRole(Long iduser, Integer idrole) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public List<String> getUserGroup(String username) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
