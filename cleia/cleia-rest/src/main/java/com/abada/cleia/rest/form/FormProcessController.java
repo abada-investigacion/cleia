@@ -31,7 +31,7 @@ import org.springframework.web.servlet.View;
  */
 @Controller
 @RequestMapping("/rs/form/process")
-public class FormController {
+public class FormProcessController {
 
     @Autowired
     private FormDispatcherPlugin formDispatcherPlugin;
