@@ -26,7 +26,7 @@ import org.springframework.web.servlet.View;
  */
 @Controller
 @RequestMapping("/rs/form/task")
-public class FormController1 {
+public class FormTaskController {
 
     @Autowired
     private FormDispatcherPlugin formDispatcherPlugin;
