@@ -1,0 +1,13 @@
+/* 
+    Document   : sate
+    Created on : 20-feb-2013, 11:58:41
+    Author     : katsu
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.body-abada {     
+    background-image: url(../images/backend.jpg);
+    background-repeat: no-repeat;    
+    background-size: 100% auto;
+}

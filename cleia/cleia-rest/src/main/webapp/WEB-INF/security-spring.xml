@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+">
+    <!-- Web Security -->         
+    <security:http auto-config='false' use-expressions="true" entry-point-ref="authenticationEntryPoint">          <!--access="IS_AUTHENTICATED_ANONYMOUSLY"-->
+        <!--security:intercept-url pattern="/rs/identity/sid" access="permitAll" />        
+        <security:intercept-url pattern="/rs/server/**" access="permitAll" /-->        
+        <security:intercept-url pattern="/rs/identity/secure/j_security_check"  access="permitAll" requires-channel="any"/>        
+        <security:intercept-url pattern="${cleia.server.url.roles}"  access="isAuthenticated()" requires-channel="any"/>
+        <security:intercept-url pattern="${cleia.server.url.dni.roles}"  access="isAuthenticated()" requires-channel="any"/>
+        <security:intercept-url pattern="/**"  access="isAuthenticated()" requires-channel="https"/>
+        <security:form-login always-use-default-target='false' login-processing-url="/rs/identity/secure/j_security_check" default-target-url="/rs/identity/sid" authentication-failure-url="/"/>
+        <security:custom-filter  position="BASIC_AUTH_FILTER" ref="basicAuthenticationFilter" />
+        <security:custom-filter position="PRE_AUTH_FILTER" ref="x509filter"/>
+    </security:http>
+    
+    <bean id="basicAuthenticationFilter" class="org.springframework.security.web.authentication.www.BasicAuthenticationFilter">
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="authenticationEntryPoint" ref="authenticationEntryPoint"/>
+    </bean>
+
+    <bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+        <property name="realmName" value="CLEIA Server"/>
+    </bean>
+    
+    <bean id="x509filter" class="com.abada.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter">
+        <property name="filterSubject" value="serialNumber=(.*?),"/>
+        <property name="authenticationManager" ref="authenticationManager"/>
+    </bean>
+    
+    <bean id="dniAuthenticationProvider" class="com.abada.springframework.security.authentication.dni.DniAuthenticationProvider">
+        <property name="dniAuthenticationDao" ref="loginDao" />
+    </bean>
+    
+    <security:authentication-manager alias="authenticationManager">        
+        <security:authentication-provider ref="dniAuthenticationProvider" /> <!-- DNIe x509 -->
+        <security:authentication-provider ref="userDaoAuthenticationProvider" /><!-- BBDD -->        
+        <!-- LOCAL -->
+        <security:authentication-provider>
+            <security:user-service>
+                <security:user name="dnie_user" password="dnie_user_1234" authorities="ROLE_DNI_CONSULT" /><!-- Usuario necesario para el dni, si se usa otro modo de authentication se debe meter este usuario o asegurarse que en la parte web se configure un usuario valido para esto, notese que no tiene permisos para casi nada -->                
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>            
+    
+    <!-- BBDD -->        
+    <bean id="userDaoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="loginDao" />
+        <property name="passwordEncoder" ref="sha1PasswordEncoder" />
+    </bean>  
+    
+    <bean id="sha1PasswordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder" />
+    
+    ${db.configuration}       
+    
+    <bean id="transactionManagerLogin" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerLogin" />
+        <qualifier value="cleia-login-txm"/>
+    </bean>
+    
+    <bean id="entityManagerLogin" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="cleiaPU" />
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />            
+        </property>
+        <property name="dataSource" ref="ds1" />
+    </bean> 
+    
+    <bean id="loginDao" class="com.abada.cleia.dao.impl.LoginDaoImpl" />
+    
+</beans>
+

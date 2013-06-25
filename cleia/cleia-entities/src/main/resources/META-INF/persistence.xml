@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+  <persistence-unit name="cleiaPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <class>com.abada.cleia.entity.user.Group</class>
+    <class>com.abada.cleia.entity.user.Role</class>
+    <class>com.abada.cleia.entity.user.User</class>
+    <class>com.abada.cleia.entity.user.Id</class>
+    <class>com.abada.cleia.entity.user.IdType</class>
+    <class>com.abada.cleia.entity.user.Medical</class>
+    <class>com.abada.cleia.entity.user.Patient</class>
+    <class>com.abada.cleia.entity.user.PatientHasProcessInstance</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="hibernate.dialect" value="${db.dialect}"/>
+      <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+      <property name="hibernate.max_fetch_depth" value="3"/>
+      <property name="hibernate.hbm2ddl.auto" value="${db.autogenerate}"/>
+      <property name="hibernate.show_sql" value="true"/>
+    </properties>
+  </persistence-unit>
+</persistence>
