@@ -41,7 +41,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>abada-jbpm</artifactId>
-            <version>${project.version}</version>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.abada</groupId>

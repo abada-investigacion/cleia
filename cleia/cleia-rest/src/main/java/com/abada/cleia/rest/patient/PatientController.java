@@ -212,7 +212,7 @@ public class PatientController {
      * @return Return success structure.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/rs/identity/patientDemographic/{idpatient}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/demographic/{idpatient}", method = RequestMethod.PUT)
     public Success putPatientData(@PathVariable Long idpatient, @RequestBody Patient patient) {
 
         Success result = new Success(Boolean.FALSE);
@@ -255,7 +255,7 @@ public class PatientController {
      * @return Return a list of every process instance that have a patient, oncoguide or not.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-    @RequestMapping(value = "/{patientId}/pinstances", method = RequestMethod.GET)
+    @RequestMapping(value = "/{patientId}/pinstance/list", method = RequestMethod.GET)
     public ExtjsStore getPInstancePatients(@PathVariable Long patientId) {
         ExtjsStore result = new ExtjsStore();
         List<PatientHasProcessInstance> aux = this.pInstancePatientDao.getProcessInstance(patientId);
@@ -275,6 +275,50 @@ public class PatientController {
     @RequestMapping(value = "/{patientId}/pinstance/{pInstance}", method = RequestMethod.GET)
     public PatientHasProcessInstance getPInstancePatients(@PathVariable Long patientId,@PathVariable Long pInstance) {        
         PatientHasProcessInstance result = this.pInstancePatientDao.getProcessInstanceFromProcessIntance(patientId, pInstance);                
+        return result;
+    }
+    
+    /**
+     * Return all identifiers of a patient.
+     * @param idpatient Patient id.
+     * @return Return all identifiers of a patient.
+     */
+    @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER","ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/{idpatient}/id", method = RequestMethod.GET)
+    public ExtjsStore getPatientidByPatient(@PathVariable Long idpatient) {
+
+        List<Id> lpatientid;
+        ExtjsStore aux = new ExtjsStore();
+        try {
+            lpatientid = this.patientDao.getIdsForPatient(idpatient);
+            aux.setData(lpatientid);
+            aux.setTotal(lpatientid.size());
+        } catch (Exception e) {
+            logger.error(e);
+        }
+
+        return aux;
+    }
+    
+     /**
+     * Modify a patient by id.
+     * @param idpatient Patient id.
+     * @param patient Patient structure. Must set in JSON in the Http body.
+     * @return Return success structure.
+     */
+    @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER","ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/{idpatient}/id", method = RequestMethod.PUT)
+    public Success putPatientid(@PathVariable Long idpatient, @RequestBody Id [] lpatientid) {
+
+        Success result = new Success(Boolean.FALSE);
+        try {
+            patientDao.putPatientid(idpatient, Arrays.asList(lpatientid));
+            result.setSuccess(Boolean.TRUE);
+        } catch (Exception e) {
+            result.setErrors(new com.abada.extjs.Error(e.getMessage()));
+            logger.error(e);
+        }
+
         return result;
     }
 }

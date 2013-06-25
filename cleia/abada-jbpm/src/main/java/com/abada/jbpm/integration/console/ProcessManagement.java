@@ -21,7 +21,7 @@ import org.jbpm.process.audit.ProcessInstanceLog;
 /**
  * Sustituye a {@link org.jbpm.integration.console.ProcessManagement}
  * 
- * 5.3.0.Final compliant
+ * jbpm 5.4.0.Final compliant
  * @author katsu
  */
 public class ProcessManagement implements org.jboss.bpm.console.server.integration.ProcessManagement, AbadaProcessManagementPlugin {

@@ -30,14 +30,13 @@ import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
-import org.jbpm.task.service.Operation;
-import org.jbpm.task.service.TaskClientHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 
 /**
  * Sustituye {@link org.jbpm.integration.console.TaskManagement} jbpm
- * 5.3.0.Final compliant
+ * 
+ * jbpm 5.4.0.Final compliant
  *
  *
  * @author katsu

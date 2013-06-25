@@ -40,4 +40,8 @@ public interface PatientDao {
     public void putPatientData(Long idpatient, Patient patient);
 
     public void enableDisablePatient(Long idpatient, boolean enable);
+
+    public List<Id> getIdsForPatient(Long idpatient);
+
+    public void putPatientid(Long idpatient, List<Id> ids);
 }

@@ -47,5 +47,13 @@ public class ProcessInstanceDaoImpl implements PatientTaskManagement, ProcessIns
         patient.addPatientHasProcessInstance(add);
         entityManager.persist(add);
     }
+
+    public PatientHasProcessInstance getProcessInstanceFromProcessIntance(Long patientId, Long pInstance) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public List<PatientHasProcessInstance> getProcessInstance(Long patientId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }
