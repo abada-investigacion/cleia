@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -23,7 +24,8 @@ import org.springframework.security.core.userdetails.UserDetails;
  *
  * @author katsu
  */
-@Entity(name = "user1")
+@Entity
+@Table(name = "user1")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User implements UserDetails{
     @javax.persistence.Id
@@ -44,7 +46,7 @@ public class User implements UserDetails{
     @ManyToMany
     @JoinTable(name = "user_has_role",
             joinColumns = {@JoinColumn(nullable = false,name = "user_id",referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(nullable = false,name="role_id",referencedColumnName = "value1")})
+            inverseJoinColumns = {@JoinColumn(nullable = false,name="role_id",referencedColumnName = "authority")})
     private List<Role> roles;    
     @ManyToMany
     @JoinTable(name = "user_has_group",

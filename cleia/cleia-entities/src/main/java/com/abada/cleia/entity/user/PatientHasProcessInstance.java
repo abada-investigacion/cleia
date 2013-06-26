@@ -11,12 +11,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  *
  * @author katsu
  */
-@Entity(name = "patient_has_pi")
+@Entity
+@Table(name = "patient_has_pi")
 public class PatientHasProcessInstance implements Serializable {
     @javax.persistence.Id
     @Basic(optional = false)

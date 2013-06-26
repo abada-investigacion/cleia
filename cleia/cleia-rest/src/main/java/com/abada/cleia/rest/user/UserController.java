@@ -9,7 +9,6 @@ import com.abada.cleia.dao.UserDao;
 import com.abada.cleia.entity.user.Group;
 import com.abada.cleia.entity.user.Role;
 import com.abada.cleia.entity.user.User;
-import com.abada.cleia.rest.identity.group.GroupController;
 import com.abada.extjs.ExtjsStore;
 import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;

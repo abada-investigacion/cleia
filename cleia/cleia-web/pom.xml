@@ -109,7 +109,13 @@
             <artifactId>abada-extjs</artifactId>
             <version>4.2.1</version>
             <scope>runtime</scope>
-        </dependency>        
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bam-module</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

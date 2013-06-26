@@ -76,5 +76,6 @@
     <module>cleia-rest</module>
     <module>cleia-web</module>
     <module>abada-jbpm</module>
+    <module>bam</module>
   </modules>
 </project>

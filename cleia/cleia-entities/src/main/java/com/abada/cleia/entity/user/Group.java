@@ -11,12 +11,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author katsu
  */
-@Entity(name = "groups1")
+@Entity
+@Table(name = "groups1")
 public class Group implements Serializable {
     @Id
     @Column(name = "value1")
