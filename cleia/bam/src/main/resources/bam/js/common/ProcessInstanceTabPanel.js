@@ -7,12 +7,13 @@ Ext.define('App.bam.js.common.ProcessInstanceTabPanel',{
     requires: ['Abada.Ajax','Ext.window.MessageBox','Ext.JSON'],
     extend:'Ext.tab.Panel',        
     config:{
-        urlImage:getRelativeURI('/bam/instance/image.do'),
-        urlInfo:getRelativeURI('/bam/instance/tree.do'),
-        urlDiagramInfo:getRelativeURI('/bam/process/diagram.do'),
+        urlImagePI:'rs/process/instance/{0}/image',
+        urlImageP:'rs/process/definition/{0}/image',
+        urlInfo:'rs/process/instance/{0}/tree',
+        urlDiagramInfo:'rs/process/definition/{0}/diagram',
         urlDocumentsNode:getRelativeURI('/bam/dms/documentsnode.do'),
         urlDocumentsNodeProcessInstance:getRelativeURI('/bam/dms/process/instance/documentsnode.do'),
-        urlJumpInTime:getRelativeURI('/bam/instance/jump.do')
+        urlJumpInTime:'rs/process/instance/{0}/jump'
     },
     initComponent:function(){        
         this.callParent();
@@ -88,7 +89,7 @@ Ext.define('App.bam.js.common.ProcessInstanceTabPanel',{
                         var aux=text.substr(0,2).toLowerCase();
                         if (aux=='sí' || aux == 'si'){
                             Abada.Ajax.requestJson({
-                                url:this.config.urlJumpInTime,
+                                url:getRelativeServerURI(this.config.urlJumpInTime,[this.processInstanceId]),
                                 method:'POST',
                                 scope:this,
                                 headers:{
@@ -130,12 +131,9 @@ Ext.define('App.bam.js.common.ProcessInstanceTabPanel',{
         this.processInstanceId=processInstanceId;
         this.removeAll();
         Abada.Ajax.requestJsonData({
-            url: this.config.urlInfo,
+            url: getRelativeServerURI(this.config.urlInfo,[processInstanceId]),
             scope:this,
             method:'GET',
-            params:{
-                processInstanceId:processInstanceId
-            },
             success: function(json) {                                                       
                 this.addProcessInstancePanel(json.data,0);                                    
                 this.doLayout();
@@ -153,7 +151,8 @@ Ext.define('App.bam.js.common.ProcessInstanceTabPanel',{
         }
         
         var panel=Ext.create('App.bam.js.common.ProcessInstancePanel',{
-            urlImage:this.config.urlImage,
+            urlImagePI:this.config.urlImagePI,
+            urlImageP:this.config.urlImageP,
             urlDiagramInfo:this.config.urlDiagramInfo,
             autoScroll:true,
             processInstanceId:records[i].processInstanceId,

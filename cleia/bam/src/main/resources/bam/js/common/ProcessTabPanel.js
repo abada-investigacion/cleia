@@ -20,12 +20,9 @@ Ext.define('App.bam.js.common.ProcessTabPanel',{
         this.processId=processId;
         this.removeAll();
         Abada.Ajax.requestJsonData({
-            url: this.urlInfo,
+            url: getRelativeServerURI(this.urlInfo,[processId]),
             scope:this,
             method:'GET',
-            params:{
-                processId:processId
-            },
             success: function(json) {                                                       
                 this.addProcessInstancePanel(json.data,0);                                    
                 this.doLayout();

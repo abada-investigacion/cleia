@@ -12,7 +12,7 @@ Ext.onReady(function(){
     var startPanel=Ext.create('Abada.form.field.Date',{});
     var endPanel=Ext.create('Abada.form.field.Date',{});
     var cbOncoguide=Ext.create('Abada.form.field.SimpleGroupingComboBox',{
-        url:getRelativeURI('/bam/oncoguides.do')
+        url:getRelativeServerURI('/rs/process/definition/list/combo')
     }); 
     var button=Ext.create('Ext.button.Button', {
         text: 'Ver',
