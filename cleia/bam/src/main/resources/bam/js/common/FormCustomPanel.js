@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-Ext.define('Oggi.bam.js.common.FormCustomPanel',{
+Ext.define('App.bam.js.common.FormCustomPanel',{
     requires: ['Abada.Ajax'],
     extend:'Ext.panel.Panel',        
     config:{
@@ -18,7 +18,7 @@ Ext.define('Oggi.bam.js.common.FormCustomPanel',{
     },    
     createIFrameForm:function(){
         var urlComplete=this.url+'form/task/'+this.taskId+'/render';
-        this.iframe=Ext.create('Oggi.bam.js.common.FormCustomFrame',{url:urlComplete});
+        this.iframe=Ext.create('App.bam.js.common.FormCustomFrame',{url:urlComplete});
         this.iframe.addListener('success',this.onSuccessSubmitIFrame,this);
         this.iframe.addListener('failure',this.onFailureSubmitIFrame,this);
         this.add(this.iframe);

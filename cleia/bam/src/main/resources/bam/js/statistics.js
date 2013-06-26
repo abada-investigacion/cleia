@@ -19,7 +19,7 @@ Ext.onReady(function(){
         scope:this,
         handler: function() {
             if(cbOncoguide.getValue()){
-                var panelAux=Ext.create('Oggi.bam.js.common.ProcessInstancePanel',{
+                var panelAux=Ext.create('App.bam.js.common.ProcessInstancePanel',{
                     urlImage:getRelativeURI('/bam/statistic/image.do'),
                     processInstanceId:cbOncoguide.getValue(),
                     start:startPanel.getValue(),
@@ -45,7 +45,7 @@ Ext.onReady(function(){
 
     var panel=Ext.create('Ext.panel.Panel',{
         title:'Estadisticas',
-        height:Oggi.height,
+        height:App.height,
         items:[
         cbOncoguide,startPanel,endPanel,button
         ]

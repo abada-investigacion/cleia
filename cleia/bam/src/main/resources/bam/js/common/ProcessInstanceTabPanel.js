@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-Ext.define('Oggi.bam.js.common.ProcessInstanceTabPanel',{
+Ext.define('App.bam.js.common.ProcessInstanceTabPanel',{
     requires: ['Abada.Ajax','Ext.window.MessageBox','Ext.JSON'],
     extend:'Ext.tab.Panel',        
     config:{
@@ -54,7 +54,7 @@ Ext.define('Oggi.bam.js.common.ProcessInstanceTabPanel',{
                     nodeId:nodeId
                 });
             }
-            var panel=Ext.create('Oggi.bam.js.common.JumpPanel',{                
+            var panel=Ext.create('App.bam.js.common.JumpPanel',{                
                 autoScroll:true,
                 height: 300,
                 width: 400
@@ -152,7 +152,7 @@ Ext.define('Oggi.bam.js.common.ProcessInstanceTabPanel',{
             }
         }
         
-        var panel=Ext.create('Oggi.bam.js.common.ProcessInstancePanel',{
+        var panel=Ext.create('App.bam.js.common.ProcessInstancePanel',{
             urlImage:this.config.urlImage,
             urlDiagramInfo:this.config.urlDiagramInfo,
             autoScroll:true,

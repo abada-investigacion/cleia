@@ -6,32 +6,24 @@ package com.abada.cleia.entity.user;
 
 import com.abada.gson.exclusionstrategy.JsonExclude;
 import java.util.List;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
  *
  * @author katsu
  */
-@Entity(name = "role1")
+@Entity
+@Table(name = "role1")
 public class Role implements GrantedAuthority{
     @Id
-    @Column(name = "value1")
-    private String value;    
+    private String authority;    
     @JsonExclude
     @ManyToMany(mappedBy = "roles")
     private List<User> users;
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 
     public List<User> getUsers() {
         return users;
@@ -42,6 +34,11 @@ public class Role implements GrantedAuthority{
     }
 
     public String getAuthority() {
-        return value;
+        return authority;
     }
+
+    public void setAuthority(String authority) {
+        this.authority = authority;
+    }
+
 }

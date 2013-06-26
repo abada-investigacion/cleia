@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-Ext.define('Oggi.bam.js.common.FormCustomFrame',{  
+Ext.define('App.bam.js.common.FormCustomFrame',{  
     requires:['Ext.XTemplate','Ext.JSON'],
     extend:'Ext.Component',        
     confing:{

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-Ext.define('Oggi.bam.js.common.ProcessTabPanel',{
+Ext.define('App.bam.js.common.ProcessTabPanel',{
     requires: ['Abada.Ajax','Ext.window.MessageBox'],
     extend:'Ext.tab.Panel',        
     config:{
@@ -42,7 +42,7 @@ Ext.define('Oggi.bam.js.common.ProcessTabPanel',{
             }
         }
         
-        var panel=Ext.create('Oggi.bam.js.common.ProcessInstancePanel',{
+        var panel=Ext.create('App.bam.js.common.ProcessInstancePanel',{
             urlImage:this.urlImage,
             urlDiagramInfo:this.urlDiagramInfo,
             autoScroll:true,

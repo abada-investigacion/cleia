@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-Ext.define('Oggi.bam.js.common.VersionFormPanel',{
+Ext.define('App.bam.js.common.VersionFormPanel',{
     requires: ['Abada.Ajax'],
     extend:'Ext.panel.Panel',        
     config:{
@@ -32,7 +32,7 @@ Ext.define('Oggi.bam.js.common.VersionFormPanel',{
         });
         button.addListener('click',this.onClickChangeVersion,this);
                         
-        this.grid=Ext.create('Oggi.bam.js.common.JumpNodeGrid',{
+        this.grid=Ext.create('App.bam.js.common.JumpNodeGrid',{
             autoScroll:true,
             height:400,
             tbar:Ext.create('Ext.toolbar.Toolbar',{
@@ -156,8 +156,8 @@ Ext.define('Oggi.bam.js.common.VersionFormPanel',{
             },this,100);
     },
     onClickButtonState:function(btn){                
-        var imageOncoguide=Ext.create('Oggi.bam.js.common.ProcessInstanceTabPanel',{
-            height:Oggi.height
+        var imageOncoguide=Ext.create('App.bam.js.common.ProcessInstanceTabPanel',{
+            height:App.height
         });
                 
         imageOncoguide.loadProcessInstancePanels(this.processInstanceId);        
@@ -182,7 +182,7 @@ Ext.define('Oggi.bam.js.common.VersionFormPanel',{
             }
             
             if (this.cbOncoguide.getValue()){
-                var panelAux=Ext.create('Oggi.bam.js.common.ProcessTabPanel',{
+                var panelAux=Ext.create('App.bam.js.common.ProcessTabPanel',{
                     urlImage:this.config.urlImage,
                     urlInfo:this.config.urlInfo,
                     urlDiagramInfo:this.config.urlDiagramInfo

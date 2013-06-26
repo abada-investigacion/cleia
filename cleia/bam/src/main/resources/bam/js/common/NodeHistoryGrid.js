@@ -4,7 +4,7 @@
  */
 
 
-Ext.define('Oggi.bam.js.common.NodeHistoryGrid', {
+Ext.define('App.bam.js.common.NodeHistoryGrid', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore','Ext.grid.column.Date'],
     extend:'Ext.grid.Panel',
     config:{

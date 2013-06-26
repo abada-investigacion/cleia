@@ -1,7 +1,7 @@
 /**
  * Panel that show a image with information about status of process instance bpm
  */
-Ext.define('Oggi.bam.js.common.ProcessInstancePanel',{
+Ext.define('App.bam.js.common.ProcessInstancePanel',{
     requires: ['Ext.Img','Ext.Date','Abada.Ajax'],
     extend:'Ext.panel.Panel',    
     autoScroll:true,

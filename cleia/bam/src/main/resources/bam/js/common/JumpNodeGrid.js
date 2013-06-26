@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-Ext.define('Oggi.bam.js.common.JumpNodeGrid', {
+Ext.define('App.bam.js.common.JumpNodeGrid', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'],
     extend:'Ext.grid.Panel',
     forceFit:true,    

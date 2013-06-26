@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-Ext.define('Oggi.bam.js.common.NewProcessInstancePanel',{
+Ext.define('App.bam.js.common.NewProcessInstancePanel',{
     requires: ['Abada.Ajax','Abada.form.field.SimpleGroupingComboBox','Ext.button.Button','Ext.window.MessageBox'],
     extend:'Ext.form.Panel',        
     config:{
@@ -65,7 +65,7 @@ Ext.define('Oggi.bam.js.common.NewProcessInstancePanel',{
         this.addEvents('success','failure');
     },
     onButtonClick:function(){        
-        var panel=Ext.create('Oggi.bam.js.common.FormCustomFrame',{                
+        var panel=Ext.create('App.bam.js.common.FormCustomFrame',{                
             url:getRelativeURI('/bam/form/process/'+this.cbOncoguide.getValue()+'/'+this.cbType.getValue()+'/patient/'+this.patientId+'/render')
         });
         panel.addListener('success',function(frame,processInstanceId){  

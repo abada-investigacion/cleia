@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-Ext.define('Oggi.bam.js.common.PrincipalToolbar',{
+Ext.define('App.bam.js.common.PrincipalToolbar',{
     extend:'Ext.toolbar.Toolbar',
     config:{
         patientname:''

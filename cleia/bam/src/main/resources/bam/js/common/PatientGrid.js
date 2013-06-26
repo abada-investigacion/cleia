@@ -10,7 +10,7 @@
  */
 
 
-Ext.define('Oggi.bam.js.common.PatientGrid', {
+Ext.define('App.bam.js.common.PatientGrid', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'
     ,'Ext.ux.grid.FiltersFeature'],
     extend:'Ext.grid.Panel',

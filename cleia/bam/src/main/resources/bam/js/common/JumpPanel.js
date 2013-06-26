@@ -3,8 +3,8 @@
  * and open the template in the editor.
  */
 
-Ext.define('Oggi.bam.js.common.JumpPanel',{
-    requires: ['Abada.Ajax','Ext.button.Button','Ext.toolbar.Toolbar','Ext.window.MessageBox','Oggi.bam.js.common.JumpNodeGrid'],
+Ext.define('App.bam.js.common.JumpPanel',{
+    requires: ['Abada.Ajax','Ext.button.Button','Ext.toolbar.Toolbar','Ext.window.MessageBox','App.bam.js.common.JumpNodeGrid'],
     extend:'Ext.panel.Panel',
     initComponent:function(){                                       
         var toolbar=Ext.create('Ext.toolbar.Toolbar',{
@@ -26,7 +26,7 @@ Ext.define('Oggi.bam.js.common.JumpPanel',{
             })]
         });
         
-        this.grid=Ext.create('Oggi.bam.js.common.JumpNodeGrid',{
+        this.grid=Ext.create('App.bam.js.common.JumpNodeGrid',{
             height: this.height-100,
             width: this.width-5,
             autoScroll:true

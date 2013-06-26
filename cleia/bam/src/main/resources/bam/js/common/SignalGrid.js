@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-Ext.define('Oggi.bam.js.common.SignalGrid',{
+Ext.define('App.bam.js.common.SignalGrid',{
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'
     ,'Ext.ux.grid.FiltersFeature'],
     extend:'Ext.grid.Panel',

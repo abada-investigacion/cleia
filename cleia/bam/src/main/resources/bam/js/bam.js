@@ -3,18 +3,18 @@
  * and open the template in the editor.
  */
 
-Ext.require(['Abada.Ajax','Ext.XTemplate','Abada.tab.panel.TabPanel','Oggi.bam.js.common.ProcessInstanceTabPanel','Oggi.bam.js.common.ProcessInstancePanel','Abada.data.JsonStore','Ext.data.proxy.Ajax','Ext.window.MessageBox','Oggi.bam.js.common.VersionFormPanel','Oggi.bam.js.common.ProcessTabPanel','Oggi.bam.js.common.JumpPanel',,'Oggi.bam.js.common.JumpNodeGrid']);
+Ext.require(['Abada.Ajax','Ext.XTemplate','Abada.tab.panel.TabPanel','App.bam.js.common.ProcessInstanceTabPanel','App.bam.js.common.ProcessInstancePanel','Abada.data.JsonStore','Ext.data.proxy.Ajax','Ext.window.MessageBox','App.bam.js.common.VersionFormPanel','App.bam.js.common.ProcessTabPanel','App.bam.js.common.JumpPanel',,'App.bam.js.common.JumpNodeGrid']);
 
 Ext.onReady(function(){      
     function showVersionChangeForm(patientId,processInstanceId,processId,patientname){
-        var tbar=Ext.create('Oggi.bam.js.common.PrincipalToolbar',{
+        var tbar=Ext.create('App.bam.js.common.PrincipalToolbar',{
             patientname:patientname
         });
         tbar.addListener('back',function(toolbar){
             modeOncoguideList(patientId,processInstanceId,patientname);
         });
         
-        var panelAux=Ext.create('Oggi.bam.js.common.VersionFormPanel',{
+        var panelAux=Ext.create('App.bam.js.common.VersionFormPanel',{
             title: 'Cambio Versi&oacute;n '+processId+' '+processInstanceId,
             processInstanceId:processInstanceId,
             tbar:tbar,
@@ -30,14 +30,14 @@ Ext.onReady(function(){
      *Screen for Signal associated with
      */
     function modeSignalOnconguide(patientId,processInstanceId,processId,patientname){          
-        var tbar=Ext.create('Oggi.bam.js.common.PrincipalToolbar',{
+        var tbar=Ext.create('App.bam.js.common.PrincipalToolbar',{
             patientname:patientname
         });
         tbar.addListener('back',function(toolbar){
             modeOncoguideList(patientId,processInstanceId,patientname);
         });
         
-        var panel=  Ext.create('Oggi.bam.js.common.SignalGrid',{
+        var panel=  Ext.create('App.bam.js.common.SignalGrid',{
             height:600,        
             url:getRelativeURI('/bam/signal/nodes.do'),
             processInstanceId:processInstanceId,
@@ -84,7 +84,7 @@ Ext.onReady(function(){
      */
     function modeTaskOnconguide(patientId,processInstanceId,patientname){
         function onTaskSelected(grid,taskId,taskUrl){
-            var panelAux=Ext.create('Oggi.bam.js.common.FormCustomPanel',{
+            var panelAux=Ext.create('App.bam.js.common.FormCustomPanel',{
                 taskId:taskId,
                 url:getRelativeURI('/bam/')
             });
@@ -116,14 +116,14 @@ Ext.onReady(function(){
             win.show();
         }
     
-        var tbar=Ext.create('Oggi.bam.js.common.PrincipalToolbar',{
+        var tbar=Ext.create('App.bam.js.common.PrincipalToolbar',{
             patientname:patientname
         });
         tbar.addListener('back',function(toolbar){
             modeOncoguideList(patientId,processInstanceId,patientname);
         });
         
-        var panel=  Ext.create('Oggi.bam.js.common.TaskGrid',{
+        var panel=  Ext.create('App.bam.js.common.TaskGrid',{
             height:600,        
             url:getRelativeURI('/bam/task/task.do'),
             processInstanceId:processInstanceId,
@@ -140,15 +140,15 @@ Ext.onReady(function(){
      *Screen for patient's oncoguide data
      */
     function modeDataOncoguide(patientId,processInstanceId,patientname){
-        var tbar=Ext.create('Oggi.bam.js.common.PrincipalToolbar',{
+        var tbar=Ext.create('App.bam.js.common.PrincipalToolbar',{
             patientname:patientname
         });
         tbar.addListener('back',function(toolbar){
             modeOncoguideList(patientId,processInstanceId,patientname);
         });
         
-        var grid=Ext.create('Oggi.bam.js.common.DataGrid',{
-            height:Oggi.height,
+        var grid=Ext.create('App.bam.js.common.DataGrid',{
+            height:App.height,
             tbar:tbar,
             processInstanceId:processInstanceId,
             url:getRelativeURI('/bam/instance/data.do')
@@ -163,15 +163,15 @@ Ext.onReady(function(){
      *Screen for patient's oncoguide history
      */
     function modeHistoryOncoguide(patientId,processInstanceId,patientname){
-        var tbar=Ext.create('Oggi.bam.js.common.PrincipalToolbar',{
+        var tbar=Ext.create('App.bam.js.common.PrincipalToolbar',{
             patientname:patientname
         });
         tbar.addListener('back',function(toolbar){
             modeOncoguideList(patientId,processInstanceId,patientname);
         });
         
-        var grid=Ext.create('Oggi.bam.js.common.NodeHistoryGrid',{
-            height:Oggi.height,
+        var grid=Ext.create('App.bam.js.common.NodeHistoryGrid',{
+            height:App.height,
             tbar:tbar,
             processInstanceId:processInstanceId,
             url:getRelativeURI('/bam/instance/history.do')
@@ -186,15 +186,15 @@ Ext.onReady(function(){
      *Screen for patient's oncoguide
      */
     function modeOncoguide(patientId,processInstanceId,patientname){
-        var tbar=Ext.create('Oggi.bam.js.common.PrincipalToolbar',{
+        var tbar=Ext.create('App.bam.js.common.PrincipalToolbar',{
             patientname:patientname
         });
         tbar.addListener('back',function(toolbar){
             modeOncoguideList(patientId,processInstanceId,patientname);
         });
         
-        var imageOncoguide=Ext.create('Oggi.bam.js.common.ProcessInstanceTabPanel',{
-            height:Oggi.height,
+        var imageOncoguide=Ext.create('App.bam.js.common.ProcessInstanceTabPanel',{
+            height:App.height,
             tbar:tbar
         });
         imageOncoguide.loadProcessInstancePanels(processInstanceId);              
@@ -207,15 +207,15 @@ Ext.onReady(function(){
      */
     function modeOncoguideList(patientId,processInstanceId,patientname){
         
-        var tbar=Ext.create('Oggi.bam.js.common.PrincipalToolbar',{
+        var tbar=Ext.create('App.bam.js.common.PrincipalToolbar',{
             patientname:patientname
         });
         tbar.addListener('back',function(toolbar){
             modePatient();
         });
         
-        var oncoguide=Ext.create('Oggi.bam.js.common.OncoguideGrid',{
-            height:Oggi.height-80,
+        var oncoguide=Ext.create('App.bam.js.common.OncoguideGrid',{
+            height:App.height-80,
             url:getRelativeURI('/bam/patient/pinstances.do'),
             patientId:patientId
         });
@@ -261,7 +261,7 @@ Ext.onReady(function(){
         /**
          *Tab for new process
          */
-        var newOncoguide=Ext.create('Oggi.bam.js.common.NewProcessInstancePanel',{
+        var newOncoguide=Ext.create('App.bam.js.common.NewProcessInstancePanel',{
             urlOncoguides:getRelativeURI('/bam/oncoguides.do'),
             urlNewOncoguide:getRelativeURI('/bam/patient/newoncoguide.do'),
             patientId:patientId
@@ -275,7 +275,7 @@ Ext.onReady(function(){
          *Tab for task
          */            
         function onTaskSelected(grid,taskId,taskUrl){
-            var panelAux=Ext.create('Oggi.bam.js.common.FormCustomPanel',{
+            var panelAux=Ext.create('App.bam.js.common.FormCustomPanel',{
                 taskId:taskId,
                 url:getRelativeURI('/bam/')
             });
@@ -307,17 +307,17 @@ Ext.onReady(function(){
             win.show();
         }
         
-        var taskGrid=  Ext.create('Oggi.bam.js.common.TaskGrid',{                 
+        var taskGrid=  Ext.create('App.bam.js.common.TaskGrid',{                 
             url:getRelativeURI('/bam/task/taskForPatient.do'),
             patientId:patientId,
-            height:Oggi.height-80
+            height:App.height-80
         });      
         taskGrid.addListener('taskselected',onTaskSelected);            
         /**
          *Tabs
          */
         var panel=Ext.create('Abada.tab.panel.TabPanel', {            
-            height: Oggi.height,            
+            height: App.height,            
             title:'Oncoguias '+patientId,
             items: [{
                 title: 'Actuales',
@@ -348,8 +348,8 @@ Ext.onReady(function(){
      * Screen for patient's search
      */
     function modePatient(){        
-        var panelPatient=  Ext.create('Oggi.bam.js.common.PatientGrid',{
-            height:Oggi.height,
+        var panelPatient=  Ext.create('App.bam.js.common.PatientGrid',{
+            height:App.height,
             url:getRelativeURI('/bam/patient/patient.do')
         });
         panelPatient.addListener('patientselected',function(grid,patientId,patientname){

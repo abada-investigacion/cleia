@@ -14,5 +14,5 @@
     <!--
                 Indicamos que clases deben ser leidas por Spring para buscar recursos
         -->
-        <context:component-scan base-package="com.abada.bam" />
+        <context:component-scan base-package="com.abada.cleia.bam" />
  </beans>

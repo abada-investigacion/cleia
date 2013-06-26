@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-Ext.define('Oggi.bam.js.common.OncoguideGrid', {
+Ext.define('App.bam.js.common.OncoguideGrid', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'
     ,'Ext.ux.grid.FiltersFeature','Ext.grid.column.Date'],
     extend:'Ext.grid.Panel',

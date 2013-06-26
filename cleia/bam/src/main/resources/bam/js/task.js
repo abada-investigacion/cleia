@@ -8,7 +8,7 @@ Ext.require(['Ext.window.Window']);
 Ext.onReady(function(){   
     
     function onTaskSelected(grid,taskId,taskUrl){
-        var panelAux=Ext.create('Oggi.bam.js.common.FormCustomPanel',{
+        var panelAux=Ext.create('App.bam.js.common.FormCustomPanel',{
             //height:600,
             taskId:taskId,
             url:getRelativeURI('/bam/')
@@ -41,7 +41,7 @@ Ext.onReady(function(){
         win.show();
     }
     
-    var panel=  Ext.create('Oggi.bam.js.common.TaskGrid',{
+    var panel=  Ext.create('App.bam.js.common.TaskGrid',{
         height:600,        
         url:getRelativeURI('/bam/task/user/task.do')
     });      

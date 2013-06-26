@@ -4,7 +4,7 @@
  */
 
 
-Ext.define('Oggi.bam.js.common.TaskGrid', {
+Ext.define('App.bam.js.common.TaskGrid', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore','Ext.grid.column.Template'],
     extend:'Ext.grid.Panel',
     config:{
