@@ -20,7 +20,7 @@ Ext.onReady(function(){
         handler: function() {
             if(cbOncoguide.getValue()){
                 var panelAux=Ext.create('App.bam.js.common.ProcessInstancePanel',{
-                    urlImage:getRelativeURI('/bam/statistic/image.do'),
+                    urlImageP:getRelativeServerURI('rs/process/statistics/{0}/number/image',[cbOncoguide.getValue()]),
                     processInstanceId:cbOncoguide.getValue(),
                     start:startPanel.getValue(),
                     end:endPanel.getValue()
