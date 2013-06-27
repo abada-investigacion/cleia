@@ -6,6 +6,7 @@ package com.abada.cleia.entity.user;
 
 import com.abada.gson.exclusionstrategy.JsonExclude;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,5 +42,21 @@ public class Group implements Serializable {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+    
+     public void addUser(User user) {
+        if (this.users == null) {
+            this.setUsers(new ArrayList<User>());
+        }
+        if (!this.users.contains(user)) {
+            this.users.add(user);
+        }
+        if (user.getGroups() == null) {
+            user.setGroups(new ArrayList<Group>());
+        }
+        if (!user.getGroups().contains(this)) {
+            user.getGroups().add(this);
+        }
+
     }
 }

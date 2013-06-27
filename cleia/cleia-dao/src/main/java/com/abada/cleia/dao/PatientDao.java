@@ -23,7 +23,7 @@ public interface PatientDao {
 
     public List<Patient> getAllPatients();
 
-    public List<Patient> findPatients(List<Id> asList);
+    public List<Patient> findPatients(List<Id> asList)throws Exception;
 
     public List<Patient> getAll(GridRequest grequest);
 
