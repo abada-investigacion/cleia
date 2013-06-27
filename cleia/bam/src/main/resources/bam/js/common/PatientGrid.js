@@ -106,7 +106,7 @@ Ext.define('App.bam.js.common.PatientGrid', {
         
     },
     onDoubleClickTask:function(grid,record,item,index){  
-        var patientname=record.data.name+" "+record.data.surname1+" "+record.data.surname2;
-        this.fireEvent('patientselected',grid,record.data.idPatient,patientname);
+        var patientname=record.data.name+" "+record.data.surname+" "+record.data.surname1;
+        this.fireEvent('patientselected',grid,record.data.id,patientname);
     }
 });

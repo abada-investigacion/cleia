@@ -12,7 +12,7 @@ Ext.define('App.bam.js.common.PrincipalToolbar',{
     constructor:function(config){
         this.initConfig(config);
         this.patientname=config.patientname;
-        this.height= 25;
+        //this.height= 25;
         this.callParent([config]);
         return this;
     },
