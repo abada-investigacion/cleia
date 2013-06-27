@@ -6,7 +6,8 @@ Ext.define('App.bam.js.common.ProcessInstancePanel',{
     extend:'Ext.panel.Panel',    
     autoScroll:true,
     config:{
-        urlImage:undefined,
+        urlImagePI:undefined,
+        urlImageP:undefined,
         urlDiagramInfo:undefined,
         processInstanceId:undefined,
         processId:undefined,
@@ -23,15 +24,15 @@ Ext.define('App.bam.js.common.ProcessInstancePanel',{
         if (this.autoLoad)
             this.loadDiagramInfo();
     },
-    addImageCmp:function(){
-        var url=this.urlImage
+    addImageCmp:function(){        
         var initParams=false;
         if (this.processInstanceId){
-            url+='?processInstanceId='+this.processInstanceId;
+            var url=this.urlImage
+            url+=getRelativeServerURI(this.config.urlImagePI,[this.processInstanceId]);
             initParams=true;
         }else{
             if (this.processId){
-                url+='?processId='+this.processId;
+                url+=getRelativeServerURI(this.config.urlImageP,[this.processId]);                
                 initParams=true;
             }
         }
@@ -149,10 +150,7 @@ Ext.define('App.bam.js.common.ProcessInstancePanel',{
             Abada.Ajax.requestJsonObject({
                 scope:this,
                 method:'GET',
-                url:this.urlDiagramInfo,
-                params:{
-                    processId:this.processId
-                },
+                url:getRelativeServerURI(this.urlDiagramInfo,[this.processId]),
                 success:function(result){
                     this.diagramInfo=result;
                     this.fireEvent('diagramloadsuccess',this);

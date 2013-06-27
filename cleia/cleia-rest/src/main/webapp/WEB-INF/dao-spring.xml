@@ -10,28 +10,25 @@
           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
           http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.1.xsd                  
           http://schema.cloudfoundry.org/spring http://schema.cloudfoundry.org/spring/cloudfoundry-spring.xsd
-">
-    
-    <tx:annotation-driven /> <!-- proxy-target-class="true"-->   
-       
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManager" />
-        <qualifier value="cleia-txm"/>
+">            
+    <bean id="cleia-txm" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="cleia-em" />
     </bean>
     
-    <bean id="entityManager" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <bean id="cleia-em" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="cleiaPU" />
         <property name="jpaDialect">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />            
         </property>
         <property name="dataSource" ref="ds1" />
-    </bean>
+    </bean>   
 
     <bean id="processInstancesDao" class="com.abada.cleia.dao.impl.ProcessInstanceDaoImpl"/>   
     <bean id="patientDao" class="com.abada.cleia.dao.impl.PatientDaoImpl"/>
     <bean id="groupDao" class="com.abada.cleia.dao.impl.GroupDaoImpl"/>
     <bean id="idTypeDao" class="com.abada.cleia.dao.impl.IdTypeDaoImpl"/>
     <bean id="roleDao" class="com.abada.cleia.dao.impl.RoleDaoImpl"/>
+    <bean id="userDao" class="com.abada.cleia.dao.impl.UserDaoImpl"/>
 
 </beans>
 

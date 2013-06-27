@@ -25,20 +25,4 @@ public class BamStatisticController {
         model.addAttribute("js", Arrays.asList("bam/js/statistics.js"));
         return "dynamic/main";
     }
-//    
-//    @RequestMapping(value = "/bam/statistic/image.do")
-//    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-//    public OutputStreamView getProcessStatisticsImage(HttpServletRequest request, String processInstanceId,String start,String end) throws Exception {
-//        RestTemplate restTemplate = context.getBean(RestTemplate.class);
-//        restTemplate.setRequestFactory(request);
-//        Map<String,Object> params=new HashMap<String, Object>();
-//        if (start!=null)
-//            params.put("start", start);
-//        if (end!=null)
-//            params.put("end", end);
-//        byte[] result = restTemplate.getForBytes(new URL(jbpmServerUrl, "rs/process/statistics/" + processInstanceId + "/number/image"+com.abada.web.util.URL.paramUrlGrid(params)).toString());
-//        ByteArrayOutputStream out = new ByteArrayOutputStream();
-//        out.write(result);
-//        return new OutputStreamView(out, processInstanceId + "-image.png", "image/png");
-//    }
 }

@@ -7,14 +7,14 @@ Ext.define('App.bam.js.common.VersionFormPanel',{
     requires: ['Abada.Ajax'],
     extend:'Ext.panel.Panel',        
     config:{
-        urlOncoguides:getRelativeURI('/bam/oncoguides.do'),
+        urlOncoguides:getRelativeServerURI('/rs/process/definition/list/combo'),
         urlSubmit:undefined,
         processInstanceId:undefined,
         urlImage:getRelativeURI('/bam/process/image.do'),
-        urlInfo:getRelativeURI('/bam/process/tree.do'),
-        urlDiagramInfo:getRelativeURI('/bam/process/diagram.do'),
-        urlActiveNodeInfo:getRelativeURI('/bam/instance/activeNodes.do'),
-        urlChangeVersion:getRelativeURI('/bam/instance/version.do')
+        urlInfo:'rs/process/definition/{0}/tree',
+        urlDiagramInfo:'rs/process/definition/{0}/diagram',
+        urlActiveNodeInfo:'rs/process/instance/{0}/allActiveNodeInfo',
+        urlChangeVersion:'rs/process/instance/{0}/{1}/version'
     },
     initComponent:function(){    
         this.cbOncoguide=Ext.create('Abada.form.field.SimpleGroupingComboBox',{
@@ -69,12 +69,9 @@ Ext.define('App.bam.js.common.VersionFormPanel',{
     },   
     loadActiveNodes:function(){
         Abada.Ajax.requestJsonData({            
-            url:this.config.urlActiveNodeInfo,
+            url:getRelativeServerURI(this.config.urlActiveNodeInfo,[this.processInstanceId]),
             method:'GET',
             scope:this,
-            params:{
-                processInstanceId:this.processInstanceId                
-            },
             success:function(records){
                 var aux;
                 for (var i=0;i<records.total;i++){
@@ -133,7 +130,7 @@ Ext.define('App.bam.js.common.VersionFormPanel',{
                 var aux=text.substr(0,2).toLowerCase();
                 if (aux=='sí' || aux == 'si'){
                     Abada.Ajax.requestJson({
-                        url:this.config.urlChangeVersion,
+                        url:getRelativeServerURI(this.config.urlChangeVersion,[this.processInstanceId,this.cbOncoguide.getValue()]),
                         method:'POST',
                         scope:this,
                         headers:{

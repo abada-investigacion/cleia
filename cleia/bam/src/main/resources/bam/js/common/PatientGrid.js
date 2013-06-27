@@ -36,16 +36,16 @@ Ext.define('App.bam.js.common.PatientGrid', {
         }, {
             type: 'date',
             dateFormat : 'd/m/Y',            
-            dataIndex: 'birthday'
+            dataIndex: 'birthDay'
         }, {
             type: 'string',
-            dataIndex: 'typeGenre'
+            dataIndex: 'genre'
         }]
     }],
     columns:[           
     {
         header: 'Id', 
-        dataIndex: 'idPatient',
+        dataIndex: 'id',
         hidden:true    
     },{
         header: 'Nombre', 
@@ -61,20 +61,20 @@ Ext.define('App.bam.js.common.PatientGrid', {
     
     },{
         header: 'Fecha nacimiento', 
-        dataIndex: 'birthday'
+        dataIndex: 'birthDay'
     
     },{
         header: 'Genero', 
-        dataIndex: 'typeGenre'
+        dataIndex: 'genre'
     
     },{
         header: 'Lista Paciente', 
-        dataIndex: 'patientidList',
+        dataIndex: 'ids',
         hidden:true
     
     },{
         header: 'Lista Oncoguia', 
-        dataIndex: 'oncoguideList',
+        dataIndex: 'processInstances',
         hidden:true    
     }],
     constructor:function(config){       
@@ -86,7 +86,7 @@ Ext.define('App.bam.js.common.PatientGrid', {
                 root:'data',                                
                 scope:this,
                 pageSize:20,
-                fields:['idPatient', 'name', 'surname1','surname2','patientidList','oncoguideList',{
+                fields:['id', 'name', 'surname1','surname2','ids','processInstances',{
                     name:'birthday',
                     xtype:'date',
                     dateFormat:'c'
