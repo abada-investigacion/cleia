@@ -15,6 +15,7 @@
  */
 package com.abada.jbpm.integration.console.form;
 
+import com.abada.jbpm.integration.guvnor.GuvnorUtils;
 import com.abada.jbpm.task.service.TaskServiceFactory;
 import java.net.URL;
 
@@ -33,7 +34,12 @@ import org.jboss.bpm.console.server.plugin.FormDispatcherPlugin;
 public class FormDispatcherComposite implements FormDispatcherPlugin {
     
     private FormDispatcherPlugin taskDispatcher;
-    private FormDispatcherPlugin processDispatcher;        
+    private FormDispatcherPlugin processDispatcher;      
+
+    public void setGuvnorUtils(GuvnorUtils guvnorUtils) {
+        ((TaskFormDispatcher)this.taskDispatcher).setGuvnorUtils(guvnorUtils);
+        ((ProcessFormDispatcher)this.processDispatcher).setGuvnorUtils(guvnorUtils);
+    }
 
     /*public void setTaskService(TaskService taskService) {
         ((TaskFormDispatcher)this.taskDispatcher).setTaskService(taskService);
@@ -53,7 +59,7 @@ public class FormDispatcherComposite implements FormDispatcherPlugin {
     }
     
     public FormDispatcherComposite(ProcessManagement processManagement) {
-        this.taskDispatcher = new TaskFormDispatcher();
+        this.taskDispatcher = new TaskFormDispatcher();        
         this.processDispatcher = new ProcessFormDispatcher();
         this.setProcessManagement(processManagement);
     }

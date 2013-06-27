@@ -127,10 +127,14 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     public List<Patient> getAll(GridRequest filters) {
         List<Patient> lpatient = this.find(entityManager, "select p from Patient p" + filters.getQL("p", true), filters.getParamsValues(), filters.getStart(), filters.getLimit());
         for (Patient patient : lpatient) {
-            for (Id pid : patient.getIds()) {
+            patient.getGroups().size();
+            patient.getRoles().size();
+            patient.getIds().size();
+            patient.getProcessInstances().size();
+            /*for (Id pid : patient.getIds()) {
                 pid.getType();
                 pid.getUser();
-            }
+            }*/
         }
         return lpatient;
 

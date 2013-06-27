@@ -54,6 +54,15 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
     private static final Log logger=LogFactory.getLog(AbstractFormDispatcher.class);
     
     private ProcessManagement processManagement;
+    private GuvnorUtils guvnorUtils;
+
+    public GuvnorUtils getGuvnorUtils() {
+        return guvnorUtils;
+    }
+
+    public void setGuvnorUtils(GuvnorUtils guvnorUtils) {
+        this.guvnorUtils = guvnorUtils;
+    }
 
     public ProcessManagement getProcessManagement() {
         return processManagement;
@@ -64,7 +73,7 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
     }       
 
     public URL getDispatchUrl(FormAuthorityRef ref) {
-        StringBuilder sb=URLUtils.getJBPMServerURL();
+        StringBuilder sb=guvnorUtils.getUrlUtils().getJBPMServerURL();
         sb.append("/rs/form/").append(getType(ref)).append("/");
         sb.append(ref.getReferenceId());
         sb.append("/render");
@@ -93,7 +102,7 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
         if (result != null) {
             return result;
         }
-        return GuvnorUtils.getTemplate(name);
+        return guvnorUtils.getTemplate(name);
     }
 
     protected DataHandler processTemplate(final String name, InputStream src, Map<String, Object> renderContext) {
