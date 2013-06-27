@@ -35,6 +35,7 @@ Ext.onReady(function(){
             },
             items:[{                
                 html: '<div style=\"float:left;padding:10px;\"><img alt=\" \" src=\"'+getRelativeURI('/images/logos/abada.png')+'\" style=\"height:60px;\" /></div>'
+                +'<div style=\"float:left;padding:10px;\"><img alt=\" \" src=\"'+getRelativeURI('/images/logos/cleia.jpg')+'\" style=\"height:60px;\" /></div>'
                 //+'<div style=\"clear: both\" />'
                 ,
                 autoHeight:true,

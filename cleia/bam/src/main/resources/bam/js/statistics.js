@@ -12,7 +12,7 @@ Ext.onReady(function(){
     var startPanel=Ext.create('Abada.form.field.Date',{});
     var endPanel=Ext.create('Abada.form.field.Date',{});
     var cbOncoguide=Ext.create('Abada.form.field.SimpleGroupingComboBox',{
-        url:getRelativeURI('/bam/oncoguides.do')
+        url:getRelativeServerURI('/rs/process/definition/list/combo')
     }); 
     var button=Ext.create('Ext.button.Button', {
         text: 'Ver',
@@ -20,7 +20,7 @@ Ext.onReady(function(){
         handler: function() {
             if(cbOncoguide.getValue()){
                 var panelAux=Ext.create('App.bam.js.common.ProcessInstancePanel',{
-                    urlImage:getRelativeURI('/bam/statistic/image.do'),
+                    urlImageP:getRelativeServerURI('rs/process/statistics/{0}/number/image',[cbOncoguide.getValue()]),
                     processInstanceId:cbOncoguide.getValue(),
                     start:startPanel.getValue(),
                     end:endPanel.getValue()

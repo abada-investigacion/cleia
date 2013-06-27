@@ -39,7 +39,7 @@ Ext.onReady(function(){
         
         var panel=  Ext.create('App.bam.js.common.SignalGrid',{
             height:600,        
-            url:getRelativeURI('/bam/signal/nodes.do'),
+            url:getRelativeServerURI('rs/process/definition/{0}/eventnodes',[processId]),
             processInstanceId:processInstanceId,
             processId:processId,
             tbar:tbar
@@ -48,14 +48,13 @@ Ext.onReady(function(){
             var win=Ext.Msg.prompt('Cuidado','¿Esta seguro de querer provocar este evento ('+eventType+') en el proceso ('+processId+') numero '+processInstanceId+'\n'+
                 'S&iacute; o No',function(btn,text){
                     if (text=='Sí' || text == 'Si'){
-                        Abada.Ajax.requestJson({
-                            url:getRelativeURI('/bam/signal/signal.do'),
+                        Abada.Ajax.requestJson({                            
+                            url:getRelativeServerURI('/rs/process/instance/event/{0}/transition/special',[processInstanceId]),
                             method:'POST',
                             scope:this,
                             params:{
                                 processId:processId,
-                                type:eventType,
-                                processInstanceId:processInstanceId
+                                type:eventType
                             },
                             success:function(records){
                                 Ext.Msg.alert('Info','Tarea completada correctamente',                        
@@ -151,7 +150,7 @@ Ext.onReady(function(){
             height:App.height,
             tbar:tbar,
             processInstanceId:processInstanceId,
-            url:getRelativeURI('/bam/instance/data.do')
+            url:getRelativeServerURI('rs/process/instance/{0}/variables/extjs',[processInstanceId])
         });
         
         grid.getStore().load();
@@ -174,7 +173,7 @@ Ext.onReady(function(){
             height:App.height,
             tbar:tbar,
             processInstanceId:processInstanceId,
-            url:getRelativeURI('/bam/instance/history.do')
+            url:getRelativeServerURI('rs/process/instance/{0}/history',[processInstanceId])
         });
         
         grid.getStore().load();
@@ -262,7 +261,7 @@ Ext.onReady(function(){
          *Tab for new process
          */
         var newOncoguide=Ext.create('App.bam.js.common.NewProcessInstancePanel',{
-            urlOncoguides:getRelativeURI('/bam/oncoguides.do'),
+            urlOncoguides:getRelativeServerURI('/rs/process/definition/list/combo'),
             urlNewOncoguide:getRelativeURI('/bam/patient/newoncoguide.do'),
             patientId:patientId
         });
@@ -350,7 +349,7 @@ Ext.onReady(function(){
     function modePatient(){        
         var panelPatient=  Ext.create('App.bam.js.common.PatientGrid',{
             height:App.height,
-            url:getRelativeURI('/bam/patient/patient.do')
+            url:getRelativeServerURI('rs/patient/search')
         });
         panelPatient.addListener('patientselected',function(grid,patientId,patientname){
             modeOncoguideList(patientId,null,patientname);
