@@ -21,7 +21,7 @@ public interface RoleDao {
     public List<Role> getAllRoles();
     
     /**
-     *Obtiene el tamaño de {@link Rolepriv}
+     *Obtiene el tamaño de {@link Role}
      * @param filters 
      * @return Long
      */
@@ -32,29 +32,29 @@ public interface RoleDao {
      * @param idrole
      * @return 
      */
-    public Role getRoleprivById(Integer idrole);
+    public Role getRoleById(Integer idrole);
 
     /**
      * Insert a role 
      * @param rolename
      * @return 
      */
-    public void postRolepriv(Role role) throws Exception;
+    public void postRole(Role role) throws Exception;
 
     /**
      * Modify a role by id
-     * @param idrolepriv
+     * @param idrole
      * @param rolename
      * @return 
      */
-    public void putRolepriv(Integer idrolepriv, Role newrole) throws Exception;
+    public void putRole(Integer idrole, Role newrole) throws Exception;
 
     /**
      * Delete a role by id
-     * @param idrolepriv
+     * @param idrole
      * @return 
      */
-    public void deleteRolepriv(Integer idrolepriv) throws Exception;
+    public void deleteRole(Integer idrole) throws Exception;
 
     /**
      * Search a list of roles by params
@@ -65,9 +65,9 @@ public interface RoleDao {
 
     /**
      * Returns a list of all users from a role
-     * @param idrolepriv
+     * @param idrole
      * @return
      * @throws Exception 
      */
-    public List<User> getUsersByIdRole(Integer idrolepriv) throws Exception;
+    public List<User> getUsersByIdRole(Integer idrole) throws Exception;
 }

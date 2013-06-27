@@ -33,15 +33,15 @@ public interface PatientDao {
 
     public Long loadSizeuserpatient(GridRequest grequest, String username);
 
-    public void postPatient(Patient patient);
+    public void postPatient(Patient patient) throws Exception;
 
-    public void putPatient(Long idpatient, Patient patient);
+    public void putPatient(Long idpatient, Patient patient) throws Exception;
 
-    public void putPatientData(Long idpatient, Patient patient);
+    public void putPatientData(Long idpatient, Patient patient) throws Exception;
 
-    public void enableDisablePatient(Long idpatient, boolean enable);
+    public void enableDisablePatient(Long idpatient, boolean enable) throws Exception;
 
     public List<Id> getIdsForPatient(Long idpatient);
 
-    public void putPatientid(Long idpatient, List<Id> ids);
+    public void putPatientid(Long idpatient, List<Id> ids) throws Exception;
 }

@@ -7,18 +7,20 @@ package com.abada.cleia.dao.impl;
 import com.abada.cleia.dao.RoleDao;
 import com.abada.cleia.entity.user.Role;
 import com.abada.cleia.entity.user.User;
+import com.abada.springframework.orm.jpa.support.JpaDaoUtils;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author katsu
  */
-public class RoleDaoImpl implements RoleDao{
+public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
 
     private static final Log logger = LogFactory.getLog(RoleDaoImpl.class);
     @PersistenceContext(unitName = "cleiaPU")
@@ -30,37 +32,173 @@ public class RoleDaoImpl implements RoleDao{
 //        return result;
 //    }
 
+    /**
+     * Returns all roles
+     * @return 
+     */
+    @Transactional(value = "cleia-txm", readOnly = true)
     public List<Role> getAllRoles() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        List<Role> listroles = entityManager.createQuery("SELECT r FROM Role r").getResultList();
+        return listroles;
     }
 
-    public Long loadSizeAll(GridRequest filters) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * Returns one role by id
+     * @param idrole
+     * @return 
+     */
+    @Transactional(value = "cleia-txm", readOnly = true)
+    public Role getRoleById(Integer idrole) {
+
+        Role rolepriv = entityManager.find(Role.class, idrole);
+        if (rolepriv != null) {
+            return rolepriv;
+        }
+
+        return null;
     }
 
-    public Role getRoleprivById(Integer idrole) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * Insert a role 
+     * @param rolename
+     * @return 
+     */
+    @Transactional(value="cleia-txm",rollbackFor={Exception.class})
+    public void postRole(Role role) throws Exception {
+        List<Role> lrole = entityManager.createQuery("select r from Role r where r.authority=?").setParameter(1, role.getAuthority()).getResultList();
+        if (lrole.isEmpty()) {
+            try {
+                this.addUsers(role, role.getUsers(), true);
+                entityManager.persist(role);
+            } catch (Exception e) {
+                throw new Exception("Error. Ha ocurrido un error al insertar el rol " + role.getAuthority());
+            }
+        } else {
+            throw new Exception("Error. El rol " + role.getAuthority() + " ya existe.");
+        }
     }
 
-    public void postRolepriv(Role role) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * Modify a role by id
+     * @param idrolepriv
+     * @param rolename
+     * @return 
+     */
+    @Transactional(value="cleia-txm",rollbackFor={Exception.class})
+    public void putRole(Integer idrolepriv, Role newrole) throws Exception {
+        Role role = entityManager.find(Role.class, idrolepriv);
+        if (role != null) {
+            List<Role> lrole = entityManager.createQuery("select r from Role r where r.authority=?").setParameter(1, newrole.getAuthority()).getResultList();
+            if ((lrole.isEmpty() && lrole!=null) || newrole.getAuthority().equals(role.getAuthority())) {
+                try {
+                    this.addUsers(role, newrole.getUsers(), false);
+                    role.setAuthority(newrole.getAuthority());
+                } catch (Exception e) {
+                    throw new Exception("Error. Ha ocurrido un error al modificar el rol " + newrole.getAuthority());
+                }
+            } else {
+                throw new Exception("Error. El rol " + newrole.getAuthority() + " ya existe");
+            }
+        } else {
+            throw new Exception("Error. El rol no existe");
+        }
     }
 
-    public void putRolepriv(Integer idrolepriv, Role newrole) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * Delete a role by id
+     * @param idrolepriv
+     * @return 
+     */
+    @Transactional(value="cleia-txm",rollbackFor={Exception.class})
+    public void deleteRole(Integer idrolepriv) throws Exception {
+
+        Role role = (Role) entityManager.find(Role.class, idrolepriv);
+        if (role != null) {
+            try {
+                for (User user : role.getUsers()) {
+                    user.getRoles().remove(role);
+                }
+                role.getUsers().clear();
+                entityManager.remove(role);
+            } catch (Exception e) {
+                throw new Exception("Error. Ha ocurrido un error al borrar el rol: " + role.getAuthority());
+            }
+        } else {
+            throw new Exception("Error. No se puede borrar el rol. Compruebe que exista.");
+        }
     }
 
-    public void deleteRolepriv(Integer idrolepriv) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    /**
+     * Search a list of roles by params
+     * @param filters
+     * @return 
+     */
+    @Transactional(value = "cleia-txm", readOnly = true)
     public List<Role> getAll(GridRequest filters) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Role> lrole = this.find(entityManager,"select r from Role r" + filters.getQL("r", true), filters.getParamsValues(), filters.getStart(), filters.getLimit());
+        return lrole;
     }
 
+    /**
+     * Returns a list of all users from a role
+     * @param idrolepriv
+     * @return
+     * @throws Exception 
+     */
+    @Transactional(value = "cleia-txm", readOnly = true)
     public List<User> getUsersByIdRole(Integer idrolepriv) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        Role role = new Role();
+
+        role = entityManager.find(Role.class, idrolepriv);
+
+        /*Si el role existe le fuerzo a que traiga su lista de User*/
+        if (role == null) {
+            throw new Exception("Error. El rol no existe");
+        } else {
+            for (User user : role.getUsers()) {
+                user.getRoles().size();
+                user.getGroups().size();
+                
+            }
+        }
+
+        return (List<User>) role.getUsers();
     }
 
-    
+    /**
+     *Obtiene el tamaño de {@link Role}
+     * @param filters 
+     * @return Long
+     */
+    @Transactional(value = "cleia-txm", readOnly = true)
+    public Long loadSizeAll(GridRequest filters) {
+        List<Long> result = this.find(entityManager,"select count(*) from Role r" + filters.getQL("r", true), filters.getParamsValues());
+        return result.get(0);
+    }
+
+    @Transactional(value="cleia-txm",rollbackFor={Exception.class})
+    public void addUsers(Role role, List<User> luser, boolean newrole) throws Exception {
+        if (luser != null) {
+            if (!newrole) {
+                for (User u : role.getUsers()) {
+                    u.getRoles().remove(role);
+                }
+                role.getUsers().clear();
+
+                entityManager.flush();
+            }
+            for (User u : luser) {
+                User user = entityManager.find(User.class, u.getId());
+                if (user != null) {
+                    role.addUser(user);
+                } else {
+                    throw new Exception("Error. Uno de los usuarios no existe");
+                }
+            }
+        } else {
+            throw new NullPointerException("Error. Lista de usuarios inexistente");
+        }
+    }
 }
