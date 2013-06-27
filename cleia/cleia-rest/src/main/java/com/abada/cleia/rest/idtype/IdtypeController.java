@@ -6,6 +6,7 @@ package com.abada.cleia.rest.idtype;
 
 import com.abada.cleia.dao.IdTypeDao;
 import com.abada.cleia.entity.user.IdType;
+import com.abada.extjs.ComboBoxResponse;
 import com.abada.extjs.ExtjsStore;
 import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
@@ -36,9 +37,10 @@ public class IdtypeController {
 
     /**
      * Returns all IdType.
+     *
      * @return Return all IdType.
      */
-    @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER","ROLE_ADMINISTRATIVE"})
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ExtjsStore getAllIdType() {
 
@@ -51,10 +53,11 @@ public class IdtypeController {
 
     /**
      * Returns one IdType by id
+     *
      * @param ididtype IdType id.
      * @return Return one IdType.
-     */    
-    @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER","ROLE_ADMINISTRATIVE"})
+     */
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{ididtype}", method = RequestMethod.GET)
     public IdType getIdTypeById(@PathVariable Integer ididtype) {
 
@@ -70,13 +73,15 @@ public class IdtypeController {
 
     /**
      * Search a list of IdType by params
-     * @param filter Filter conditions of results. Set in JSON by an array of FilterRequestPriv
+     *
+     * @param filter Filter conditions of results. Set in JSON by an array of
+     * FilterRequestPriv
      * @param sort Order of results. Set in JSON by an array of OrderByRequest
      * @param limit Set the limit of the results. Use it for pagination
      * @param start Set the start of the results. Use it for pagination
      * @return Return a list of results.
      */
-    @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER","ROLE_ADMINISTRATIVE"})
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ExtjsStore getSearchIdType(String filter, String sort, Integer limit, Integer start) {
 
@@ -95,11 +100,47 @@ public class IdtypeController {
     }
 
     /**
+     * Search a list of IdType by params
+     *
+     * @param filter Filter conditions of results. Set in JSON by an array of
+     * FilterRequestPriv
+     * @param sort Order of results. Set in JSON by an array of OrderByRequest
+     * @param limit Set the limit of the results. Use it for pagination
+     * @param start Set the start of the results. Use it for pagination
+     * @return Return a list of results.
+     */
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/search/combo", method = RequestMethod.GET)
+    public ExtjsStore getSearchIdTypeCombo(String filter, String sort, Integer limit, Integer start) {
+
+        List<ComboBoxResponse> data = new ArrayList<ComboBoxResponse>();
+        List<IdType> lidtype = new ArrayList<IdType>();
+        try {
+            GridRequest grequest = GridRequestFactory.parse(sort, start, limit, filter);
+            lidtype = this.idtypeDao.getAll(grequest);
+        } catch (Exception e) {
+            logger.error(e);
+        }
+
+        for (IdType pid : lidtype) {
+            ComboBoxResponse aux = new ComboBoxResponse();
+            aux.setId(pid.getValue());
+            aux.setValue(pid.getValue());
+            data.add(aux);
+        }
+        ExtjsStore result = new ExtjsStore();
+        result.setData(data);
+        return result;
+    }
+
+    /**
      * Insert a IdType
-     * @param idtype IdType structure. Must set in JSON in the Http body request.
+     *
+     * @param idtype IdType structure. Must set in JSON in the Http body
+     * request.
      * @return Return success structure.
      */
-    @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER","ROLE_ADMINISTRATIVE"})
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(method = RequestMethod.POST)
     public Success postIdType(@RequestBody IdType idtype) {
 
@@ -117,11 +158,13 @@ public class IdtypeController {
 
     /**
      * Modify a IdType by id
+     *
      * @param ididtype IdType id.
-     * @param idtype IdType structure. Must set in JSON in the Http body request.
+     * @param idtype IdType structure. Must set in JSON in the Http body
+     * request.
      * @return Return success structure.
      */
-    @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER","ROLE_ADMINISTRATIVE"})
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{ididtype}", method = RequestMethod.PUT)
     public Success putIdType(@PathVariable Integer ididtype, @RequestBody IdType idtype) {
 
@@ -139,10 +182,11 @@ public class IdtypeController {
 
     /**
      * Delete a IdType by id
+     *
      * @param ididtype IdType id.
      * @return Return success structure.
      */
-    @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER","ROLE_ADMINISTRATIVE"})
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{ididtype}", method = RequestMethod.DELETE)
     public Success deleteIdType(@PathVariable Integer ididtype) {
 

@@ -6,13 +6,16 @@ package com.abada.cleia.rest.patient;
 
 import com.abada.cleia.dao.PatientDao;
 import com.abada.cleia.dao.ProcessInstanceDao;
+import com.abada.cleia.entity.user.Genre;
 import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.Patient;
 import com.abada.cleia.entity.user.PatientHasProcessInstance;
+import com.abada.extjs.ComboBoxResponse;
 import com.abada.extjs.ExtjsStore;
 import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.factory.GridRequestFactory;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
@@ -319,6 +323,28 @@ public class PatientController {
             logger.error(e);
         }
 
+        return result;
+    }
+    
+    
+    
+   /**
+    * Return all Patient Genre in a ExtjsStore structure
+    * 
+    * @return 
+    */
+    @RequestMapping(value = "/genre/combo", method = RequestMethod.GET)
+    @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER","ROLE_ADMINISTRATIVE"})
+    public @ResponseBody ExtjsStore getGenreCombo() {
+        List<ComboBoxResponse> data = new ArrayList<ComboBoxResponse>();
+        for (Genre tr : Genre.values()) {
+            ComboBoxResponse aux = new ComboBoxResponse();
+            aux.setId(tr.toString());
+            aux.setValue(tr.toString());
+            data.add(aux);
+        }
+        ExtjsStore result = new ExtjsStore();
+        result.setData(data);
         return result;
     }
 }
