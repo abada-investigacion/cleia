@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author david
  */
-public class UserDaoImpl extends JpaDaoUtils implements UserDao, UserDetailsService, GroupTaskManagement {
+public class UserDaoImpl extends JpaDaoUtils implements UserDao {
 
     private static final Log logger = LogFactory.getLog(UserDaoImpl.class);
     @PersistenceContext(unitName = "cleiaPU")
@@ -40,27 +40,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao, UserDetailsServ
     @Autowired
     private TaskService taskService;
     @Autowired
-    private ShaPasswordEncoder sha1PasswordEncoder;
-
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
-        User user = (User) loadUserByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException(username);
-        }
-        return user;
-    }
-
-    public List<String> getGroupByUserName(String username) {
-        User user = (User) loadUserByUsername(username);
-        if (user != null) {
-            List<String> result = new ArrayList<String>();
-            for (Group g : user.getGroups()) {
-                result.add(g.getValue());
-            }
-            return result;
-        }
-        return null;
-    }
+    private ShaPasswordEncoder sha1PasswordEncoder;   
 
     /**
      * Returns all actors that an actor has in their groups

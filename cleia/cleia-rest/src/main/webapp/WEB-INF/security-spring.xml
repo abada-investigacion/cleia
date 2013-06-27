@@ -59,14 +59,10 @@
     
     <bean id="sha1PasswordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder" />
     
-    ${db.configuration}       
-    
-    <tx:annotation-driven />
-    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+    ${db.configuration}               
     
     <bean id="transactionManagerLogin" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerLogin" />
-        <qualifier value="cleia-login-txm"/>
+        <property name="entityManagerFactory" ref="entityManagerLogin" />        
     </bean>
     
     <bean id="entityManagerLogin" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
@@ -76,8 +72,10 @@
         </property>
         <property name="dataSource" ref="ds1" />
     </bean> 
-    
-    <bean id="loginDao" class="com.abada.cleia.dao.impl.LoginDaoImpl" />
+
+    <bean id="loginDao" class="com.abada.cleia.dao.impl.LoginDaoImpl">
+        <property name="entityManagerFactoryBean" ref="entityManagerLogin"/>
+    </bean>
     
 </beans>
 

@@ -12,12 +12,11 @@
 
     <!-- Transaction Manager para el data source que estamos utilizando -->
     <tx:annotation-driven />
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManager" />
-        <qualifier value="jbpm-txm"/>
+    <bean id="jbpm-txm" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="jbpm-em" />
     </bean>
 
-    <bean id="entityManager" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <bean id="jbpm-em" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="com.abada.drools.persistence.jpa" />
         <property name="jpaDialect">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />            
@@ -25,12 +24,11 @@
         <property name="dataSource" ref="ds1" />
     </bean>
     
-    <bean id="transactionManager2" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManager2" />
-        <qualifier value="jbpm-task-txm"/>
+    <bean id="jbpm-task-txm" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="jbpm-task-em" />
     </bean>
 
-    <bean id="entityManager2" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <bean id="jbpm-task-em" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="com.abada.jbpm.task" />
         <property name="jpaDialect">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />            
@@ -91,7 +89,7 @@
     
     <!-- Human Task Service -->
     <bean id="taskService" class="com.abada.jbpm.task.spring.TaskService">
-        <property name="entityManagerFactory" ref="entityManager2" />        
+        <property name="entityManagerFactory" ref="jbpm-task-em" />        
         <property name="taskServiceFactory" ref="taskServiceFactory"/>        
     </bean>
     <!-- Register human task handler in the knowledge session -->
@@ -113,8 +111,8 @@
     <drools:ksession id="ksession1" type="stateful"  kbase="kbase1">
         <drools:configuration>
             <drools:jpa-persistence>
-                <drools:transaction-manager ref="transactionManager" />
-                <drools:entity-manager-factory ref="entityManager" />
+                <drools:transaction-manager ref="jbpm-txm" />
+                <drools:entity-manager-factory ref="jbpm-em" />
             </drools:jpa-persistence>      
             <drools:keep-reference enabled="false" />      
         </drools:configuration>
