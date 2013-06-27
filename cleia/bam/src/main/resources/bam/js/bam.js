@@ -38,7 +38,7 @@ Ext.onReady(function(){
         });
         
         var panel=  Ext.create('App.bam.js.common.SignalGrid',{
-            height:600,        
+            height:App.height,        
             url:getRelativeServerURI('rs/process/definition/{0}/eventnodes',[processId]),
             processInstanceId:processInstanceId,
             processId:processId,
@@ -102,7 +102,7 @@ Ext.onReady(function(){
         
             var win=Ext.create('Ext.window.Window', {
                 title: 'Tarea '+taskId,
-                height: 600,
+                height: App.height,
                 width: 900,
                 autoScroll:true,
                 layout: 'fit',
@@ -123,7 +123,7 @@ Ext.onReady(function(){
         });
         
         var panel=  Ext.create('App.bam.js.common.TaskGrid',{
-            height:600,        
+            height:App.height,        
             url:getRelativeURI('/bam/task/task.do'),
             processInstanceId:processInstanceId,
             tbar:tbar
@@ -214,7 +214,7 @@ Ext.onReady(function(){
         });
         
         var oncoguide=Ext.create('App.bam.js.common.OncoguideGrid',{
-            height:App.height-80,
+            height:App.height,
             url:getRelativeURI('/bam/patient/pinstances.do'),
             patientId:patientId
         });
@@ -293,7 +293,7 @@ Ext.onReady(function(){
         
             var win=Ext.create('Ext.window.Window', {
                 title: 'Tarea '+taskId,
-                height: 600,
+                height: App.height,
                 width: 900,
                 autoScroll:true,
                 layout: 'fit',
@@ -309,7 +309,7 @@ Ext.onReady(function(){
         var taskGrid=  Ext.create('App.bam.js.common.TaskGrid',{                 
             url:getRelativeURI('/bam/task/taskForPatient.do'),
             patientId:patientId,
-            height:App.height-80
+            height:App.height
         });      
         taskGrid.addListener('taskselected',onTaskSelected);            
         /**
@@ -317,7 +317,7 @@ Ext.onReady(function(){
          */
         var panel=Ext.create('Abada.tab.panel.TabPanel', {            
             height: App.height,            
-            title:'Oncoguias '+patientId,
+            title:'Id Paciente: '+patientId,
             items: [{
                 title: 'Actuales',
                 items:[oncoguide]
