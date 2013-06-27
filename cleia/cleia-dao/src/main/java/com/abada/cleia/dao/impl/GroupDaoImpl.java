@@ -42,7 +42,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      * @param groupname
      * @return
      */
-    @Transactional(value = "cleia-tx", readOnly = true)
+    @Transactional(value = "cleia-txm", readOnly = true)
     public List<String> getMemberGroup(String groupname) {
         List<String> listmember = new ArrayList<String>();
         List<Group> listgroup = entityManager.createQuery("select g from Group g where g.value=?").setParameter(1, groupname).getResultList();
@@ -60,7 +60,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      *
      * @return
      */
-    @Transactional(value = "cleia-tx", readOnly = true)
+    @Transactional(value = "cleia-txm", readOnly = true)
     public List<Group> getAllGroups() {
         List<Group> listgroups = entityManager.createQuery("SELECT g FROM Group g").getResultList();
         return listgroups;
@@ -72,7 +72,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      * @param idgroup
      * @return
      */
-    @Transactional(value = "cleia-tx", readOnly = true)
+    @Transactional(value = "cleia-txm", readOnly = true)
     public Group getGroupById(Long idgroup) {
 
         Group group = entityManager.find(Group.class, idgroup);
@@ -90,7 +90,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      *
      * @param name
      */
-    @Transactional(value = "cleia-tx")
+    @Transactional(value = "cleia-txm")
     public void postGroup(Group group) throws Exception {
         List<Group> lgroup = entityManager.createQuery("select g from Group g where g.value=?").setParameter(1, group.getValue()).getResultList();
         if (lgroup.isEmpty() && lgroup != null) {
@@ -120,7 +120,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      * @param name
      * @return
      */
-    @Transactional(value = "cleia-tx")
+    @Transactional(value = "cleia-txm")
     public void putGroup(Long idgroup, Group newgroup) throws Exception {
         Group group = entityManager.find(Group.class, idgroup);
         if (group != null) {
@@ -158,7 +158,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      * @param idgroup
      * @return
      */
-    @Transactional(value = "cleia-tx")
+    @Transactional(value = "cleia-txm")
     public void deleteGroup(Long idgroup) throws Exception {
         Group group = (Group) entityManager.find(Group.class, idgroup);
 
@@ -184,7 +184,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      * @param filters
      * @return
      */
-    @Transactional(value = "cleia-tx", readOnly = true)
+    @Transactional(value = "cleia-txm", readOnly = true)
     public List<Group> getAll(GridRequest filters) {
 
         List<Group> lgroup = this.find(entityManager, "select g from Group g" + filters.getQL("g", true), filters.getParamsValues(), filters.getStart(), filters.getLimit());
@@ -198,7 +198,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      * @return
      * @throws Exception
      */
-    @Transactional(value = "cleia-tx", readOnly = true)
+    @Transactional(value = "cleia-txm", readOnly = true)
     public List<User> getUsersByIdGroup(Long idgroup) throws Exception {
 
         Group group = new Group();
@@ -224,7 +224,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      * @param filters
      * @return Long
      */
-    @Transactional(value = "cleia-tx", readOnly = true)
+    @Transactional(value = "cleia-txm", readOnly = true)
     public Long loadSizeAll(GridRequest filters) {
         List<Long> result = this.find(entityManager, "select count(*) from Group g" + filters.getQL("g", true), filters.getParamsValues());
         return result.get(0);
@@ -238,7 +238,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      * @param newgroup
      * @throws Exception
      */
-    @Transactional(value = "cleia-tx")
+    @Transactional(value = "cleia-txm")
     public void addUsers(Group group, List<User> luser, boolean newgroup) throws Exception {
 
         if (luser != null) {
