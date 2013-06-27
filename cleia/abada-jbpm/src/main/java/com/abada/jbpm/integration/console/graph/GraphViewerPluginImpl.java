@@ -65,6 +65,15 @@ public class GraphViewerPluginImpl implements AbadaGraphViewerPlugin {
     private static final String xImage = "com/abada/jbpm/integration/console/graph/image/x.png";
     private KnowledgeBase kbase;
     private ProcessInstanceDbLog processInstanceDbLog;
+    private GuvnorUtils guvnorUtils;
+
+    public GuvnorUtils getGuvnorUtils() {
+        return guvnorUtils;
+    }
+
+    public void setGuvnorUtils(GuvnorUtils guvnorUtils) {
+        this.guvnorUtils = guvnorUtils;
+    }
 
     public void setProcessInstanceDbLog(ProcessInstanceDbLog processInstanceDbLog) {
         this.processInstanceDbLog = processInstanceDbLog;
@@ -178,7 +187,7 @@ public class GraphViewerPluginImpl implements AbadaGraphViewerPlugin {
         }
         StringBuilder sb = new StringBuilder(processId);
         sb.append("-image");
-        return GuvnorUtils.getFileAsByte(sb.toString(), ".png");
+        return guvnorUtils.getFileAsByte(sb.toString(), ".png");
     }
     private static final int BUFFER_SIZE = 512;
 
@@ -201,7 +210,7 @@ public class GraphViewerPluginImpl implements AbadaGraphViewerPlugin {
         }
         StringBuilder sb = new StringBuilder(id);
         sb.append("-image");
-        return GuvnorUtils.getURL(sb.toString(), ".png");
+        return guvnorUtils.getURL(sb.toString(), ".png");
     }
 
     public List<ActiveNodeInfo> getNodeInfoForActivities(

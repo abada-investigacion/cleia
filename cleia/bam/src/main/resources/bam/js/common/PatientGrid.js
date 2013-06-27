@@ -29,10 +29,10 @@ Ext.define('App.bam.js.common.PatientGrid', {
             dataIndex: 'name'
         }, {
             type: 'string',
-            dataIndex: 'surname1'
+            dataIndex: 'surname'
         }, {
             type: 'string',
-            dataIndex: 'surname2'
+            dataIndex: 'surname1'
         }, {
             type: 'date',
             dateFormat : 'd/m/Y',            
@@ -53,11 +53,11 @@ Ext.define('App.bam.js.common.PatientGrid', {
     
     },{
         header: 'Apellido 1', 
-        dataIndex: 'surname1'
+        dataIndex: 'surname'
     
     },{
         header: 'Apellido 2', 
-        dataIndex: 'surname2'
+        dataIndex: 'surname1'
     
     },{
         header: 'Fecha nacimiento', 
@@ -86,11 +86,11 @@ Ext.define('App.bam.js.common.PatientGrid', {
                 root:'data',                                
                 scope:this,
                 pageSize:20,
-                fields:['id', 'name', 'surname1','surname2','ids','processInstances',{
-                    name:'birthday',
+                fields:['id', 'name', 'surname','surname1','ids','processInstances',{
+                    name:'birthDay',
                     xtype:'date',
                     dateFormat:'c'
-                },'typeGenre']
+                },'genre']
             });
         }
         this.selModel= Ext.create('Ext.selection.RowModel');
