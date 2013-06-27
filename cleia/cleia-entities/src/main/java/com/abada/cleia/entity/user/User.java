@@ -4,6 +4,7 @@
  */
 package com.abada.cleia.entity.user;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.persistence.Column;
@@ -27,14 +28,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Table(name = "user1")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User implements UserDetails{
+public class User implements UserDetails {
+
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @Column(nullable = false,unique = true,length = 1024)
+    @Column(nullable = false, unique = true, length = 1024)
     private String username;
-    @Column(nullable = false,length = 1024)
-    private String password; 
+    @Column(nullable = false, length = 1024)
+    private String password;
     @Column(nullable = false)
     private boolean accountNonExpired;
     @Column(nullable = false)
@@ -45,13 +47,17 @@ public class User implements UserDetails{
     private boolean enabled;
     @ManyToMany
     @JoinTable(name = "user_has_role",
-            joinColumns = {@JoinColumn(nullable = false,name = "user_id",referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(nullable = false,name="role_id",referencedColumnName = "authority")})
-    private List<Role> roles;    
+            joinColumns = {
+        @JoinColumn(nullable = false, name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {
+        @JoinColumn(nullable = false, name = "role_id", referencedColumnName = "authority")})
+    private List<Role> roles;
     @ManyToMany
     @JoinTable(name = "user_has_group",
-            joinColumns = {@JoinColumn(nullable = false,name = "user_id",referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(nullable = false,name="group_id",referencedColumnName = "value1")})
+            joinColumns = {
+        @JoinColumn(nullable = false, name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {
+        @JoinColumn(nullable = false, name = "group_id", referencedColumnName = "value1")})
     private List<Group> groups;
     @OneToMany(mappedBy = "user")
     private List<Id> ids;
@@ -106,7 +112,7 @@ public class User implements UserDetails{
 
     public void setGroups(List<Group> groups) {
         this.groups = groups;
-    }    
+    }
 
     public boolean isAccountNonExpired() {
         return accountNonExpired;
@@ -138,5 +144,37 @@ public class User implements UserDetails{
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }    
+    }
+
+    public void addGroup(Group group) {
+        if (this.groups == null) {
+            this.setGroups(new ArrayList<Group>());
+        }
+        if (!this.groups.contains(group)) {
+            this.groups.add(group);
+        }
+        if (group.getUsers() == null) {
+            group.setUsers(new ArrayList<User>());
+        }
+        if (!group.getUsers().contains(this)) {
+            group.getUsers().add(this);
+        }
+    }
+
+    public void addRole(Role role) {
+        if (this.roles == null) {
+            this.setRoles(new ArrayList<Role>());
+        }
+        if (!this.roles.contains(role)) {
+            this.roles.add(role);
+        }
+        if (role.getUsers() == null) {
+            role.setUsers(new ArrayList<User>());
+        }
+        if (!role.getUsers().contains(this)) {
+            role.getUsers().add(this);
+        }
+
+
+    }
 }
