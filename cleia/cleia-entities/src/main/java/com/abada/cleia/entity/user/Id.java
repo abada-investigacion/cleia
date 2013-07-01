@@ -4,7 +4,8 @@
  */
 package com.abada.cleia.entity.user;
 
-import com.abada.gson.exclusionstrategy.JsonExclude;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,13 +22,16 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Id implements Serializable {
     @javax.persistence.Id
+    @JsonView(Views.Public.class)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @JsonView(Views.Public.class)
     @Column(nullable = false,length = 1024,name = "value1")
     private String value;
+    @JsonView(Views.Public.class)
     @ManyToOne(fetch = FetchType.EAGER,optional = false)
     private IdType type;
-    @JsonExclude
+    @JsonView(Views.Level1.class)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

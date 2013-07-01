@@ -4,6 +4,7 @@
  */
 package com.abada.cleia.rest.process.definition;
 
+import com.abada.cleia.entity.user.Views;
 import com.abada.extjs.ExtjsStore;
 import com.abada.extjs.SimpleGroupingComboBoxResponse;
 import com.abada.jbpm.definition.process.FindEventNodes;
@@ -11,6 +12,7 @@ import com.abada.jbpm.definition.process.Node;
 import com.abada.jbpm.definition.process.NodeListCommand;
 import com.abada.jbpm.definition.process.ProcessTreeCommand;
 import com.abada.jbpm.integration.console.ProcessManagement;
+import com.abada.springframework.web.servlet.view.JsonView;
 import com.abada.springframework.web.servlet.view.OutputStreamView;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,13 +28,13 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.jboss.bpm.console.client.model.DiagramInfo;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRefWrapper;
-import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRefWrapper;
 import org.jboss.bpm.console.server.plugin.FormAuthorityRef;
 import org.jboss.bpm.console.server.plugin.FormDispatcherPlugin;
 import org.jboss.bpm.console.server.plugin.GraphViewerPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -64,9 +66,10 @@ public class DefinitionController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{processName}/diagram", method = RequestMethod.GET)
-    public DiagramInfo getDiagramInfo(@PathVariable String processName) throws IOException {
+    public void getDiagramInfo(@PathVariable String processName, Model model) throws IOException {
         DiagramInfo result = graphViewerPlugin.getDiagramInfo(processName);
-        return result;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, result);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -77,12 +80,12 @@ public class DefinitionController {
      */
     @RequestMapping(value = "/{processName}/nodes", method = RequestMethod.GET)
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    public List<Node> getNodes(@PathVariable String processName) {
+    public void getNodes(@PathVariable String processName, Model model) {
         NodeListCommand command = new NodeListCommand();
         command.setProcessId(processName);
         List<Node> result = ((CommandBasedStatefulKnowledgeSession) ksession1).getCommandService().execute(command);
-        return result;
-        //return null;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, result);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -93,12 +96,12 @@ public class DefinitionController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
     @RequestMapping(value = "/{processName}/eventnodes", method = RequestMethod.GET)
-    public List<Node> getEventNodes(@PathVariable String processName) {
+    public void getEventNodes(@PathVariable String processName, Model model) {
         FindEventNodes command = new FindEventNodes();
         command.setProcessId(processName);
         List<Node> result = ((CommandBasedStatefulKnowledgeSession) ksession1).getCommandService().execute(command);
-        return result;
-        //return null;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, result);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -111,11 +114,12 @@ public class DefinitionController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
     @RequestMapping(value = "/{processId}/tree", method = RequestMethod.GET)
-    public List<String> getProcessIdTree(@PathVariable String processId) {
+    public void getProcessIdTree(@PathVariable String processId, Model model) {
         ProcessTreeCommand command = new ProcessTreeCommand();
         command.setProcessId(processId);
         List<String> result = ((CommandBasedStatefulKnowledgeSession) ksession1).getCommandService().execute(command);
-        return result;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, result);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     //
@@ -128,8 +132,9 @@ public class DefinitionController {
      */
     @RequestMapping(value = "/{processName}/new_instance", method = RequestMethod.POST)
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-    public ProcessInstanceRef startInstance(@PathVariable String processName, HttpServletRequest request) {
-        return processManagement.newInstance(processName, com.abada.web.util.URL.parseRequest(request));
+    public void startInstance(@PathVariable String processName, HttpServletRequest request, Model model) {
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, processManagement.newInstance(processName, com.abada.web.util.URL.parseRequest(request)));
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -162,9 +167,10 @@ public class DefinitionController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ProcessDefinitionRefWrapper listResources() {
+    public void listResources(Model model) {
         List<ProcessDefinitionRef> processDefinitions = processManagement.getProcessDefinitions();
-        return new ProcessDefinitionRefWrapper(decorateProcessDefintions(processDefinitions));
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, new ProcessDefinitionRefWrapper(decorateProcessDefintions(processDefinitions)));
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -174,7 +180,7 @@ public class DefinitionController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/list/combo", method = RequestMethod.GET)
-    public ExtjsStore<SimpleGroupingComboBoxResponse> listResourcesCombo() {
+    public void listResourcesCombo(Model model) {
         List<ProcessDefinitionRef> processDefinitions = processManagement.getProcessDefinitions();
         ProcessDefinitionRefWrapper aux = new ProcessDefinitionRefWrapper(decorateProcessDefintions(processDefinitions));
 
@@ -189,9 +195,9 @@ public class DefinitionController {
             }
             ExtjsStore<SimpleGroupingComboBoxResponse> r = new ExtjsStore<SimpleGroupingComboBoxResponse>();
             r.setData(result);
-            return r;
+            model.addAttribute(JsonView.JSON_VIEW_RESULT, result);
+            model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
         }
-        return null;
     }
 
     /**
@@ -202,8 +208,9 @@ public class DefinitionController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
     @RequestMapping(value = "/{processName}/remove", method = RequestMethod.POST)
-    public ProcessDefinitionRefWrapper removeProcess(@PathVariable String processName) {
-        return new ProcessDefinitionRefWrapper(processManagement.removeProcessDefinition(processName));
+    public void removeProcess(@PathVariable String processName, Model model) {
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, new ProcessDefinitionRefWrapper(processManagement.removeProcessDefinition(processName)));
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -214,8 +221,9 @@ public class DefinitionController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
     @RequestMapping(value = "/{processName}/instances", method = RequestMethod.GET)
-    public ProcessInstanceRefWrapper getInstances(@PathVariable String processName) {
-        return new ProcessInstanceRefWrapper(processManagement.getProcessInstances(processName));
+    public void getInstances(@PathVariable String processName, Model model) {
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, new ProcessInstanceRefWrapper(processManagement.getProcessInstances(processName)));
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**

@@ -21,7 +21,7 @@ public class Medical extends Patient{
             joinColumns = {@JoinColumn(name = "medical_id", referencedColumnName = "id", nullable = false)},
             inverseJoinColumns = {@JoinColumn(name = "patient_id", referencedColumnName = "id", nullable = false)})
     @ManyToMany(fetch = FetchType.LAZY)
-    List<Patient> patients;
+    private List<Patient> patients;
 
     public List<Patient> getPatients() {
         return patients;
