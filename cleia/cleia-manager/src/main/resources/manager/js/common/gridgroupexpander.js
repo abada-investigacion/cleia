@@ -20,7 +20,7 @@ Ext.define('App.manager.js.common.gridgroupexpander', {
                 '</tpl>',
                 '</div>'
             ],
-            url: getRelativeServerURI('rs/group/{idgroup}/users', {idgroup: ['idGroup']}),
+            url: 'rs/group/{idGroup}/users',
             searchFields: ['idGroup']
 
         }]

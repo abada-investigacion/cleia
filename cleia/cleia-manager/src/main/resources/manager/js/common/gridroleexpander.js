@@ -23,7 +23,7 @@ Ext.define('App.manager.js.common.gridroleexpander', {
       
         '</div>'
         ],
-        url:getRelativeServerURI('rs/role/{idrole}/users', {idrole:['idRolePriv']}),
+        url:'rs/role/{idRolePriv}/users',
         searchFields:['idRolePriv']
     }]
 });

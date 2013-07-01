@@ -30,7 +30,7 @@ Ext.onReady(function() {
                 if (usersGrid.selModel.hasSelection()) {
                     var form = {
                         enabled: !usersGrid.selModel.getLastSelected().get('enabled'),
-                        idUser: usersGrid.selModel.getLastSelected().get('idUser')
+                        idUser: usersGrid.selModel.getLastSelected().get('id')
                     }
                     var opt = 'modifica', title = 'habilitando';
                     var habilitar = 'Deshabilitado: ';
@@ -38,7 +38,8 @@ Ext.onReady(function() {
                         habilitar = 'habilitado: '
                     }
                     habilitar = habilitar + usersGrid.selModel.getLastSelected().get('username');
-                    AjaxrequestJson(getRelativeServerURI('rs/user/{iduser}/{enable}', [form.idUser,form.enabled]), form, 'PUT', usersGrid, null, opt + 'ndo', opt + 'ndo ' + title + '...', habilitar, 'error no se ha podido ' + opt + 'r');
+                    alert(form.enabled);
+                    doAjaxrequestJson(getRelativeServerURI('rs/user/{iduser}/{enable}', {iduser:form.idUser,enable:form.enabled}), form, 'PUT', usersGrid, null, opt + 'ndo', opt + 'ndo ' + title + '...', habilitar, 'error no se ha podido ' + opt + 'r');
                 } else
                     Ext.Msg.alert('', 'Seleccione un usuario');
             }

@@ -19,6 +19,12 @@ Ext.define('App.manager.js.common.griduser', {
  
     columns:[           
     {
+        header: 'id', 
+        dataIndex: 'id',
+        hidden:true,
+        width:50
+    
+    },{
         header: 'Usuario', 
         dataIndex: 'username',
         width:50

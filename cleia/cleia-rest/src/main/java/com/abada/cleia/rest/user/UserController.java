@@ -231,7 +231,7 @@ public class UserController {
         ExtjsStore aux = new ExtjsStore();
         try {
             GridRequest grequest = GridRequestFactory.parse(sort, start, limit, filter);
-            User u= this.userDao.getAll(grequest,username);
+            User u= this.userDao.getUserByUsername(grequest,username);
             luser.add(u);
            
                 u.setPassword("");
