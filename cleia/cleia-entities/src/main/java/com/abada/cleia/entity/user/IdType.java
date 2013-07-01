@@ -4,6 +4,7 @@
  */
 package com.abada.cleia.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,10 +17,13 @@ import javax.persistence.Id;
 @Entity
 public class IdType implements Serializable {
     @Id    
+    @JsonView(Views.Public.class)
     @Column(name = "value1")
     private String value;
+    @JsonView(Views.Public.class)
     @Column(length = 1024)
     private String description;
+    @JsonView(Views.Public.class)
     @Column(nullable = false)
     private boolean repeatable;
 

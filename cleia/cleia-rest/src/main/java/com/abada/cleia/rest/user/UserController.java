@@ -9,10 +9,12 @@ import com.abada.cleia.dao.UserDao;
 import com.abada.cleia.entity.user.Group;
 import com.abada.cleia.entity.user.Role;
 import com.abada.cleia.entity.user.User;
+import com.abada.cleia.entity.user.Views;
 import com.abada.extjs.ExtjsStore;
 import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.factory.GridRequestFactory;
+import com.abada.springframework.web.servlet.view.JsonView;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -20,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,7 +75,7 @@ public class UserController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ExtjsStore getAllUsers() {
+    public void getAllUsers(Model model) {
         
         ExtjsStore aux = new ExtjsStore();
         List<User> listusers = userDao.getAllUsers();
@@ -83,7 +86,8 @@ public class UserController {
         
         aux.setTotal(listusers.size());
         aux.setData(listusers);
-        return aux;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -94,7 +98,7 @@ public class UserController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{iduser}", method = RequestMethod.GET)
-    public User getUserById(@PathVariable Long iduser) {
+    public void getUserById(@PathVariable Long iduser,Model model) {
         
         User user = new User();
         try {
@@ -103,9 +107,8 @@ public class UserController {
             logger.error(e);
         }
         
-        user.setPassword("");
-        
-        return user;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, user);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
     
     
@@ -191,7 +194,7 @@ public class UserController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ExtjsStore getSearchUser(String filter, String sort, Integer limit, Integer start) {
+    public void getSearchUser(String filter, String sort, Integer limit, Integer start,Model model) {
         
         List<User> luser;
         ExtjsStore aux = new ExtjsStore();
@@ -209,7 +212,8 @@ public class UserController {
             logger.error(e);
         }
         
-        return aux;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
     
     
@@ -225,7 +229,7 @@ public class UserController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/search/{username}", method = RequestMethod.GET)
-    public ExtjsStore getSearchUser(@PathVariable String username,String filter, String sort, Integer limit, Integer start) {
+    public void getSearchUser(@PathVariable String username,String filter, String sort, Integer limit, Integer start,Model model) {
         
         List<User> luser = new ArrayList<User>();
         ExtjsStore aux = new ExtjsStore();
@@ -243,7 +247,8 @@ public class UserController {
             logger.error(e);
         }
         
-        return aux;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -255,7 +260,7 @@ public class UserController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{iduser}/groups", method = RequestMethod.GET)
-    public ExtjsStore getUserGroups(@PathVariable Long iduser) throws Exception {
+    public void getUserGroups(@PathVariable Long iduser,Model model) throws Exception {
         
         
         List<Group> groups = new ArrayList<Group>();
@@ -274,7 +279,8 @@ public class UserController {
         
         aux.setData(groups);
         aux.setTotal(groups.size());
-        return aux;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -286,7 +292,7 @@ public class UserController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{iduser}/roles", method = RequestMethod.GET)
-    public ExtjsStore getUserRoles(@PathVariable Long iduser) throws Exception {
+    public void getUserRoles(@PathVariable Long iduser,Model model) throws Exception {
         
         
         List<Role> lrole = new ArrayList<Role>();
@@ -299,7 +305,8 @@ public class UserController {
         
         aux.setData(lrole);
         aux.setTotal(lrole.size());
-        return aux;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
