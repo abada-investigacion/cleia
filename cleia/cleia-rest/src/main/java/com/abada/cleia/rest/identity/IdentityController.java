@@ -6,7 +6,9 @@ package com.abada.cleia.rest.identity;
 
 import com.abada.cleia.entity.user.Group;
 import com.abada.cleia.entity.user.User;
+import com.abada.cleia.entity.user.Views;
 import com.abada.springframework.security.authentication.dni.DniAuthenticationDao;
+import com.abada.springframework.web.servlet.view.JsonView;
 import java.security.Principal;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -17,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -37,16 +40,16 @@ public class IdentityController {
      * @return Return all roles of logged users.
      */
     @RequestMapping(value = "/roles/list", method = RequestMethod.GET)
-    public Collection<? extends GrantedAuthority> getRoles(HttpServletRequest request) {
+    public void getRoles(HttpServletRequest request,Model model) {
         Principal p = request.getUserPrincipal();
         if (p instanceof UsernamePasswordAuthenticationToken) {
             UsernamePasswordAuthenticationToken u = (UsernamePasswordAuthenticationToken) p;
             if (u.getPrincipal() instanceof UserDetails) {
                 UserDetails user = (UserDetails) u.getPrincipal();                
-                return user.getAuthorities();
+                model.addAttribute(JsonView.JSON_VIEW_RESULT, user.getAuthorities());
+                model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
             }
         }
-        return null;
     }
     
     /**
@@ -57,12 +60,13 @@ public class IdentityController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN","ROLE_DNI_CONSULT"})
     @RequestMapping(value = "/dni/roles/list", method = RequestMethod.GET)
-    public Collection<? extends GrantedAuthority> getRolesByDni(String dni) throws Exception {   
+    public void getRolesByDni(String dni,Model model) throws Exception {   
         DniAuthenticationDao dniAuthenticationDao=context.getBean(DniAuthenticationDao.class);
         if (dniAuthenticationDao!=null){
             UserDetails userDetails=dniAuthenticationDao.getUserByDNI(dni);
             if (userDetails!=null){
-                return userDetails.getAuthorities();
+                model.addAttribute(JsonView.JSON_VIEW_RESULT, userDetails.getAuthorities());
+                model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
             }
             throw new Exception("User with dni "+dni+" not found.");
         }
@@ -76,15 +80,15 @@ public class IdentityController {
      * @return Return all roles of logged users.
      */
     @RequestMapping(value = "/groups/list", method = RequestMethod.GET)
-    public Collection<Group> getGroups(HttpServletRequest request) {
+    public void getGroups(HttpServletRequest request,Model model) {
         Principal p = request.getUserPrincipal();
         if (p instanceof UsernamePasswordAuthenticationToken) {
             UsernamePasswordAuthenticationToken u = (UsernamePasswordAuthenticationToken) p;
             if (u.getPrincipal() instanceof User) {
                 User user = (User) u.getPrincipal();                
-                return user.getGroups();
+                model.addAttribute(JsonView.JSON_VIEW_RESULT, user.getGroups());
+                model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
             }
-        }
-        return null;
+        }        
     }       
 }

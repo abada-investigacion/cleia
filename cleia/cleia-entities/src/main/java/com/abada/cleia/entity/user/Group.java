@@ -4,7 +4,7 @@
  */
 package com.abada.cleia.entity.user;
 
-import com.abada.gson.exclusionstrategy.JsonExclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +22,10 @@ import javax.persistence.Table;
 @Table(name = "groups1")
 public class Group implements Serializable {
     @Id
+    @JsonView(Views.Public.class)
     @Column(name = "value1")
     private String value;
-    @JsonExclude
+    @JsonView(Views.Level1.class)
     @ManyToMany(mappedBy = "groups")
     private List<User> users;
 
