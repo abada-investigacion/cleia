@@ -26,11 +26,7 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
     @PersistenceContext(unitName = "cleiaPU")
     private EntityManager entityManager;
     
-//    @Transactional(value = "cleia-txm", readOnly = true)
-//    public Patient getPatientById(long patientId) {
-//        Patient result=entityManager.find(Patient.class, patientId);
-//        return result;
-//    }
+
 
     /**
      * Returns all roles

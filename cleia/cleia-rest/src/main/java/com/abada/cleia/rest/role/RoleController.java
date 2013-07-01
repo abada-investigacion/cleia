@@ -93,7 +93,7 @@ public class RoleController {
         
         Role role=null;
         try {
-            role = roleprivDao.getRoleprivById(idrolepriv);
+            role = roleprivDao.getRoleById(idrolepriv);
         } catch (Exception e) {
             logger.error(e);
         }
@@ -114,7 +114,7 @@ public class RoleController {
         
         Success result = new Success(Boolean.FALSE);
         try {
-            roleprivDao.postRolepriv(role);
+            roleprivDao.postRole(role);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));
@@ -138,7 +138,7 @@ public class RoleController {
         
         Success result = new Success(Boolean.FALSE);
         try {
-            roleprivDao.putRolepriv(idrolepriv, rolepriv);
+            roleprivDao.putRole(idrolepriv, rolepriv);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));
@@ -161,7 +161,7 @@ public class RoleController {
         
         Success result = new Success(Boolean.FALSE);
         try {
-            roleprivDao.deleteRolepriv(idrolepriv);
+            roleprivDao.deleteRole(idrolepriv);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));

@@ -8,8 +8,10 @@ import com.abada.gson.exclusionstrategy.JsonExclude;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Inheritance;
@@ -61,7 +63,7 @@ public class User implements UserDetails {
             inverseJoinColumns = {
         @JoinColumn(nullable = false, name = "group_id", referencedColumnName = "value1")})
     private List<Group> groups;
-    @OneToMany(mappedBy = "user")
+     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Id> ids;
 
     public List<Id> getIds() {

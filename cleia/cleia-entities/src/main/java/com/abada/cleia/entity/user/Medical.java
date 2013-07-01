@@ -4,6 +4,7 @@
  */
 package com.abada.cleia.entity.user;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,5 +30,6 @@ public class Medical extends Patient{
 
     public void setPatients(List<Patient> patients) {
         this.patients = patients;
-    }        
+    }       
+   
 }

@@ -19,7 +19,6 @@ public interface RoleDao {
      * @return 
      */
     public List<Role> getAllRoles();
-    
     /**
      *Obtiene el tamaño de {@link Role}
      * @param filters 

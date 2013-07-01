@@ -118,7 +118,7 @@ public class Patient extends User{
     public void setAddress(Address address) {
         this.address = address;
     }
-    
+  
     public void addPatientHasProcessInstance(PatientHasProcessInstance instance){
         if (this.getProcessInstances()==null)
             this.setProcessInstances(new ArrayList<PatientHasProcessInstance>());

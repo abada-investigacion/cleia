@@ -34,6 +34,7 @@ public class IdtypeController {
     @Autowired
     private IdTypeDao idtypeDao;
 
+    
     /**
      * Returns all IdType.
      * @return Return all IdType.
@@ -43,7 +44,7 @@ public class IdtypeController {
     public ExtjsStore getAllIdType() {
 
         ExtjsStore aux = new ExtjsStore();
-        List<IdType> lidtype = idtypeDao.getAllIdType();
+        List<IdType> lidtype = idtypeDao.getAll();
         aux.setTotal(lidtype.size());
         aux.setData(lidtype);
         return aux;
@@ -56,7 +57,7 @@ public class IdtypeController {
      */    
     @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER","ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{ididtype}", method = RequestMethod.GET)
-    public IdType getIdTypeById(@PathVariable Integer ididtype) {
+    public IdType getIdTypeById(@PathVariable String ididtype) {
 
         IdType idtype = new IdType();
         try {
@@ -143,12 +144,12 @@ public class IdtypeController {
      * @return Return success structure.
      */
     @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER","ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/{ididtype}", method = RequestMethod.DELETE)
-    public Success deleteIdType(@PathVariable Integer ididtype) {
+    @RequestMapping(value = "/{value}", method = RequestMethod.DELETE)
+    public Success deleteIdType(@PathVariable String value) {
 
         Success result = new Success(Boolean.FALSE);
         try {
-            idtypeDao.deleteIdType(ididtype);
+            idtypeDao.deleteIdType(value);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));

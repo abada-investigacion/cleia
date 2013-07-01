@@ -2,13 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.abada.cleia.rest.patient;
+package com.abada.cleia.rest.medical;
 
+
+import com.abada.cleia.dao.MedicalDao;
 import com.abada.cleia.dao.PatientDao;
-import com.abada.cleia.dao.ProcessInstanceDao;
 import com.abada.cleia.entity.user.Id;
-import com.abada.cleia.entity.user.Patient;
-import com.abada.cleia.entity.user.PatientHasProcessInstance;
+import com.abada.cleia.entity.user.Medical;
+
 import com.abada.extjs.ExtjsStore;
 import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
@@ -30,72 +31,71 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author mmartin
  */
 @Controller
-@RequestMapping("/rs/patient")
-public class PatientController {
+@RequestMapping("/rs/medical")
+public class MedicalController {
 
-    private static final Log logger = LogFactory.getLog(PatientController.class);
+    private static final Log logger = LogFactory.getLog(MedicalController.class);
     @Autowired
-    private PatientDao patientDao;
-    @Autowired
-    private ProcessInstanceDao pInstancePatientDao;
+    private MedicalDao medicalDao;
+  
 
     /**
-     * Returns all patients.
+     * Returns all medicals.
      *
-     * @return Return a list of all patients.
+     * @return Return a list of all medicals.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ExtjsStore getAllPatients() {
+    public ExtjsStore getAllMedicals() {
 
         ExtjsStore aux = new ExtjsStore();
-        List<Patient> lpatient = patientDao.getAllPatients();
-        aux.setTotal(lpatient.size());
-        aux.setData(lpatient);
+        List<Medical> lmedical = medicalDao.getAllMedicals();
+        aux.setTotal(lmedical.size());
+        aux.setData(lmedical);
         return aux;
     }
 
     /**
-     * Returns one patient by id.
+     * Returns one medical by id.
      *
-     * @param idpatient Patient id.
-     * @return Return patient structure.
+     * @param idmedical Medical id.
+     * @return Return medical structure.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/{idpatient}", method = RequestMethod.GET)
-    public Patient getPatientById(@PathVariable Long idpatient) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public Medical getMedicalById(@PathVariable Long id) {
 
-        Patient patient = new Patient();
+        Medical medical = new Medical();
         try {
-            patient = patientDao.getPatientById(idpatient);
+            medical = medicalDao.getMedicalById(id);
         } catch (Exception e) {
             logger.error(e);
         }
 
-        return patient;
+        return medical;
     }
 
     /**
-     * Find patient with the passed identificators
+     * Find medical with the passed identificators
      *
-     * @param lpatientid Patient id list.
-     * @return Return patient structure.
+     * @param lmedicalid Medical id list.
+     * @return Return medical structure.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(method = RequestMethod.PUT)
-    public Patient getPatientByListId(@RequestBody Id[] lpatientid) {
+    public Medical getMedicalByListId(@RequestBody Id[] lid) {
 
-        Patient patient = null;
+        Medical medical = null;
         try {
-            List<Patient> lpatient = patientDao.findPatientsrepeatable(Arrays.asList(lpatientid),null);
-            if (!lpatient.isEmpty() && lpatient.size() == 1) {
-                return lpatient.get(0);
+            List<Medical> lmedical = medicalDao.findMedicalsrepeatable(Arrays.asList(lid),null);
+            if (!lmedical.isEmpty() && lmedical.size() == 1) {
+                return lmedical.get(0);
             }
         } catch (Exception e) {
             logger.error(e);
         }
 
-        return patient;
+        return medical;
     }
 
     /**
@@ -110,15 +110,15 @@ public class PatientController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ExtjsStore getSearchPatient(String filter, String sort, Integer limit, Integer start) {
+    public ExtjsStore getSearchMedical(String filter, String sort, Integer limit, Integer start) {
 
-        List<Patient> lpatient;
+        List<Medical> lmedical;
         ExtjsStore aux = new ExtjsStore();
         try {
             GridRequest grequest = GridRequestFactory.parse(sort, start, limit, filter);
-            lpatient = this.patientDao.getAll(grequest);
-            aux.setData(lpatient);
-            aux.setTotal(this.patientDao.loadSizeAll(grequest).intValue());
+            lmedical = this.medicalDao.getAll(grequest);
+            aux.setData(lmedical);
+            aux.setTotal(this.medicalDao.loadSizeAll(grequest).intValue());
         } catch (Exception e) {
             logger.error(e);
         }
@@ -138,15 +138,15 @@ public class PatientController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/search/byUser/{username}", method = RequestMethod.GET)
-    public ExtjsStore getSearchPatientuser(@PathVariable String username,String filter, String sort, Integer limit, Integer start) {
+    public ExtjsStore getSearchMedicaluser(@PathVariable String username,String filter, String sort, Integer limit, Integer start) {
 
-        List<Patient> lpatient;
+        List<Medical> lmedical;
         ExtjsStore aux = new ExtjsStore();
         try {
             GridRequest grequest = GridRequestFactory.parse(sort, start, limit, filter);
-            lpatient = this.patientDao.getPatientUser(grequest,username);
-            aux.setData(lpatient);
-            aux.setTotal(lpatient.size());
+            lmedical = this.medicalDao.getMedicalUser(grequest,username);
+            aux.setData(lmedical);
+            aux.setTotal(lmedical.size());
         } catch (Exception e) {
             logger.error(e);
         }
@@ -157,19 +157,19 @@ public class PatientController {
     
 
     /**
-     * Insert a patient
+     * Insert a medical
      *
-     * @param patient Patient structure. Must set in JSON in the Http body.
+     * @param medical Medical structure. Must set in JSON in the Http body.
      * request.
      * @return Return success structure.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(method = RequestMethod.POST)
-    public Success postPatient(@RequestBody Patient patient) {
+    public Success postMedical(@RequestBody Medical medical) {
 
         Success result = new Success(Boolean.FALSE);
         try {
-            patientDao.postPatient(patient);
+            medicalDao.postMedical(medical);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));
@@ -180,20 +180,20 @@ public class PatientController {
     }
 
     /**
-     * Modify a patient by id
+     * Modify a medical by id
      *
-     * @param idpatient Patient id.
-     * @param patient Patient structure. Must set in JSON in the Http body
+     * @param idmedical Medical id.
+     * @param medical Medical structure. Must set in JSON in the Http body
      * request.
      * @return Return success structure.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/{idpatient}", method = RequestMethod.PUT)
-    public Success putPatient(@PathVariable Long idpatient, @RequestBody Patient patient) {
+    @RequestMapping(value = "/{idmedical}", method = RequestMethod.PUT)
+    public Success putMedical(@PathVariable Long idmedical, @RequestBody Medical medical) {
 
         Success result = new Success(Boolean.FALSE);
         try {
-            patientDao.putPatient(idpatient, patient);
+            medicalDao.putMedical(idmedical, medical);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));
@@ -204,20 +204,20 @@ public class PatientController {
     }
 
     /**
-     * Modify a patient by id
+     * Modify a medical by id
      *
-     * @param idpatient Patient id.
-     * @param patient Patient structure. Must set in JSON in the Http body
+     * @param idmedical Medical id.
+     * @param medical Medical structure. Must set in JSON in the Http body
      * request.
      * @return Return success structure.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/demographic/{idpatient}", method = RequestMethod.PUT)
-    public Success putPatientData(@PathVariable Long idpatient, @RequestBody Patient patient) {
+    @RequestMapping(value = "/demographic/{idmedical}", method = RequestMethod.PUT)
+    public Success putMedicalData(@PathVariable Long idmedical, @RequestBody Medical medical) {
 
         Success result = new Success(Boolean.FALSE);
         try {
-            patientDao.putPatientData(idpatient, patient);
+            medicalDao.putMedicalData(idmedical, medical);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));
@@ -228,18 +228,18 @@ public class PatientController {
     }
 
     /**
-     * Enable a patient by id
+     * Enable a medical by id
      *
-     * @param idpatient Patient id.
+     * @param idmedical Medical id.
      * @return Return success structure.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/{idpatient}/{enable}", method = RequestMethod.PUT)
-    public Success enableDisablePatient(@PathVariable Long idpatient, @PathVariable boolean enable) {
+    @RequestMapping(value = "/{idmedical}/{enable}", method = RequestMethod.PUT)
+    public Success enableDisableMedical(@PathVariable Long idmedical, @PathVariable boolean enable) {
 
         Success result = new Success(Boolean.FALSE);
         try {
-            patientDao.enableDisablePatient(idpatient, enable);
+            medicalDao.enableDisableMedical(idmedical, enable);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));
@@ -249,50 +249,25 @@ public class PatientController {
         return result;
     }
 
-    /**
-     * Return a list of every process instance that have a patient.
-     * @param patientId Patient id.
-     * @return Return a list of every process instance that have a patient, oncoguide or not.
-     */
-    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-    @RequestMapping(value = "/{patientId}/pinstance/list", method = RequestMethod.GET)
-    public ExtjsStore getPInstancePatients(@PathVariable Long patientId) {
-        ExtjsStore result = new ExtjsStore();
-        List<PatientHasProcessInstance> aux = this.pInstancePatientDao.getProcessInstance(patientId);
-        if (aux != null) {
-            result.setData(aux);
-        }
-        return result;
-    }
+
+    
+
     
     /**
-     * Return a list of every process instance that have a patient.
-     * @param patientId Patient id.
-     * @param pInstance Instance base to search all the subprocess from it.
-     * @return Return a list of every process instance that have a patient, oncoguide or not.
-     */
-    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-    @RequestMapping(value = "/{patientId}/pinstance/{pInstance}", method = RequestMethod.GET)
-    public PatientHasProcessInstance getPInstancePatients(@PathVariable Long patientId,@PathVariable Long pInstance) {        
-        PatientHasProcessInstance result = this.pInstancePatientDao.getProcessInstanceFromProcessIntance(patientId, pInstance);                
-        return result;
-    }
-    
-    /**
-     * Return all identifiers of a patient.
-     * @param idpatient Patient id.
-     * @return Return all identifiers of a patient.
+     * Return all identifiers of a medical.
+     * @param idmedical Medical id.
+     * @return Return all identifiers of a medical.
      */
     @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER","ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/{idpatient}/id", method = RequestMethod.GET)
-    public ExtjsStore getPatientidByPatient(@PathVariable Long idpatient) {
+    @RequestMapping(value = "/{idmedical}/id", method = RequestMethod.GET)
+    public ExtjsStore getMedicalidByMedical(@PathVariable Long idmedical) {
 
-        List<Id> lpatientid;
+        List<Id> lmedicalid;
         ExtjsStore aux = new ExtjsStore();
         try {
-            lpatientid = this.patientDao.getIdsForPatient(idpatient);
-            aux.setData(lpatientid);
-            aux.setTotal(lpatientid.size());
+            lmedicalid = this.medicalDao.getIdsForMedical(idmedical);
+            aux.setData(lmedicalid);
+            aux.setTotal(lmedicalid.size());
         } catch (Exception e) {
             logger.error(e);
         }
@@ -301,18 +276,18 @@ public class PatientController {
     }
     
      /**
-     * Modify a patient by id.
-     * @param idpatient Patient id.
-     * @param patient Patient structure. Must set in JSON in the Http body.
+     * Modify a medical by id.
+     * @param idmedical Medical id.
+     * @param medical Medical structure. Must set in JSON in the Http body.
      * @return Return success structure.
      */
     @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER","ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/{idpatient}/id", method = RequestMethod.PUT)
-    public Success putPatientid(@PathVariable Long idpatient, @RequestBody Id [] lpatientid) {
+    @RequestMapping(value = "/{idmedical}/id", method = RequestMethod.PUT)
+    public Success putMedicalid(@PathVariable Long idmedical, @RequestBody Id [] lmedicalid) {
 
         Success result = new Success(Boolean.FALSE);
         try {
-            patientDao.putPatientid(idpatient, Arrays.asList(lpatientid));
+            medicalDao.putMedicalid(idmedical, Arrays.asList(lmedicalid));
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));

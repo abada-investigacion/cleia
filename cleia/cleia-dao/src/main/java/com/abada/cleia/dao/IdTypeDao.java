@@ -13,57 +13,65 @@ import java.util.List;
  * @author katsu
  */
 public interface IdTypeDao {
+
     /**
      * Returns all IdType
+     *
      * @param
-     * @return 
+     * @return
      */
-    public List<IdType> getAllIdType();
-    
+    public List<IdType> getAll();
+
     /**
-     *Obtiene el tamaño de {@link IdType}
-     * @param filters 
+     * Obtiene el tamaño de {@link IdType}
+     *
+     * @param filters
      * @return Long
      */
     public Long loadSizeAll(GridRequest filters);
 
     /**
      * Returns one IdType by id
+     *
      * @param ididtype
-     * @return 
+     * @return
      */
-    public IdType getIdTypeById(Integer ididtype);
+    public IdType getIdTypeById(String value);
 
     /**
      * Search a list of IdType by params
+     *
      * @param filter
      * @param dir
      * @param sort
      * @param limit
      * @param start
-     * @return 
+     * @return
      */
     public List<IdType> getAll(GridRequest filters);
 
     /**
      * Insert a IdType
+     *
      * @param idtype
-     * @return 
+     * @return
      */
     public void postIdType(IdType idtype) throws Exception;
 
     /**
      * Modify a IdType by id
+     *
      * @param ididtype
      * @param idtype
-     * @return 
+     * @return
      */
     public void putIdType(Integer ididtype, IdType idtype) throws Exception;
 
     /**
      * Delete a IdType by id
+     *
      * @param value
-     * @return 
+     * @return
      */
     public void deleteIdType(String value) throws Exception;
 }

@@ -6,6 +6,7 @@ package com.abada.cleia.entity.user;
 
 import com.abada.gson.exclusionstrategy.JsonExclude;
 import java.io.Serializable;
+import java.util.ArrayList;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -62,5 +63,10 @@ public class Id implements Serializable {
 
     public void setType(IdType type) {
         this.type = type;
+    }
+      public void addUser(User user) {
+        if (this.user == null) {
+            this.setUser(user);
+        }
     }
 }

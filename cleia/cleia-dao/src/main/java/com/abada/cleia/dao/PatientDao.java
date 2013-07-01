@@ -14,16 +14,18 @@ import java.util.List;
  * @author katsu
  */
 public interface PatientDao {
+
     /**
      * Return patient by Id
+     *
      * @param patientId
-     * @return 
+     * @return
      */
     public Patient getPatientById(long patientId);
 
     public List<Patient> getAllPatients();
 
-    public List<Patient> findPatients(List<Id> asList)throws Exception;
+    public List<Patient> findPatientsrepeatable(List<Id> asList, Boolean repeatable) throws Exception;
 
     public List<Patient> getAll(GridRequest grequest);
 
@@ -31,7 +33,7 @@ public interface PatientDao {
 
     public List<Patient> getPatientUser(GridRequest grequest, String username);
 
-    public Long loadSizeuserpatient(GridRequest grequest, String username);
+    public void updatePatient(Patient patient, Patient p);
 
     public void postPatient(Patient patient) throws Exception;
 
