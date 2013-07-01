@@ -62,8 +62,8 @@ public interface IdTypeDao {
 
     /**
      * Delete a IdType by id
-     * @param ididtype
+     * @param value
      * @return 
      */
-    public void deleteIdType(Integer ididtype) throws Exception;
+    public void deleteIdType(String value) throws Exception;
 }

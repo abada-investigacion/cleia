@@ -4,6 +4,7 @@
  */
 package com.abada.cleia.entity.user;
 
+import com.abada.gson.exclusionstrategy.JsonExclude;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +36,7 @@ public class User implements UserDetails {
     private long id;
     @Column(nullable = false, unique = true, length = 1024)
     private String username;
+    @JsonExclude
     @Column(nullable = false, length = 1024)
     private String password;
     @Column(nullable = false)

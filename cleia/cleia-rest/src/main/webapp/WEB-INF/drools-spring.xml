@@ -36,10 +36,25 @@
         <property name="dataSource" ref="ds1" />
     </bean>
 
-   <!-- Jbpm Console  -->
-   <bean id="taskServiceFactory" class="com.abada.jbpm.task.service.TaskServiceFactory">
-       <property name="type" value="HORNETQ" />
-       <!--property name="groupTaskManagement" ref="groupTaskManagement"/--><!--LDAP -->
+    <!-- Jbpm Console  -->
+    <bean id="urlUtils" class="com.abada.jbpm.integration.console.URLUtils">
+        <property name="properties">
+            <props>
+                <prop key="jbpm.console.guvnor.url">${jbpm.console.guvnor.url}</prop>                                
+                <prop key="jbpm.console.server.url">${cleia.server.secure.url}</prop>
+                <prop key="jbpm.console.guvnor.user">${jbpm.console.guvnor.user}</prop>
+                <prop key="jbpm.console.guvnor.password">${jbpm.console.guvnor.password}</prop>
+            </props>
+        </property>
+    </bean>
+   
+    <bean id="guvnorUtils" class="com.abada.jbpm.integration.guvnor.GuvnorUtils">
+        <property name="urlUtils" ref="urlUtils"/>
+    </bean>
+   
+    <bean id="taskServiceFactory" class="com.abada.jbpm.task.service.TaskServiceFactory">
+        <property name="type" value="HORNETQ" />
+        <!--property name="groupTaskManagement" ref="groupTaskManagement"/--><!--LDAP -->
         <property name="groupTaskManagement" ref="loginDao"/><!--BBDD --> 
         <property name="properties">
             <props>
@@ -47,17 +62,19 @@
                 <prop key="jbpm.task.hornetq.port">${jbpm.task.hornetq.port}</prop>
             </props>
         </property>
-   </bean>
+    </bean>
    
     <bean id="graphViewerPlugin" class="com.abada.jbpm.integration.console.graph.GraphViewerPluginImpl">
         <constructor-arg ref="processInstanceDbLog"/>
         <property name="kbase" ref="kbase1"/>
+        <property name="guvnorUtils" ref="guvnorUtils"/>
         <!--property name="processInstanceDbLog" ref="processInstanceDbLog" /-->
     </bean> 
     <bean id="formDispatcherPlugin" class="com.abada.jbpm.integration.console.form.FormDispatcherComposite">        
         <property name="processManagement" ref="processManagement" />               
         <!--property name="taskService" ref="taskService" /-->
         <property name="taskClientFactory" ref="taskServiceFactory"/>
+        <property name="guvnorUtils" ref="guvnorUtils"/>
     </bean>
     
     <bean id="taskJbpmDao" class="com.abada.jbpm.task.dao.impl.TaskDaoImpl" />    

@@ -30,6 +30,12 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     @PersistenceContext(unitName = "cleiaPU")
     private EntityManager entityManager;
 
+    /**
+     * obtained from patient id
+     *
+     * @param patientId
+     * @return
+     */
     @Transactional(value = "cleia-txm", readOnly = true)
     public Patient getPatientById(long patientId) {
         Patient result = entityManager.find(Patient.class, patientId);
@@ -42,9 +48,13 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
         return result;
     }
 
+    /**
+     * obtained all patient
+     *
+     * @return
+     */
     @Transactional(value = "cleia-txm", readOnly = true)
     public List<Patient> getAllPatients() {
-
         List<Patient> lpatient = entityManager.createQuery("SELECT p FROM Patient p").getResultList();
         for (Patient patient : lpatient) {
             patient.getIds().size();
@@ -85,7 +95,7 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     }
 
     /**
-     * Obtiene el tamaño de {@link Patient}
+     * Gets the size {@link Patient}
      *
      * @param filters
      * @return Long
@@ -106,7 +116,7 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     }
 
     /**
-     * Obtiene el tamaño de {@link Patient}
+     * Gets the size of {@link Patient}
      *
      * @param filters
      * @return Long
@@ -127,15 +137,25 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     public List<Patient> getAll(GridRequest filters) {
         List<Patient> lpatient = this.find(entityManager, "select p from Patient p" + filters.getQL("p", true), filters.getParamsValues(), filters.getStart(), filters.getLimit());
         for (Patient patient : lpatient) {
-            for (Id pid : patient.getIds()) {
+            patient.getGroups().size();
+            patient.getRoles().size();
+            patient.getIds().size();
+            patient.getProcessInstances().size();
+            /*for (Id pid : patient.getIds()) {
                 pid.getType();
                 pid.getUser();
-            }
+            }*/
         }
         return lpatient;
 
     }
 
+    /**
+     * setting patient
+     *
+     * @param patient
+     * @param p
+     */
     @Transactional("cleia-txm")
     public void persistPatient(Patient patient, Patient p) {
         patient.setGenre(p.getGenre());
@@ -148,6 +168,13 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
         patient.setProcessInstances(p.getProcessInstances());
     }
 
+    /**
+     * find patient given id
+     *
+     * @param asList
+     * @return
+     * @throws Exception
+     */
     @Transactional(value = "cleia-txm", readOnly = true)
     public List<Patient> findPatients(List<Id> asList) throws Exception {
         List<Patient> p = new ArrayList<Patient>();
@@ -176,8 +203,14 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
         }
         return p;
     }
-    
-     @Transactional(value = "cleia-txm", readOnly = true)
+
+    /**
+     * find patient given id
+     *
+     * @param ids
+     * @throws Exception
+     */
+    @Transactional(value = "cleia-txm", readOnly = true)
     public void findRepeatIdtypes(List<Id> ids) throws Exception {
         List<IdType> lidtyperepeat = entityManager.createQuery("from IdType i where i.repeatable=1").getResultList();
         List<String> keys = new ArrayList<String>(), values = new ArrayList<String>();
@@ -189,7 +222,7 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
                 //Comprobamos si el tipo de identificador esta repetido
                 if (keys.size() > 0 && values.size() > 0) {
                     if (keys.contains(pid.getType().getValue()) && !lidtyperepeat.contains(pid.getType())) {
-                        throw new Exception("Error. El identificador " + pid.getType().getValue()+ " no se puede repetir");
+                        throw new Exception("Error. El identificador " + pid.getType().getValue() + " no se puede repetir");
                     }
 
                     if (values.contains(pid.getType().getValue() + " " + pid.getValue())) {
@@ -212,30 +245,223 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
      * @param idpatient
      * @return
      */
+    @Transactional(value = "cleia-txm", readOnly = true)
     public List<Id> getIdsForPatient(Long idpatient) {
-        List<Id> lpatientid = entityManager.createQuery("SELECT p FROM Id p WHERE p.user.id=?").setParameter(1, idpatient).getResultList();
-        return lpatientid;
+        List<Id> ids = entityManager.createQuery("SELECT p FROM Id p WHERE p.user.id=?").setParameter(1, idpatient).getResultList();
+        return ids;
     }
 
-    public void postPatient(Patient patient) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * insert patient
+     *
+     * @param patient
+     * @throws Exception
+     */
+    @Transactional(value = "cleia-txm")
+    public void postPatient(Patient patient) throws Exception {
+        Patient p;
+        if (patient.getIds() != null && !patient.getIds().isEmpty()) {
+            List<Patient> lpatients = this.findPatients(patient.getIds());
+            /*Si no hay ningun paciente con el mismo identificador lo insertamos*/
+            if ((lpatients.isEmpty() && lpatients != null)) {
+                p = new Patient();
+                this.persistPatient(p, patient);
+                /*Insertamos los patientid*/
+                this.findRepeatIdtypes(patient.getIds());
+                for (Id pi : patient.getIds()) {
+                    List<IdType> lidtype = entityManager.createQuery("SELECT i FROM Idtype i WHERE i.name = ?").setParameter(1, pi.getType().getValue()).getResultList();
+                    if (!lidtype.isEmpty() && lidtype != null) {
+                        if (lidtype.size() == 1) {
+                            try {
+                                pi.getType().setValue(lidtype.get(0).getValue());
+
+                            } catch (Exception e) {
+                                throw new Exception("Error. Ha ocurrido un error al insertar uno de los identificadores");
+                            }
+                        } else {
+                            throw new Exception("Error. El tipo de identificador esta repetido");
+                        }
+                    } else {
+                        throw new Exception("Error. El tipo de identificador no existe");
+                    }
+                }
+                p.setIds(patient.getIds());
+            } else {
+                String name = "";
+                for (Patient pat : lpatients) {
+                    name = pat.getName() + " " + pat.getSurname() + " " + pat.getSurname() + ", ";
+                }
+                throw new Exception("Error. Ya existe el paciente " + name + " con esos identificadores");
+            }
+        } else {
+            throw new Exception("Error. Ningún identificador enviado");
+        }
+        try {
+            entityManager.persist(p);
+        } catch (Exception e) {
+            throw new Exception("Error. Ha ocurrido un error al insertar el paciente " + patient.getName() + " " + patient.getSurname() + " " + patient.getSurname1());
+        }
     }
 
-    public void putPatient(Long idpatient, Patient patient) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * update patient
+     *
+     * @param idpatient
+     * @param patient
+     */
+    @Transactional(value = "cleia-txm")
+    public void putPatient(Long idpatient, Patient patient) throws Exception {
+        Patient patient1 = entityManager.find(Patient.class, idpatient);
+        if (patient1 != null) {
+            List<Patient> lpatients = this.findPatients(patient.getIds());
+            if (!lpatients.isEmpty() && lpatients != null) {
+                if (lpatients.size() > 1 || (lpatients.size() == 1 && lpatients.get(0).getId() != patient.getId())) {
+                    for (Patient aux : lpatients) {
+                        if (aux.getId() != patient1.getId()) {
+                            throw new Exception("Error. El paciente " + aux.getName() + " "
+                                    + aux.getSurname() + " " + aux.getSurname1() + " ya tiene asignado uno de los identificadores enviados");
+                        }
+                    }
+                }
+            }
+            putPatientid(idpatient, patient.getIds());
+            /*Modificamos el paciente*/
+            try {
+                this.persistPatient(patient, patient);
+            } catch (Exception e) {
+                throw new Exception("Error. Ha ocurrido un error al modificar el paciente "
+                        + patient.getName() + " " + patient.getSurname() + " " + patient.getSurname());
+            }
+        } else {
+            throw new Exception("Error. El paciente no existe");
+        }
     }
 
-    public void putPatientData(Long idpatient, Patient patient) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * update patient data
+     *
+     * @param idpatient
+     * @param patient
+     */
+    @Transactional(value = "cleia-txm")
+    public void putPatientData(Long idpatient, Patient patient) throws Exception {
+        Patient patient1 = entityManager.find(Patient.class, idpatient);
+        if (patient1 != null) {
+            /*Modificamos el paciente*/
+            try {
+                this.persistPatient(patient1, patient);
+            } catch (Exception e) {
+                throw new Exception("Error. Ha ocurrido un error al modificar el paciente "
+                        + patient1.getName() + " " + patient1.getSurname() + " " + patient1.getSurname1());
+            }
+        } else {
+            throw new Exception("Error. El paciente no existe");
+        }
     }
 
-    public void enableDisablePatient(Long idpatient, boolean enable) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     *
+     * @param idpatient
+     * @param enable
+     */
+    @Transactional(value = "cleia-txm")
+    public void enableDisablePatient(Long idpatient, boolean enable) throws Exception {
+        Patient patient = entityManager.find(Patient.class, idpatient);
+        String habilitar = "";
+        if (patient != null) {
+            if ((!patient.isEnabled() && enable) || (patient.isEnabled() && !enable)) {
+                try {
+                    patient.setEnabled(enable);
+                } catch (Exception e) {
+                    if (enable) {
+                        habilitar = "habilitar";
+                    } else {
+                        habilitar = "deshabilitar";
+                    }
+                    throw new Exception("Error. Ha ocurrido un error al" + habilitar + " al paciente " + patient.getName() + " " + patient.getSurname() + " " + patient.getSurname1());
+                }
+            } else {
+                if (!enable) {
+                    habilitar = "deshabilitado";
+                } else {
+                    habilitar = "habilitado";
+                }
+                throw new Exception("Error. El paciente " + patient.getName() + " " + patient.getSurname() + " " + patient.getSurname1() + " ya esta " + habilitar);
+            }
+        } else {
+            throw new Exception("Error. El usuario no existe");
+        }
     }
 
-    public void putPatientid(Long idpatient, List<Id> ids) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * delete patient old
+     *
+     * @param patient
+     * @param ids
+     * @throws Exception
+     */
+    @Transactional(value = "cleia-txm")
+    public void deleteOldId(Patient patient, List<Id> ids) throws Exception {
+        Id pidtodelete = new Id();
+        List<Id> listtodelete = new ArrayList<Id>();
+        for (Id pi : patient.getIds()) {
+            if (!ids.contains(pi)) {
+                listtodelete.add(pi);
+            }
+        }
+
+        if (!listtodelete.isEmpty() && listtodelete != null) {
+            for (Id pid : listtodelete) {
+                pidtodelete = entityManager.find(Id.class, pid.getId());
+                patient.getIds().remove(pidtodelete);
+                entityManager.remove(pidtodelete);
+            }
+        }
+        entityManager.flush();
     }
 
-   
+    /**
+     * update id patient
+     *
+     * @param idpatient
+     * @param ids
+     * @throws Exception
+     */
+    public void putPatientid(Long idpatient, List<Id> ids) throws Exception {
+        Patient patient = entityManager.find(Patient.class, idpatient);
+
+        if (patient != null) {
+            if (ids != null && !ids.isEmpty()) {
+
+
+                /*Comprobamos si vienen identificadores repetidos.En caso de que vengan
+                 comprobamos si se pueden repetir. Tambien se comprueba si el tipo de identificador
+                 existe.*/
+                findRepeatIdtypes(ids);
+                deleteOldId(patient, ids);
+                for (Id pi : ids) {
+                    List<IdType> lidtype = entityManager.createQuery("SELECT i FROM IdType i WHERE i.name = ?").setParameter(1, pi.getType().getValue()).getResultList();
+                    if (!lidtype.isEmpty() && lidtype != null) {
+                        if (lidtype.size() == 1) {
+                            try {
+                                pi.getType().setValue(lidtype.get(0).getValue());
+                                entityManager.persist(pi);
+
+                            } catch (Exception e) {
+                                throw new Exception("Error. Ha ocurrido un error al insertar uno de los identificadores");
+                            }
+                        } else {
+                            throw new Exception("Error. El tipo de identificador esta repetido");
+                        }
+                    }
+                }
+
+            } else {
+                throw new Exception("Error. Ningún identificador enviado");
+            }
+
+        } else {
+            throw new Exception("Error. El paciente no existe");
+        }
+    }
 }
