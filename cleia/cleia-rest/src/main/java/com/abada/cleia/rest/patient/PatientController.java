@@ -129,7 +129,7 @@ public class PatientController {
             logger.error(e);
         }
         model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
-        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Level1.class);
     }
 
     /**

@@ -49,10 +49,10 @@ public class Patient extends User{
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Genre genre;
-    @JsonView(Views.Level1.class)
+    @JsonView(Views.Level3.class)
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "patients")
     private List<Medical> medicals;
-    @JsonView(Views.Level1.class)
+    @JsonView(Views.Level3.class)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "patientId")
     private List<PatientHasProcessInstance> processInstances;
 
