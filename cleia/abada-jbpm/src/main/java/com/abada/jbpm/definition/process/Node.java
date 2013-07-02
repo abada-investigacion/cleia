@@ -4,7 +4,7 @@
  */
 package com.abada.jbpm.definition.process;
 
-import com.abada.gson.exclusionstrategy.JsonExclude;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Node Information
@@ -33,7 +33,7 @@ public class Node {
     /**
      * In case the node was a SubNode then this is the parent
      */
-    @JsonExclude
+    @JsonIgnore
     private Node parent;
 
     public Node getParent() {

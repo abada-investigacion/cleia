@@ -4,7 +4,8 @@
  */
 package com.abada.cleia.entity.user;
 
-import com.abada.gson.exclusionstrategy.JsonExclude;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -20,11 +21,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "patient_has_pi")
 public class PatientHasProcessInstance implements Serializable {
+    @JsonView(Views.Public.class)
     @javax.persistence.Id
     @Basic(optional = false)
     @Column(name = "process", nullable = false)
     private Long processInstanceId;
-    @JsonExclude
+    @JsonView(Views.Level1.class)
     @JoinColumn(name = "patient", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
     private Patient patientId;        

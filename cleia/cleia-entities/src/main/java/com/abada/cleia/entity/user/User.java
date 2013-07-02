@@ -4,12 +4,15 @@
  */
 package com.abada.cleia.entity.user;
 
-import com.abada.gson.exclusionstrategy.JsonExclude;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Inheritance;
@@ -31,22 +34,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User implements UserDetails {
 
+    @JsonView(Views.Public.class)
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @JsonView(Views.Public.class)
     @Column(nullable = false, unique = true, length = 1024)
-    private String username;
-    @JsonExclude
+    private String username;    
+    @JsonView(Views.Level1.class)
     @Column(nullable = false, length = 1024)
     private String password;
+    @JsonView(Views.Public.class)
     @Column(nullable = false)
     private boolean accountNonExpired;
+    @JsonView(Views.Public.class)
     @Column(nullable = false)
     private boolean accountNonLocked;
+    @JsonView(Views.Public.class)
     @Column(nullable = false)
     private boolean credentialsNonExpired;
+    @JsonView(Views.Public.class)
     @Column(nullable = false)
     private boolean enabled;
+    @JsonView(Views.Public.class)
     @ManyToMany
     @JoinTable(name = "user_has_role",
             joinColumns = {
@@ -54,6 +64,7 @@ public class User implements UserDetails {
             inverseJoinColumns = {
         @JoinColumn(nullable = false, name = "role_id", referencedColumnName = "authority")})
     private List<Role> roles;
+    @JsonView(Views.Public.class)
     @ManyToMany
     @JoinTable(name = "user_has_group",
             joinColumns = {
@@ -61,6 +72,7 @@ public class User implements UserDetails {
             inverseJoinColumns = {
         @JoinColumn(nullable = false, name = "group_id", referencedColumnName = "value1")})
     private List<Group> groups;
+    @JsonView(Views.Public.class)
     @OneToMany(mappedBy = "user")
     private List<Id> ids;
 

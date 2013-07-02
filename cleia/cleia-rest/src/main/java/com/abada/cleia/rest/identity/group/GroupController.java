@@ -7,10 +7,12 @@ package com.abada.cleia.rest.identity.group;
 import com.abada.cleia.dao.GroupDao;
 import com.abada.cleia.entity.user.Group;
 import com.abada.cleia.entity.user.User;
+import com.abada.cleia.entity.user.Views;
 import com.abada.extjs.ExtjsStore;
 import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.factory.GridRequestFactory;
+import com.abada.springframework.web.servlet.view.JsonView;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -18,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +36,7 @@ public class GroupController {
 
     private static final Log logger = LogFactory.getLog(GroupController.class);
     @Autowired
-    private GroupDao groupDao;   
+    private GroupDao groupDao;
 
     /**
      * Returns all users groups (service in clinical definition)
@@ -42,13 +45,13 @@ public class GroupController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ExtjsStore getAllGroups() {
-
+    public void getAllGroups(Model model) {
         ExtjsStore aux = new ExtjsStore();
         List<Group> listgroups = groupDao.getAllGroups();
         aux.setTotal(listgroups.size());
         aux.setData(listgroups);
-        return aux;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -59,7 +62,7 @@ public class GroupController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{idgroup}", method = RequestMethod.GET)
-    public Group getGroupById(@PathVariable Long idgroup) {
+    public void getGroupById(@PathVariable Long idgroup, Model model) {
 
         Group group = new Group();
         try {
@@ -67,7 +70,8 @@ public class GroupController {
         } catch (Exception e) {
             logger.error(e);
         }
-        return group;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, group);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -79,7 +83,7 @@ public class GroupController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{idgroup}/users", method = RequestMethod.GET)
-    public ExtjsStore getGroupUsers(@PathVariable Long idgroup) throws Exception {
+    public void getGroupUsers(@PathVariable Long idgroup, Model model) throws Exception {
 
 
         List<User> lusers = new ArrayList<User>();
@@ -90,13 +94,11 @@ public class GroupController {
             logger.error(e);
         }
 
-        for (User u : lusers) {
-            u.setPassword("");
-        }
         aux.setData(lusers);
         aux.setTotal(lusers.size());
 
-        return aux;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -111,7 +113,7 @@ public class GroupController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ExtjsStore getSearchGroup(String filter, String sort, Integer limit, Integer start) {
+    public void getSearchGroup(String filter, String sort, Integer limit, Integer start,Model model) {
 
         List<Group> lgroup;
         ExtjsStore aux = new ExtjsStore();
@@ -124,7 +126,8 @@ public class GroupController {
             logger.error(e);
         }
 
-        return aux;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -192,5 +195,5 @@ public class GroupController {
         }
 
         return result;
-    }       
+    }
 }

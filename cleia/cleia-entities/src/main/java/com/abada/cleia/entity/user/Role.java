@@ -4,7 +4,7 @@
  */
 package com.abada.cleia.entity.user;
 
-import com.abada.gson.exclusionstrategy.JsonExclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
@@ -21,8 +21,9 @@ import org.springframework.security.core.GrantedAuthority;
 @Table(name = "role1")
 public class Role implements GrantedAuthority{
     @Id
-    private String authority;    
-    @JsonExclude
+    @JsonView(Views.Public.class)
+    private String authority;
+    @JsonView(Views.Level1.class)
     @ManyToMany(mappedBy = "roles")
     private List<User> users;
 

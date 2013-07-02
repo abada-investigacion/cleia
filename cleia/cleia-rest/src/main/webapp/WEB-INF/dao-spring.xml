@@ -29,6 +29,8 @@
     <bean id="idTypeDao" class="com.abada.cleia.dao.impl.IdTypeDaoImpl"/>
     <bean id="roleDao" class="com.abada.cleia.dao.impl.RoleDaoImpl"/>
     <bean id="userDao" class="com.abada.cleia.dao.impl.UserDaoImpl"/>
+    <bean id="medicalDao" class="com.abada.cleia.dao.impl.MedicalDaoImpl"/>
+    <bean id="idDao" class="com.abada.cleia.dao.impl.IdDaoImpl"/>
 
 </beans>
 

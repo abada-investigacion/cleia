@@ -7,10 +7,12 @@ package com.abada.cleia.rest.role;
 import com.abada.cleia.dao.RoleDao;
 import com.abada.cleia.entity.user.Role;
 import com.abada.cleia.entity.user.User;
+import com.abada.cleia.entity.user.Views;
 import com.abada.extjs.ExtjsStore;
 import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.factory.GridRequestFactory;
+import com.abada.springframework.web.servlet.view.JsonView;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -18,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping("/rs/role")
 public class RoleController {
-    
+
     private static final Log logger = LogFactory.getLog(RoleController.class);
     @Autowired(required = false)
     private RoleDao roleprivDao;
@@ -42,13 +45,14 @@ public class RoleController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ExtjsStore getAllRolepriv() {
-        
+    public void getAllRolepriv(Model model) {
+
         ExtjsStore aux = new ExtjsStore();
         List<Role> listroles = roleprivDao.getAllRoles();
         aux.setTotal(listroles.size());
         aux.setData(listroles);
-        return aux;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -60,9 +64,9 @@ public class RoleController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{idrole}/users", method = RequestMethod.GET)
-    public ExtjsStore getRoleUsers(@PathVariable Integer idrole) throws Exception {
-        
-        
+    public void getRoleUsers(@PathVariable Integer idrole, Model model) throws Exception {
+
+
         List<User> lusers = new ArrayList<User>();
         ExtjsStore aux = new ExtjsStore();
         try {
@@ -70,15 +74,16 @@ public class RoleController {
         } catch (Exception e) {
             logger.error(e);
         }
-        
+
         for (User u : lusers) {
             u.setPassword("");
         }
-        
+
         aux.setData(lusers);
         aux.setTotal(lusers.size());
-        
-        return aux;
+
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -89,16 +94,17 @@ public class RoleController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{idrolepriv}", method = RequestMethod.GET)
-    public Role getRoleprivById(@PathVariable Integer idrolepriv) {
-        
-        Role role=null;
+    public void getRoleprivById(@PathVariable Integer idrolepriv, Model model) {
+
+        Role role = null;
         try {
-            role = roleprivDao.getRoleprivById(idrolepriv);
+            role = roleprivDao.getRoleById(idrolepriv);
         } catch (Exception e) {
             logger.error(e);
         }
-        
-        return role;
+
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, role);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -111,15 +117,15 @@ public class RoleController {
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(method = RequestMethod.POST)
     public Success postRolepriv(@RequestBody Role role) {
-        
+
         Success result = new Success(Boolean.FALSE);
         try {
-            roleprivDao.postRolepriv(role);
+            roleprivDao.postRole(role);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));
             logger.error(e);
-            
+
         }
         return result;
     }
@@ -135,18 +141,18 @@ public class RoleController {
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{idrolepriv}", method = RequestMethod.PUT)
     public Success putRolepriv(@PathVariable Integer idrolepriv, @RequestBody Role rolepriv) throws Exception {
-        
+
         Success result = new Success(Boolean.FALSE);
         try {
-            roleprivDao.putRolepriv(idrolepriv, rolepriv);
+            roleprivDao.putRole(idrolepriv, rolepriv);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));
             logger.error(e);
-            
+
         }
         return result;
-        
+
     }
 
     /**
@@ -158,16 +164,16 @@ public class RoleController {
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{idrolepriv}", method = RequestMethod.DELETE)
     public Success deleteRolepriv(@PathVariable Integer idrolepriv) {
-        
+
         Success result = new Success(Boolean.FALSE);
         try {
-            roleprivDao.deleteRolepriv(idrolepriv);
+            roleprivDao.deleteRole(idrolepriv);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));
             logger.error(e);
         }
-        
+
         return result;
     }
 
@@ -183,10 +189,10 @@ public class RoleController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ExtjsStore getSearchRolepriv(String filter, String sort, Integer limit, Integer start) {
+    public void getSearchRolepriv(String filter, String sort, Integer limit, Integer start, Model model) {
         List<Role> lrole;
         ExtjsStore aux = new ExtjsStore();
-        
+
         try {
             GridRequest grequest = GridRequestFactory.parse(sort, start, limit, filter);
             lrole = this.roleprivDao.getAll(grequest);
@@ -195,7 +201,8 @@ public class RoleController {
         } catch (Exception e) {
             logger.error(e);
         }
-        
-        return aux;
+
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 }

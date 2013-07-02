@@ -6,11 +6,12 @@ package com.abada.cleia.rest.idtype;
 
 import com.abada.cleia.dao.IdTypeDao;
 import com.abada.cleia.entity.user.IdType;
-import com.abada.extjs.ComboBoxResponse;
+import com.abada.cleia.entity.user.Views;
 import com.abada.extjs.ExtjsStore;
 import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.factory.GridRequestFactory;
+import com.abada.springframework.web.servlet.view.JsonView;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -18,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +37,7 @@ public class IdtypeController {
     @Autowired
     private IdTypeDao idtypeDao;
 
+    
     /**
      * Returns all IdType.
      *
@@ -42,13 +45,14 @@ public class IdtypeController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ExtjsStore getAllIdType() {
+    public void getAllIdType(Model model) {
 
         ExtjsStore aux = new ExtjsStore();
-        List<IdType> lidtype = idtypeDao.getAllIdType();
+        List<IdType> lidtype = idtypeDao.getAll();
         aux.setTotal(lidtype.size());
         aux.setData(lidtype);
-        return aux;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -59,7 +63,7 @@ public class IdtypeController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{ididtype}", method = RequestMethod.GET)
-    public IdType getIdTypeById(@PathVariable Integer ididtype) {
+    public void getIdTypeById(@PathVariable String ididtype, Model model) {
 
         IdType idtype = new IdType();
         try {
@@ -68,7 +72,8 @@ public class IdtypeController {
             logger.error(e);
         }
 
-        return idtype;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, idtype);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -83,7 +88,7 @@ public class IdtypeController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ExtjsStore getSearchIdType(String filter, String sort, Integer limit, Integer start) {
+    public void getSearchIdType(String filter, String sort, Integer limit, Integer start, Model model) {
 
         List<IdType> lidtype = new ArrayList<IdType>();
         ExtjsStore aux = new ExtjsStore();
@@ -96,7 +101,8 @@ public class IdtypeController {
             logger.error(e);
         }
 
-        return aux;
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -186,13 +192,13 @@ public class IdtypeController {
      * @param ididtype IdType id.
      * @return Return success structure.
      */
-    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/{ididtype}", method = RequestMethod.DELETE)
-    public Success deleteIdType(@PathVariable Integer ididtype) {
+    @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER","ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/{value}", method = RequestMethod.DELETE)
+    public Success deleteIdType(@PathVariable String value) {
 
         Success result = new Success(Boolean.FALSE);
         try {
-            idtypeDao.deleteIdType(ididtype);
+            idtypeDao.deleteIdType(value);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));

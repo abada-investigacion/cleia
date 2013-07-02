@@ -4,7 +4,8 @@
  */
 package com.abada.cleia.entity.user;
 
-import com.abada.gson.exclusionstrategy.JsonExclude;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,24 +27,32 @@ import javax.persistence.TemporalType;
  */
 @Entity
 public class Patient extends User{    
+    @JsonView(Views.Public.class)
     @Column(nullable = false,length = 255)
     private String name;
+    @JsonView(Views.Public.class)
     @Column(nullable = false,length = 1024)
     private String surname;
+    @JsonView(Views.Public.class)
     @Column(length = 1024)
     private String surname1;
+    @JsonView(Views.Public.class)
     @Temporal(TemporalType.DATE)
     private Date birthDay;
+    @JsonView(Views.Public.class)
     @Column(length = 255)
     private String tlf;
+    @JsonView(Views.Public.class)
     @Embedded
     private Address address;
+    @JsonView(Views.Public.class)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Genre genre;
-    @JsonExclude
+    @JsonView(Views.Level1.class)
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "patients")
     private List<Medical> medicals;
+    @JsonView(Views.Public.class)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "patientId")
     private List<PatientHasProcessInstance> processInstances;
 
@@ -118,7 +127,7 @@ public class Patient extends User{
     public void setAddress(Address address) {
         this.address = address;
     }
-    
+  
     public void addPatientHasProcessInstance(PatientHasProcessInstance instance){
         if (this.getProcessInstances()==null)
             this.setProcessInstances(new ArrayList<PatientHasProcessInstance>());
