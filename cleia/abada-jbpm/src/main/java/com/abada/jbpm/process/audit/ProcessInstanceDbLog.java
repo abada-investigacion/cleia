@@ -117,7 +117,7 @@ public class ProcessInstanceDbLog {
         if (me != null) {
             result.add(me);
             //mis hijitos
-            List<ProcessInstanceLog> childs = em.createQuery("from ProcessInstanceLogExt as log where log.parentProcessInstanceId = ?").setParameter(1, processInstanceId).getResultList();
+            List<ProcessInstanceLog> childs = em.createQuery("from ProcessInstanceLog as log where log.parentProcessInstanceId = ?").setParameter(1, processInstanceId).getResultList();
             if (childs != null && !childs.isEmpty()) {
                 for (ProcessInstanceLog log : childs) {
                     result.addAll(this.findProcessInstancesFrom(log.getProcessInstanceId()));

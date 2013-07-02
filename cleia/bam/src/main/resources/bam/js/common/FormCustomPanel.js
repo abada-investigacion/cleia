@@ -17,7 +17,7 @@ Ext.define('App.bam.js.common.FormCustomPanel',{
         this.addEvents('success','failure');
     },    
     createIFrameForm:function(){
-        var urlComplete=this.url+'form/task/'+this.taskId+'/render';
+        var urlComplete=this.url;
         this.iframe=Ext.create('App.bam.js.common.FormCustomFrame',{url:urlComplete});
         this.iframe.addListener('success',this.onSuccessSubmitIFrame,this);
         this.iframe.addListener('failure',this.onFailureSubmitIFrame,this);

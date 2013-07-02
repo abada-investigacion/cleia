@@ -5,17 +5,18 @@
 package com.abada.cleia.rest.process.task;
 
 import com.abada.bpm.console.server.integration.AbadaTaskManagement;
+import com.abada.extjs.ExtjsStore;
 import java.net.URL;
 
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import org.jboss.bpm.console.client.model.TaskRef;
-import org.jboss.bpm.console.client.model.TaskRefWrapper;
 import org.jboss.bpm.console.server.integration.TaskManagement;
 import org.jboss.bpm.console.server.plugin.FormAuthorityRef;
 import org.jboss.bpm.console.server.plugin.FormDispatcherPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,10 +45,15 @@ public class TaskController {
      * @return Return the tasks for a given patient that have to be completed by
      * user.
      */
-    @RequestMapping(value = "/patient/{patientId}/user/{userId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/patient/{patientId}/loggeduser", method = RequestMethod.GET)
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-    public TaskRefWrapper getTaskForPatient(@PathVariable Long patientId, @PathVariable String userId) {
-        return new TaskRefWrapper(processTaskListResponse(taskManagementAbada.getTaskByUser(patientId, userId)));
+    public ExtjsStore<TaskRef> getTaskForPatient(@PathVariable Long patientId, HttpServletRequest request) {
+        AbstractAuthenticationToken principal=(AbstractAuthenticationToken)request.getUserPrincipal();
+//        User user=(User) userDao.loadUserByUsername(principal.getName());
+        List<TaskRef> aux=processTaskListResponse(taskManagementAbada.getTaskByUser(patientId, principal.getName()));
+        ExtjsStore<TaskRef> result=new ExtjsStore<TaskRef>();
+        result.setData(aux);
+        return result;
     }
 
     /**
@@ -60,9 +66,14 @@ public class TaskController {
      * completed by user.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-    @RequestMapping(value = "/process/{processInstanceId}/user/{userId}", method = RequestMethod.GET)
-    public TaskRefWrapper getTaskForProcessInstanceAndSubProcess(@PathVariable Long processInstanceId, @PathVariable String userId) {
-        return new TaskRefWrapper(processTaskListResponse(taskManagementAbada.getTaskForProcessInstanceAndSubProcess(processInstanceId, userId)));
+    @RequestMapping(value = "/process/{processInstanceId}/loggeduser", method = RequestMethod.GET)
+    public ExtjsStore<TaskRef> getTaskForProcessInstanceAndSubProcess(@PathVariable Long processInstanceId, HttpServletRequest request) {
+        AbstractAuthenticationToken principal=(AbstractAuthenticationToken)request.getUserPrincipal();
+//        User user=(User) userDao.loadUserByUsername(principal.getName());
+        List<TaskRef> aux=processTaskListResponse(taskManagementAbada.getTaskForProcessInstanceAndSubProcess(processInstanceId, principal.getName()));
+        ExtjsStore<TaskRef> result=new ExtjsStore<TaskRef>();
+        result.setData(aux);
+        return result;
     }
 
     /**
@@ -73,8 +84,11 @@ public class TaskController {
      */
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-    public TaskRefWrapper getAssignedTasks(@PathVariable String userId) {
-        return new TaskRefWrapper(processTaskListResponse(taskManagement.getAssignedTasks(userId)));
+    public ExtjsStore<TaskRef> getAssignedTasks(@PathVariable String userId) {
+        List<TaskRef> aux=processTaskListResponse(taskManagement.getAssignedTasks(userId));
+        ExtjsStore<TaskRef> result=new ExtjsStore<TaskRef>();
+        result.setData(aux);
+        return result;
     }
 
     /**
@@ -87,8 +101,11 @@ public class TaskController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
     @RequestMapping(value = "/{userId}/participation", method = RequestMethod.GET)
-    public TaskRefWrapper getTasksForIdRefPaticipation(@PathVariable String userId) {
-        return new TaskRefWrapper(processTaskListResponse(taskManagement.getUnassignedTasks(userId, null)));
+    public ExtjsStore<TaskRef> getTasksForIdRefPaticipation(@PathVariable String userId) {
+        List<TaskRef> aux=processTaskListResponse(taskManagement.getUnassignedTasks(userId, null));
+        ExtjsStore<TaskRef> result=new ExtjsStore<TaskRef>();
+        result.setData(aux);
+        return result;
     }
 
     /**

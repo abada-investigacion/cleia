@@ -4,7 +4,7 @@
  */
 package com.abada.cleia.dao;
 
-import com.abada.cleia.entity.user.PatientHasProcessInstance;
+import com.abada.cleia.entity.temporal.PatientHasProcessInstanceInfo;
 import java.util.List;
 
 /**
@@ -14,7 +14,7 @@ import java.util.List;
 public interface ProcessInstanceDao {
     public void addPInstancePatient(Long patientId, Long processInstanceId);
 
-    public PatientHasProcessInstance getProcessInstanceFromProcessIntance(Long patientId, Long pInstance);
+    public PatientHasProcessInstanceInfo getProcessInstanceFromProcessIntance(Long patientId, Long pInstance);
 
-    public List<PatientHasProcessInstance> getProcessInstance(Long patientId);
+    public List<PatientHasProcessInstanceInfo> getProcessInstance(Long patientId);
 }

@@ -47,14 +47,14 @@ public class HumanTaskRegistrationService extends ApplicationObjectSupport imple
                     handler.setIpAddress(taskClientFactory.getProperties().getProperty(TaskConfigurationProperties.HORNET_HOST));
                     handler.setPort(Integer.parseInt(taskClientFactory.getProperties().getProperty(TaskConfigurationProperties.HORNET_PORT)));
 
-                    if (client.connect()) {
+//                    if (client.connect()) {
                         session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
                         handler.connect();
                         loaded = true;
                         logger.debug("Registered Human Task Handler");
-                    }else{
-                        throw new Exception("Couldn't connect to Human Server");
-                    }
+//                    }else{
+//                        throw new Exception("Couldn't connect to Human Server");
+//                    }
                 }
             } catch (Exception e) {
                 logger.error(e);
