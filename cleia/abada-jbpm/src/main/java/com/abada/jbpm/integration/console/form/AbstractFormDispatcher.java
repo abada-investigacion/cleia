@@ -1,17 +1,17 @@
 /**
  * Copyright 2010 JBoss Inc
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package com.abada.jbpm.integration.console.form;
 
@@ -45,14 +45,13 @@ import org.jboss.bpm.console.server.integration.ProcessManagement;
 /**
  * Sustituye {@link org.jbpm.integration.console.forms.AbstractFormDispatcher}
  * jbpm 5.4.0.Final compliant
- * 
+ *
  * @author Kris Verlaenen
  * @author katsu
  */
 public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
-    
-    private static final Log logger=LogFactory.getLog(AbstractFormDispatcher.class);
-    
+
+    private static final Log logger = LogFactory.getLog(AbstractFormDispatcher.class);
     private ProcessManagement processManagement;
     private GuvnorUtils guvnorUtils;
 
@@ -70,10 +69,10 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
 
     public void setProcessManagement(ProcessManagement processManagement) {
         this.processManagement = processManagement;
-    }       
+    }
 
     public URL getDispatchUrl(FormAuthorityRef ref) {
-        StringBuilder sb=guvnorUtils.getUrlUtils().getJBPMServerURL();
+        StringBuilder sb = guvnorUtils.getUrlUtils().getJBPMServerURL();
         sb.append("/rs/form/").append(getType(ref)).append("/");
         sb.append(ref.getReferenceId());
         sb.append("/render");
@@ -99,10 +98,13 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
 
     public InputStream getTemplate(String name) {
         InputStream result = AbstractFormDispatcher.class.getResourceAsStream("/" + name + ".ftl");
-        if (result != null) {
-            return result;
+        if (result == null) {
+            result = guvnorUtils.getTemplate(name);
+            if (result == null) {
+                result = guvnorUtils.getTemplate(name + "-taskform");
+            }
         }
-        return guvnorUtils.getTemplate(name);
+        return result;
     }
 
     protected DataHandler processTemplate(final String name, InputStream src, Map<String, Object> renderContext) {
@@ -117,7 +119,6 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
             temp.process(renderContext, out);
             out.flush();
             merged = new DataHandler(new DataSource() {
-
                 public InputStream getInputStream() throws IOException {
                     return new ByteArrayInputStream(bout.toByteArray());
                 }
