@@ -18,7 +18,7 @@ import javax.persistence.ManyToMany;
  */
 @Entity
 public class Medical extends Patient{
-    @JsonView(Views.Level1.class)
+    @JsonView(Views.Level4.class)
     @JoinTable(name = "medical_has_patient", 
             joinColumns = {@JoinColumn(name = "medical_id", referencedColumnName = "id", nullable = false)},
             inverseJoinColumns = {@JoinColumn(name = "patient_id", referencedColumnName = "id", nullable = false)})
