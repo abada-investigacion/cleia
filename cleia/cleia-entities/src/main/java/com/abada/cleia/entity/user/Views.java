@@ -11,5 +11,6 @@ package com.abada.cleia.entity.user;
 public class Views {
     public static class Public {}
     public static class Level1 extends Public{}
+    public static class Level2 extends Level1{}
     public static class Hide extends Public{}
 }

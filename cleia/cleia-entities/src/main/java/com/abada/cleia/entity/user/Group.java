@@ -25,7 +25,7 @@ public class Group implements Serializable {
     @JsonView(Views.Public.class)
     @Column(name = "value1")
     private String value;
-    @JsonView(Views.Level1.class)
+    @JsonView(Views.Level2.class)
     @ManyToMany(mappedBy = "groups")
     private List<User> users;
 

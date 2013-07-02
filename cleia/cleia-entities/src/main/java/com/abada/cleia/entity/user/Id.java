@@ -32,7 +32,7 @@ public class Id implements Serializable {
     @JsonView(Views.Public.class)
     @ManyToOne(fetch = FetchType.EAGER,optional = false)
     private IdType type;
-    @JsonView(Views.Level1.class)
+    @JsonView(Views.Level2.class)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
