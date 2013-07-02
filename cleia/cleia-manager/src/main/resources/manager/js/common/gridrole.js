@@ -45,9 +45,6 @@ Ext.define('App.manager.js.common.gridrole', {
                     direction: 'ASC'
                 },
                 fields:[{
-                    name:'idRolePriv',
-                    mapping:'idRolePriv'
-                },{
                     name:'authority',
                     mapping:'authority'
                 }],

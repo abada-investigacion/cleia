@@ -7,7 +7,7 @@ Ext.require([
     'Ext.form.Panel', 'Ext.form.field.Checkbox', 'Abada.Ajax', 'Ext.JSON', 'Ext.Ajax',
     'Ext.layout.container.Table', 'Abada.toolbar.ToolbarInsertUpdateDelete'
 
-])
+    ])
 
 Ext.onReady(function() {
 
@@ -19,7 +19,9 @@ Ext.onReady(function() {
             submitUpdate: function() {
                 if (usersGrid.selModel.hasSelection()) {
                     if (usersGrid.selModel.getCount() == 1) {
-                        handleFormulario('Modifica', usersGrid, 'Usuario', getRelativeServerURI('rs/user/{iduser}', [usersGrid.selModel.getLastSelected().get('idUser')]), usersGrid.selModel);
+                        handleFormulario('Modifica', usersGrid, 'Usuario', getRelativeServerURI('rs/user/{iduser}', {
+                            iduser:usersGrid.selModel.getLastSelected().get('id')
+                            }), usersGrid.selModel);
                     } else {
                         Ext.Msg.alert('', 'Seleccione un usuario');
                     }
@@ -32,14 +34,16 @@ Ext.onReady(function() {
                         enabled: !usersGrid.selModel.getLastSelected().get('enabled'),
                         idUser: usersGrid.selModel.getLastSelected().get('id')
                     }
-                    var opt = 'modifica', title = 'habilitando';
-                    var habilitar = 'Deshabilitado: ';
-                    if (!usersGrid.selModel.getLastSelected().get('enabled')) {
-                        habilitar = 'habilitado: '
-                    }
-                    habilitar = habilitar + usersGrid.selModel.getLastSelected().get('username');
-                    alert(form.enabled);
-                    doAjaxrequestJson(getRelativeServerURI('rs/user/{iduser}/{enable}', {iduser:form.idUser,enable:form.enabled}), form, 'PUT', usersGrid, null, opt + 'ndo', opt + 'ndo ' + title + '...', habilitar, 'error no se ha podido ' + opt + 'r');
+                    var opt = 'modifica', status = 'habilitado';
+                 
+                    if (usersGrid.selModel.getLastSelected().get('enabled')) {
+                        status = 'deshabilitado'
+                    }                  
+                    doAjaxrequestJson(getRelativeServerURI('rs/user/{iduser}/{enable}', {
+                        iduser:form.idUser,
+                        enable:form.enabled
+                        }), form, 'PUT', usersGrid, null, 'Usuario '+status, opt + 'ndo usuario...', 'Usuario '+status, 'Error. No se ha podido ' + opt + 'r');
+              
                 } else
                     Ext.Msg.alert('', 'Seleccione un usuario');
             }
@@ -73,7 +77,7 @@ Ext.onReady(function() {
     setCentralPanel(grid);
 
     //*Funcion para los frompanel
-    function getO(form, selegroup, selerole) {
+    function getO(form, selectionGroup, selectionRole) {
         var id = form.getComponent("idUser").getValue();
         if (id == "") {
             id = null;
@@ -86,22 +90,37 @@ Ext.onReady(function() {
             credentialsNonExpired: form.getComponent("credentialsNonExpired").getValue(),
             password: form.getComponent("password").getValue(),
             accountNonLocked: form.getComponent("accountNonLocked").getValue(),
-            group1List: getSelectedIds(selegroup, ['idGroup']),
-            roleprivList: getSelectedIds(selerole, ['idRolePriv'])
+            groups: getListForObject(selectionGroup,'value'),
+            roles: getListForObject(selectionRole,'authority')
 
         };
         return o;
     }
+    
+    function getListForObject(selection,idName){
+        
+        var idArray=[];
+        var selectedItems=selection.selected.items;
+        
+        for(var i=0; i<selectedItems.length; i++){
+            var str='{'+"\""+idName+"\":"+"\""+selectedItems[i].data[idName]+"\""+'}';
+            var obj = JSON.parse(str);
+            idArray.push(obj);
+        }
+       
+        return idArray;
+    }
 
-    function handleFormulario(opt, grid, title, url, selecion) {
+    function handleFormulario(opt, grid, title, url, selection) {
+        
         var username, contrasena, idUser, method = 'POST', tooltip = 'Insertar usuario', enabled = true;
 
-        if (opt != 'Inserta' && selecion.hasSelection()) {
+        if (opt != 'Inserta' && selection.hasSelection()) {
             method = 'PUT';
-            username = selecion.getLastSelected().get('username');
-            contrasena = selecion.getLastSelected().get('password');
-            idUser = selecion.getLastSelected().get('idUser');
-            enabled = selecion.getLastSelected().get('enabled');
+            username = selection.getLastSelected().get('username');
+            contrasena = selection.getLastSelected().get('password');
+            idUser = selection.getLastSelected().get('idUser');
+            enabled = selection.getLastSelected().get('enabled');
             tooltip = 'Modificar usuario';
         }
 
@@ -166,72 +185,72 @@ Ext.onReady(function() {
                 columns: 3
             },
             items: [
-                {
-                    fieldLabel: 'Usuario',
-                    name: 'username',
-                    id: 'username',
-                    value: username,
-                    allowBlank: false,
-                    width: 220
-                }, groupGrid, roleGrid, {
-                    fieldLabel: 'Contrase&ntilde;a',
-                    name: 'password',
-                    id: 'password',
-                    allowBlank: false,
-                    inputType: 'password',
-                    value: contrasena,
-                    width: 220
-                },
-                {
-                    fieldLabel: 'Repita Contrase&ntilde;a',
-                    name: 'password2',
-                    id: 'password2',
-                    allowBlank: false,
-                    inputType: 'password',
-                    value: contrasena,
-                    width: 220
+            {
+                fieldLabel: 'Usuario',
+                name: 'username',
+                id: 'username',
+                value: username,
+                allowBlank: false,
+                width: 220
+            }, groupGrid, roleGrid, {
+                fieldLabel: 'Contrase&ntilde;a',
+                name: 'password',
+                id: 'password',
+                allowBlank: false,
+                inputType: 'password',
+                value: contrasena,
+                width: 220
+            },
+            {
+                fieldLabel: 'Repita Contrase&ntilde;a',
+                name: 'password2',
+                id: 'password2',
+                allowBlank: false,
+                inputType: 'password',
+                value: contrasena,
+                width: 220
 
-                }, checkboxenabled, checkboxaccountNonExpired, {
-                    name: 'idUser',
-                    id: 'idUser',
-                    value: idUser,
-                    hidden: true
-                }, checkboxcredentialsNonExpired, checkboxaccountNonLocked
+            }, checkboxenabled, checkboxaccountNonExpired, {
+                name: 'idUser',
+                id: 'idUser',
+                value: idUser,
+                hidden: true
+            }, checkboxcredentialsNonExpired, checkboxaccountNonLocked
 
 
             ],
             buttons: [{
-                    text: opt + 'r',
-                    id: 'formuser',
-                    formBind: true,
-                    handler: function() {
-                        if (formpanel.getComponent("password2").getValue() == formpanel.getComponent("password").getValue()) {
-                            if (formpanel.getForm().isValid()) {
-                                var form = getO(formpanel, groupGrid.selModel, roleGrid.selModel)
-                                AjaxrequestJson(url, form, method, usersGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error no se ha podido ' + opt + 'r');
-                            }
-                        } else {
-                            Ext.Msg.alert('Error', 'la contrase&ntilde;a no son iguales');
-
+                text: opt + 'r',
+                id: 'formuser',
+                formBind: true,
+                handler: function() {
+                    if (formpanel.getComponent("password2").getValue() == formpanel.getComponent("password").getValue()) {
+                        if (formpanel.getForm().isValid()) {
+                            var form = getO(formpanel, groupGrid.selModel, roleGrid.selModel)
+                            doAjaxrequestJson(url, form, method, usersGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error no se ha podido ' + opt + 'r');
                         }
-                    },
-                    tooltip: tooltip
-                }]
+                    } else {
+                        Ext.Msg.alert('Error', 'la contrase&ntilde;a no son iguales');
+
+                    }
+                },
+                tooltip: tooltip
+            }]
         });
         roleGrid.getStore().load();
-
+        groupGrid.getStore().load();
         /*
          *en caso de modificar seleciona los id de los grupos y roles del usuario elegido
          */
 
         roleGrid.getStore().on('load', function() {
-            groupGrid.getStore().load();
+          
             if (opt != 'Inserta') {
-                var roles = selecion.getLastSelected().get('roleprivList');
+                var roles = selection.getLastSelected().get('roles');
                 for (var i = 0; i < roleGrid.getStore().getCount(); i++) {
                     var record = roleGrid.getStore().getAt(i);
                     for (var j = 0; j < roles.length; j++) {
-                        if (record.get("idRolePriv") == roles[j].idRolePriv) {
+                        if (record.get("authority") == roles[j].authority) {
                             roleGrid.selModel.select(record, true, true);
                         }
                     }
@@ -240,11 +259,11 @@ Ext.onReady(function() {
         });
         if (opt != 'Inserta') {
             groupGrid.getStore().on('load', function() {
-                var groups = selecion.getLastSelected().get('group1List');
+                var groups = selection.getLastSelected().get('groups');
                 for (var i = 0; i < groupGrid.getStore().getCount(); i++) {
                     var record = groupGrid.getStore().getAt(i);
                     for (var j = 0; j < groups.length; j++) {
-                        if (record.get("idGroup") == groups[j].idGroup) {
+                        if (record.get("value") == groups[j].value) {
                             groupGrid.selModel.select(record, true, true);
                         }
                     }

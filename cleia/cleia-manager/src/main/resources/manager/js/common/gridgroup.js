@@ -15,7 +15,7 @@ Ext.define('App.manager.js.common.gridgroup', {
     columns:[           
     {
         header: 'Servicios', 
-        dataIndex: 'name'
+        dataIndex: 'value'
     
     }],
     features:[{
@@ -25,7 +25,7 @@ Ext.define('App.manager.js.common.gridgroup', {
         encode:true,
         filters: [ {
             type: 'string',
-            dataIndex: 'name'
+            dataIndex: 'value'
         }]
     }],
     forceFit:true,
@@ -36,15 +36,12 @@ Ext.define('App.manager.js.common.gridgroup', {
             this.store=Ext.create('Abada.data.JsonStore',{
                 storeId:'gridgroupStore',
                 sorters: {
-                    property: 'name',
+                    property: 'value',
                     direction: 'ASC'
                 },
                 fields:[{
-                    name:'idGroup',
-                    mapping:'idGroup'
-                },{
-                    name:'name',
-                    mapping:'name'
+                    name:'value',
+                    mapping:'value'
                 }],
                 url:this.config.url,                
                 root:'data',                                

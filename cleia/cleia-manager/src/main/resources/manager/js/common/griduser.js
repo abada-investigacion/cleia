@@ -78,11 +78,11 @@ Ext.define('App.manager.js.common.griduser', {
                     name:'password',
                     mapping:'password'
                 },{
-                    name:'roleprivList',
-                    mapping:'roleprivList'
+                    name:'roles',
+                    mapping:'roles'
                 },{
-                    name:'group1List',
-                    mapping:'group1List' //grupo
+                    name:'groups',
+                    mapping:'groups' //grupo
                 }],
                 url:this.config.url,                
                 root:'data',                                

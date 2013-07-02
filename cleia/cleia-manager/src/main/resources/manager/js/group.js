@@ -117,7 +117,7 @@ Ext.onReady(function() {
                     handler: function() {
                         if (formpanel.getForm().isValid()) {
                             var form = getO(formpanel, usersGrid.selModel);
-                            AjaxrequestJson(url, form, method, groupGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error no se ha podido ' + opt + 'r');
+                            doAjaxrequestJson(url, form, method, groupGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error no se ha podido ' + opt + 'r');
                         }
 
                     },

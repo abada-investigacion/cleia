@@ -145,6 +145,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
      */
     @Transactional(value = "cleia-txm")
     public void postUser(User user) throws Exception {
+
         if (user.getGroups().isEmpty() || user.getGroups() == null) {
             throw new Exception("Error. El usuario debe pertenecer a un servicio");
         } else if (user.getRoles().isEmpty() || user.getRoles() == null) {
@@ -152,23 +153,20 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         }
         List<User> luser = entityManager.createQuery("select u from User u where u.username=?").setParameter(1, user.getUsername()).getResultList();
         if (luser.isEmpty() && luser != null) {
-            List<Group> lgroup = entityManager.createQuery("select g from Group g where g.name=?").setParameter(1, user.getUsername()).getResultList();
-            if (lgroup.isEmpty() && lgroup != null) {
-                try {
-                    org.jbpm.task.User usertask = new org.jbpm.task.User();
-                    usertask.setId(user.getUsername());
-                    taskService.getTaskSession().addUser(usertask);
-                    this.addGroupsAndRoles(user, user.getGroups(), user.getRoles(), true);
-                    user.setPassword(sha1PasswordEncoder.encodePassword(user.getPassword(), null));
 
-                    entityManager.persist(user);
-                } catch (Exception e) {
+            try {
+                org.jbpm.task.User usertask = new org.jbpm.task.User();
+                usertask.setId(user.getUsername());
+                taskService.getTaskSession().addUser(usertask);
+                this.addGroupsAndRoles(user, user.getGroups(), user.getRoles(), true);
+                user.setPassword(sha1PasswordEncoder.encodePassword(user.getPassword(), null));
 
-                    throw new Exception("Error. Ha ocurrido un error al insertar el usuario " + user.getUsername(), e);
-                }
-            } else {
-                throw new Exception("Error. Existe un servicio con el nombre " + user.getUsername());
+                entityManager.persist(user);
+            } catch (Exception e) {
+
+                throw new Exception("Error. Ha ocurrido un error al insertar el usuario " + user.getUsername(), e);
             }
+
         } else {
             throw new Exception("Error. El usuario " + user.getUsername() + " ya existe.");
         }
@@ -198,24 +196,21 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         if (user != null) {
             List<User> luser = entityManager.createQuery("select u from User u where u.username=?").setParameter(1, newuser.getUsername()).getResultList();
             if (luser.isEmpty() || newuser.getUsername().equals(user.getUsername())) {
-                List<User> lgroup = entityManager.createQuery("select g from Group g where g.name=?").setParameter(1, newuser.getUsername()).getResultList();
-                if (lgroup.isEmpty() && lgroup != null) {
-                    try {
-                        if (!newuser.getUsername().equals(newuser.getUsername())) {
-                            org.jbpm.task.User usertask = new org.jbpm.task.User();
-                            usertask.setId(user.getUsername());
-                            taskService.getTaskSession().addUser(usertask);
 
-                        }
-                        //this.addGroupsAndRolesAndPatient(user, newuser.getGroups(), newuser.getRoles(), false, newuser.getPatientList());
-                        this.persistUser(user, newuser);
-                    } catch (Exception e) {
+                try {
+                    if (!newuser.getUsername().equals(user.getUsername())) {
+                        org.jbpm.task.User usertask = new org.jbpm.task.User();
+                        usertask.setId(newuser.getUsername());
+                        taskService.getTaskSession().addUser(usertask);
 
-                        throw new Exception("Error. Ha ocurrido un error al modificar el usuario " + newuser.getUsername(), e);
                     }
-                } else {
-                    throw new Exception("Error. Ya existe un servicio con el nombre " + newuser.getUsername());
+                    this.addGroupsAndRoles(user, newuser.getGroups(), newuser.getRoles(), true);
+                    this.persistUser(user, newuser);
+                } catch (Exception e) {
+
+                    throw new Exception("Error. Ha ocurrido un error al modificar el usuario " + newuser.getUsername(), e);
                 }
+
             } else {
                 throw new Exception("Error. El usuario " + newuser.getUsername() + " ya existe");
             }
@@ -501,6 +496,9 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
     public void addGroupsAndRoles(User user, List<Group> lgroup, List<Role> lrole, boolean newUser) throws Exception {
 
         if (lgroup != null && lrole != null) {
+            List<Group> lgroupaux=new ArrayList<Group>(lgroup);
+            List<Role> lroleaux=new ArrayList<Role>(lrole);
+            
             //Eliminamos todos los grupos y roles de un usuario
             if (!newUser) {
                 for (Group g : user.getGroups()) {
@@ -517,7 +515,8 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
                 entityManager.flush();
             }
             if (lgroup != null) {
-                for (Group g : lgroup) {
+                user.getGroups().clear();
+                for (Group g : lgroupaux) {
                     Group group = entityManager.find(Group.class, g.getValue());
                     if (group != null) {
                         user.addGroup(group);
@@ -527,7 +526,8 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
                 }
             }
             if (lrole != null) {
-                for (Role r : lrole) {
+                user.getRoles().clear();
+                for (Role r : lroleaux) {
                     Role role = entityManager.find(Role.class, r.getAuthority());
                     if (role != null) {
                         user.addRole(role);

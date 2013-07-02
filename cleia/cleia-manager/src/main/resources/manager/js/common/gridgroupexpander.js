@@ -15,13 +15,13 @@ Ext.define('App.manager.js.common.gridgroupexpander', {
             rowBodyTpl: [
                 '<div>',
                 '<p><b> Usuarios:</b></p>',
-                '<tpl for=".">',
+                '<tpl for="users">',
                 '<li><b>{#}. </b> {username}</li>',
                 '</tpl>',
                 '</div>'
             ],
-            url: 'rs/group/{idGroup}/users',
-            searchFields: ['idGroup']
+            url: 'rs/group/{value}/users',
+            searchFields: ['value']
 
         }]
 });

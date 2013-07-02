@@ -121,7 +121,7 @@ Ext.onReady(function() {
                     handler: function() {
                         if (formpanel.getForm().isValid()) {
                             var form = getO(formpanel)
-                            AjaxrequestJson(url, form, method, idtypeGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error. No se ha podido ' + opt + 'r');
+                            doAjaxrequestJson(url, form, method, idtypeGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error. No se ha podido ' + opt + 'r');
                         }
                     },
                     tooltip: tooltip

@@ -188,6 +188,11 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
     public List<Group> getAll(GridRequest filters) {
 
         List<Group> lgroup = this.find(entityManager, "select g from Group g" + filters.getQL("g", true), filters.getParamsValues(), filters.getStart(), filters.getLimit());
+
+        for (Group g : lgroup) {
+            g.getUsers().size();
+        }
+
         return lgroup;
     }
 
@@ -204,7 +209,9 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
         Group group = new Group();
         group = entityManager.find(Group.class, idgroup);
 
-        /*Si el grupo existe le fuerzo a que traiga su lista de User*/
+        /*
+         * Si el grupo existe le fuerzo a que traiga su lista de User
+         */
         if (group == null) {
             throw new Exception("Error. El servicio no existe");
         } else {

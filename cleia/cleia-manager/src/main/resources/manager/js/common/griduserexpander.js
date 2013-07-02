@@ -15,17 +15,17 @@ Ext.define('App.manager.js.common.griduserexpander', {
         ptype: 'abada.rowexpander',
         rowBodyTpl: [
         '<div>',
-        '<tpl if="roleprivList.length">',
+        '<tpl if="roles.length">',
         '<p><b>Roles:</b></p>',
         '</tpl>',
-        '<tpl for="roleprivList">',
+        '<tpl for="roles">',
         '<li><b>{#}. </b> {authority}</li>',
         '</tpl>',
-        '<tpl if="group1List.length">',
+        '<tpl if="groups.length">',
         '<p><b>Servicios:</b></p>',
         '</tpl>',
-        '<tpl for="group1List">',
-        '<li><b>{#}. </b> {name} </li>',
+        '<tpl for="groups">',
+        '<li><b>{#}. </b> {value} </li>',
         '</tpl>',
         '</div>'
         ] 

@@ -39,7 +39,7 @@ Ext.onReady(function() {
                         habilitar = 'habilitado: '
                     }
                     habilitar = habilitar + patientsGrid.selModel.getLastSelected().get('name');
-                    AjaxrequestJson(getRelativeServerURI('rs/patient/{idpatient}/{enable}',[form.idPatient,form.enabled]), form, 'PUT', patientsGrid, null, opt + 'ndo', opt + 'ndo ' + title + '...', habilitar, 'error no se ha podido ' + opt + 'r');
+                    doAjaxrequestJson(getRelativeServerURI('rs/patient/{idpatient}/{enable}',[form.idPatient,form.enabled]), form, 'PUT', patientsGrid, null, opt + 'ndo', opt + 'ndo ' + title + '...', habilitar, 'error no se ha podido ' + opt + 'r');
                 } else
                     Ext.Msg.alert('', 'Seleccione un Paciente');
             }
@@ -239,7 +239,7 @@ Ext.onReady(function() {
                     handler: function() {
                         if (formpanel.getForm().isValid()) {
                             if (patientidGrid.getStore().getCount() > 0) {
-                                AjaxrequestJson(url, getO(formpanel, patientidGrid.getStore()), method, patientsGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error no se ha podido ' + opt + 'r');
+                                doAjaxrequestJson(url, getO(formpanel, patientidGrid.getStore()), method, patientsGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error no se ha podido ' + opt + 'r');
                             } else
                                 Ext.Msg.alert('', 'El paciente no tiene ningun Id');
                         }

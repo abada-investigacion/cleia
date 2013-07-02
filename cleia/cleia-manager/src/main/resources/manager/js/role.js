@@ -127,7 +127,7 @@ Ext.onReady(function() {
                     formBind: true,
                     handler: function() {
                         if (formpanel.getForm().isValid()) {
-                            AjaxrequestJson(url, getO(formpanel, usersGrid.selModel), method, roleGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error no se ha podido ' + opt + 'r');
+                            doAjaxrequestJson(url, getO(formpanel, usersGrid.selModel), method, roleGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error no se ha podido ' + opt + 'r');
                         }
 
                     },
