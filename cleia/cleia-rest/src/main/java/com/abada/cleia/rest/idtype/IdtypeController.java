@@ -7,6 +7,7 @@ package com.abada.cleia.rest.idtype;
 import com.abada.cleia.dao.IdTypeDao;
 import com.abada.cleia.entity.user.IdType;
 import com.abada.cleia.entity.user.Views;
+import com.abada.extjs.ComboBoxResponse;
 import com.abada.extjs.ExtjsStore;
 import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
