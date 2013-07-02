@@ -83,7 +83,7 @@ public class GroupController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{idgroup}/users", method = RequestMethod.GET)
-    public void getGroupUsers(@PathVariable Long idgroup, Model model) throws Exception {
+    public void getGroupUsers(@PathVariable String idgroup, Model model) throws Exception {
 
 
         List<User> lusers = new ArrayList<User>();
@@ -98,7 +98,7 @@ public class GroupController {
         aux.setTotal(lusers.size());
 
         model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
-        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Level1.class);
     }
 
     /**

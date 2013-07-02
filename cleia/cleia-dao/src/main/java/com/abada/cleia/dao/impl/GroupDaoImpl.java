@@ -204,7 +204,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      * @throws Exception
      */
     @Transactional(value = "cleia-txm", readOnly = true)
-    public List<User> getUsersByIdGroup(Long idgroup) throws Exception {
+    public List<User> getUsersByIdGroup(String idgroup) throws Exception {
 
         Group group = new Group();
         group = entityManager.find(Group.class, idgroup);

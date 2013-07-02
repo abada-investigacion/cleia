@@ -76,5 +76,5 @@ public interface GroupDao {
      * @return
      * @throws Exception 
      */
-    public List<User> getUsersByIdGroup(Long idgroup) throws Exception;
+    public List<User> getUsersByIdGroup(String idgroup) throws Exception;
 }
