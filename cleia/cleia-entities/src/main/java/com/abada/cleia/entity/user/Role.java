@@ -23,7 +23,7 @@ public class Role implements GrantedAuthority{
     @Id
     @JsonView(Views.Public.class)
     private String authority;
-    @JsonView(Views.Level1.class)
+    @JsonView(Views.Level2.class)
     @ManyToMany(mappedBy = "roles")
     private List<User> users;
 

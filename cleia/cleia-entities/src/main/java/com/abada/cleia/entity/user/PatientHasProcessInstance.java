@@ -26,7 +26,7 @@ public class PatientHasProcessInstance implements Serializable {
     @Basic(optional = false)
     @Column(name = "process", nullable = false)
     private Long processInstanceId;
-    @JsonView(Views.Level1.class)
+    @JsonView(Views.Level2.class)
     @JoinColumn(name = "patient", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
     private Patient patientId;        
