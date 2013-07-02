@@ -41,7 +41,7 @@ public class User implements UserDetails {
     @JsonView(Views.Public.class)
     @Column(nullable = false, unique = true, length = 1024)
     private String username;    
-    @JsonView(Views.Level1.class)
+    @JsonView(Views.Hide.class)
     @Column(nullable = false, length = 1024)
     private String password;
     @JsonView(Views.Public.class)
@@ -56,7 +56,7 @@ public class User implements UserDetails {
     @JsonView(Views.Public.class)
     @Column(nullable = false)
     private boolean enabled;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Level1.class)
     @ManyToMany
     @JoinTable(name = "user_has_role",
             joinColumns = {
@@ -64,7 +64,7 @@ public class User implements UserDetails {
             inverseJoinColumns = {
         @JoinColumn(nullable = false, name = "role_id", referencedColumnName = "authority")})
     private List<Role> roles;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Level1.class)
     @ManyToMany
     @JoinTable(name = "user_has_group",
             joinColumns = {
@@ -72,7 +72,7 @@ public class User implements UserDetails {
             inverseJoinColumns = {
         @JoinColumn(nullable = false, name = "group_id", referencedColumnName = "value1")})
     private List<Group> groups;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Level1.class)
     @OneToMany(mappedBy = "user")
     private List<Id> ids;
 

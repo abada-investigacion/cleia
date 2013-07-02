@@ -52,7 +52,7 @@ public class FormProcessController {
      * @throws IOException 
      */
     @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER"})
-    @RequestMapping(value = {"/{definitionid}/patient/{patientId}/render","/rs/form/process/{definitionid}/{type}/patient/{patientId}/render"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/{definitionid}/patient/{patientId}/render"}, method = RequestMethod.GET)
     public View renderProcess(@PathVariable String definitionid, @PathVariable Long patientId, HttpServletRequest request) throws IOException {
         return new InputStreamView(formDispatcherPlugin.provideForm(new FormAuthorityRef(definitionid, FormAuthorityRef.Type.PROCESS)).getInputStream(), "text/html", null);
     }
@@ -68,21 +68,7 @@ public class FormProcessController {
     @RequestMapping(value = "/{definitionid}/patient/{patientId}/complete", method = RequestMethod.POST)
     public String completeProcess(@PathVariable String definitionid, @PathVariable Long patientId, HttpServletRequest request, Model model) {
         return completeProcessPriv(definitionid, patientId, request, model);
-    }
-    
-    /**
-     * Submit and start the process instance of the form showed in the renderProcess method.
-     * @param definitionid Process id
-     * @param patientId Patient id
-     * @param request Do nothing.
-     * @param model Do nothing.
-     * @return Return success structure.
-     */
-    @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER"})
-    @RequestMapping(value = "/{definitionid}/patient/{patientId}/complete", method = RequestMethod.POST)
-    public String completeProcessAbada(@PathVariable String definitionid, @PathVariable Long patientId, HttpServletRequest request, Model model) {
-        return completeProcessPriv(definitionid, patientId, request, model);
-    }    
+    } 
     
     private String completeProcessPriv(String definitionid, Long patientId,HttpServletRequest request, Model model) {
         try {

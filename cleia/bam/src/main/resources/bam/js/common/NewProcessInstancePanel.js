@@ -20,35 +20,35 @@ Ext.define('App.bam.js.common.NewProcessInstancePanel',{
             allowBlank:false
         });
         
-        var types = Ext.create('Ext.data.Store', {
-            fields: ['id', 'value'],
-            data : [
-            {
-                "id":"ONCOGUIDE", 
-                "value":"Proceso Oncoguia"
-            },
-            {
-                "id":"EMERGENCY", 
-                "value":"Proceso Urgencias"
-            },
-            {
-                "id":"UNDEFINED", 
-                "value":"Proceso Tipo Desconocido"
-            }
-            ]
-        });
-
-        // Create the combo box, attached to the states data store
-        this.cbType=Ext.create('Ext.form.ComboBox', { 
-            emptyText : 'seleccione tipo Oncoguia',
-            width:200,
-            store: types,
-            queryMode: 'local',
-            displayField: 'value',
-            valueField: 'id',
-            editable:false,
-            allowBlank:false
-        });
+//        var types = Ext.create('Ext.data.Store', {
+//            fields: ['id', 'value'],
+//            data : [
+//            {
+//                "id":"ONCOGUIDE", 
+//                "value":"Proceso Oncoguia"
+//            },
+//            {
+//                "id":"EMERGENCY", 
+//                "value":"Proceso Urgencias"
+//            },
+//            {
+//                "id":"UNDEFINED", 
+//                "value":"Proceso Tipo Desconocido"
+//            }
+//            ]
+//        });
+//
+//        // Create the combo box, attached to the states data store
+//        this.cbType=Ext.create('Ext.form.ComboBox', { 
+//            emptyText : 'seleccione tipo Oncoguia',
+//            width:200,
+//            store: types,
+//            queryMode: 'local',
+//            displayField: 'value',
+//            valueField: 'id',
+//            editable:false,
+//            allowBlank:false
+//        });
         
         
         this.button=Ext.create('Ext.button.Button', {
@@ -57,7 +57,7 @@ Ext.define('App.bam.js.common.NewProcessInstancePanel',{
         });
         this.button.addListener('click',this.onButtonClick,this);
         
-        this.items=[this.cbOncoguide,this.cbType];
+        this.items=[this.cbOncoguide];
         this.buttons=[this.button];
         
         this.callParent();                
@@ -66,7 +66,7 @@ Ext.define('App.bam.js.common.NewProcessInstancePanel',{
     },
     onButtonClick:function(){        
         var panel=Ext.create('App.bam.js.common.FormCustomFrame',{                
-            url:getRelativeURI('/bam/form/process/'+this.cbOncoguide.getValue()+'/'+this.cbType.getValue()+'/patient/'+this.patientId+'/render')
+            url:getRelativeServerURI('/rs/form/process/{0}/patient/{1}/render',[this.cbOncoguide.getValue(),this.patientId])
         });
         panel.addListener('success',function(frame,processInstanceId){  
             Ext.Msg.alert('Info','Oncoguia creada correctamente',                        

@@ -215,7 +215,7 @@ Ext.onReady(function(){
         
         var oncoguide=Ext.create('App.bam.js.common.OncoguideGrid',{
             height:App.height,
-            url:getRelativeURI('/bam/patient/pinstances.do'),
+            url:getRelativeServerURI('rs/patient/{0}/pinstance/list',[patientId]),
             patientId:patientId
         });
         oncoguide.addListener('graphclick',function(grid,processInstanceId){
