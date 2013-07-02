@@ -4,7 +4,7 @@
  */
 package com.abada.cleia.entity.user;
 
-import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,6 +18,7 @@ import javax.persistence.ManyToMany;
  */
 @Entity
 public class Medical extends Patient{
+    @JsonView(Views.Level1.class)
     @JoinTable(name = "medical_has_patient", 
             joinColumns = {@JoinColumn(name = "medical_id", referencedColumnName = "id", nullable = false)},
             inverseJoinColumns = {@JoinColumn(name = "patient_id", referencedColumnName = "id", nullable = false)})

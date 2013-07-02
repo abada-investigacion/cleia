@@ -48,12 +48,19 @@ public class ProcessInstanceDaoImpl implements PatientTaskManagement, ProcessIns
         entityManager.persist(add);
     }
 
+    @Transactional(value = "cleia-txm", readOnly = true)
     public PatientHasProcessInstance getProcessInstanceFromProcessIntance(Long patientId, Long pInstance) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Transactional(value = "cleia-txm", readOnly = true)
     public List<PatientHasProcessInstance> getProcessInstance(Long patientId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Patient patient=entityManager.find(Patient.class, patientId);
+        if (patient!=null){
+            patient.getProcessInstances().size();
+            return patient.getProcessInstances();
+        }
+        return null;
     }
     
 }

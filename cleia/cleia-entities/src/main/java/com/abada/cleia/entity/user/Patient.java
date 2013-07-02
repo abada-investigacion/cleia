@@ -52,7 +52,7 @@ public class Patient extends User{
     @JsonView(Views.Level1.class)
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "patients")
     private List<Medical> medicals;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Level1.class)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "patientId")
     private List<PatientHasProcessInstance> processInstances;
 
