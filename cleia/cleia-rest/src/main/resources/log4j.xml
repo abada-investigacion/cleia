@@ -10,10 +10,10 @@
         </layout>
     </appender>
 
-    <!--logger name="org.hibernate">        
+    <logger name="com.abada">        
         <level value="ALL" />
         <appender-ref ref="CONSOLE.OUT"/>
-    </logger-->
+    </logger>
 
     <root>        
         <priority value="ERROR" />

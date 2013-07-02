@@ -4,8 +4,9 @@
  */
 package com.abada.jbpm.process.audit;
 
-import com.abada.gson.GsonImpl;
 import com.abada.json.Json;
+import com.abada.json.JsonFactory;
+import com.abada.json.JsonType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class ProcessInstanceDbLog {
 
-    private static final Json gson=new GsonImpl();
+    private static final Json gson= JsonFactory.getInstance().getInstance(JsonType.DEFAULT);
     @PersistenceContext(unitName = "com.abada.drools.persistence.jpa")
     private EntityManager em;
 
@@ -149,6 +150,8 @@ public class ProcessInstanceDbLog {
         for (VariableInstanceLog vil:list){
             if (vil instanceof VariableInstanceLogExt && !result.keySet().contains(vil.getVariableId())){                
                 result.put(vil.getVariableId(), gson.deserialize(((VariableInstanceLogExt)vil).getValueJson(),this.getClass().getClassLoader().loadClass(((VariableInstanceLogExt)vil).getValueType())));
+            }else{
+                result.put(vil.getVariableId(), vil.getValue());
             }
         }
         return result;        
