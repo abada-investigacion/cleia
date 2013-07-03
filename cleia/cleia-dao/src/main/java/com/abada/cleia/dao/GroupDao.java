@@ -54,14 +54,14 @@ public interface GroupDao {
      * @param name
      * @return 
      */
-    public void putGroup(Long idgroup, Group newgroup) throws Exception;
+    public void putGroup(String idgroup, Group newgroup) throws Exception;
 
     /**
      * Delete a group by id
      * @param idgroup
      * @return 
      */
-    public void deleteGroup(Long idgroup) throws Exception;
+    public void deleteGroup(String idgroup) throws Exception;
     
     /**
      * Search a list of groups by params

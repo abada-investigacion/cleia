@@ -65,8 +65,8 @@ Ext.define('App.manager.js.common.griduser', {
                     direction: 'ASC'
                 },
                 fields:[{
-                    name:'idUser',
-                    mapping:'idUser'
+                    name:'id',
+                    mapping:'id'
                 },{
                     name:'username',
                     mapping:'username'

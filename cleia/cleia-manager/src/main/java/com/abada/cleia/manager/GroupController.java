@@ -28,7 +28,8 @@ public class GroupController {
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @MenuEntry(icon = "manager/image/servicio_me.png", menuGroup = "Manager", order = 1, text = "Servicios")
     public String gridgroup(Model model) {
-        model.addAttribute("js", Arrays.asList("manager/js/common/gridgroup.js", "manager/js/common/gridgroupexpander.js", "manager/js/group.js", "manager/js/common/griduser.js"));
+        model.addAttribute("js", Arrays.asList("manager/js/common/gridgroup.js", "manager/js/common/gridgroupexpander.js", 
+                "manager/js/group.js", "manager/js/common/griduser.js","manager/js/manager-utils.js"));
         return "dynamic/main";
 
     }

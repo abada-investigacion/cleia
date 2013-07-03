@@ -32,17 +32,17 @@ Ext.onReady(function() {
                 if (usersGrid.selModel.hasSelection()) {
                     var form = {
                         enabled: !usersGrid.selModel.getLastSelected().get('enabled'),
-                        idUser: usersGrid.selModel.getLastSelected().get('id')
+                        id: usersGrid.selModel.getLastSelected().get('id')
                     }
-                    var opt = 'modifica', status = 'habilitado';
+                    var opt = 'modifica', status = 'habilita';
                  
                     if (usersGrid.selModel.getLastSelected().get('enabled')) {
-                        status = 'deshabilitado'
+                        status = 'deshabilita'
                     }                  
                     doAjaxrequestJson(getRelativeServerURI('rs/user/{iduser}/{enable}', {
-                        iduser:form.idUser,
+                        iduser:form.id,
                         enable:form.enabled
-                        }), form, 'PUT', usersGrid, null, 'Usuario '+status, opt + 'ndo usuario...', 'Usuario '+status, 'Error. No se ha podido ' + opt + 'r');
+                        }), form, 'PUT', usersGrid, null, 'Usuario '+status+'do', 'Error. No se ha podido ' + status + 'r');
               
                 } else
                     Ext.Msg.alert('', 'Seleccione un usuario');
@@ -78,12 +78,12 @@ Ext.onReady(function() {
 
     //*Funcion para los frompanel
     function getO(form, selectionGroup, selectionRole) {
-        var id = form.getComponent("idUser").getValue();
+        var id = form.getComponent("id").getValue();
         if (id == "") {
             id = null;
         }
         var o = {
-            idUser: id,
+            id: id,
             enabled: form.getComponent("enabled").getValue(),
             username: form.getComponent("username").getValue(),
             accountNonExpired: form.getComponent("accountNonExpired").getValue(),
@@ -97,29 +97,17 @@ Ext.onReady(function() {
         return o;
     }
     
-    function getListForObject(selection,idName){
-        
-        var idArray=[];
-        var selectedItems=selection.selected.items;
-        
-        for(var i=0; i<selectedItems.length; i++){
-            var str='{'+"\""+idName+"\":"+"\""+selectedItems[i].data[idName]+"\""+'}';
-            var obj = JSON.parse(str);
-            idArray.push(obj);
-        }
-       
-        return idArray;
-    }
+    
 
     function handleFormulario(opt, grid, title, url, selection) {
         
-        var username, contrasena, idUser, method = 'POST', tooltip = 'Insertar usuario', enabled = true;
+        var username, contrasena, id, method = 'POST', tooltip = 'Insertar usuario', enabled = true;
 
         if (opt != 'Inserta' && selection.hasSelection()) {
             method = 'PUT';
             username = selection.getLastSelected().get('username');
             contrasena = selection.getLastSelected().get('password');
-            idUser = selection.getLastSelected().get('idUser');
+            id = selection.getLastSelected().get('id');
             enabled = selection.getLastSelected().get('enabled');
             tooltip = 'Modificar usuario';
         }
@@ -211,9 +199,9 @@ Ext.onReady(function() {
                 width: 220
 
             }, checkboxenabled, checkboxaccountNonExpired, {
-                name: 'idUser',
-                id: 'idUser',
-                value: idUser,
+                name: 'id',
+                id: 'id',
+                value: id,
                 hidden: true
             }, checkboxcredentialsNonExpired, checkboxaccountNonLocked
 
@@ -227,7 +215,7 @@ Ext.onReady(function() {
                     if (formpanel.getComponent("password2").getValue() == formpanel.getComponent("password").getValue()) {
                         if (formpanel.getForm().isValid()) {
                             var form = getO(formpanel, groupGrid.selModel, roleGrid.selModel)
-                            doAjaxrequestJson(url, form, method, usersGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error no se ha podido ' + opt + 'r');
+                            doAjaxrequestJson(url, form, method, usersGrid, wind, 'Usuario '+ opt + 'do', 'Error no se ha podido ' + opt + 'r');
                         }
                     } else {
                         Ext.Msg.alert('Error', 'la contrase&ntilde;a no son iguales');

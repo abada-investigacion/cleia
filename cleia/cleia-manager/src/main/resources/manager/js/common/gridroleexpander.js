@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 Ext.define('App.manager.js.common.gridroleexpander', {
     requires: ['Abada.grid.RowExpander'],
     extend:'App.manager.js.common.gridrole',
@@ -17,13 +16,14 @@ Ext.define('App.manager.js.common.gridroleexpander', {
         rowBodyTpl: [
         '<div>',
         '<p><b> Usuarios:</b></p>',
-        '<tpl for=".">',
-        '<li><b>{#}. </b> {username}</li>',
-        '</tpl>',
-      
+        '<tpl for="data">',
+        '<li style="list-style: none;font-size: 12px;'+
+        'font-weight: bold; font-family: helvetica,arial,verdana,sans-serif;'+
+        'color: #666;"><b style="color:#157fcc">{#}  </b> {username}</li>',
+        '</tpl>',      
         '</div>'
         ],
-        url:'rs/role/{idRolePriv}/users',
-        searchFields:['idRolePriv']
+        url:'rs/role/{authority}/users',
+        searchFields:['authority']
     }]
 });

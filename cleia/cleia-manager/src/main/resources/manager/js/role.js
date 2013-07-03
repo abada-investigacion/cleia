@@ -7,14 +7,13 @@ Ext.require([
     'Ext.form.Panel', 'Ext.form.field.Checkbox', 'Abada.Ajax', 'Ext.JSON', 'Ext.Ajax',
     'Ext.layout.container.Column', 'Abada.toolbar.ToolbarInsertUpdateDelete'
 
-])
+    ])
 
 Ext.onReady(function() {
     var roleGrid = Ext.create('App.manager.js.common.gridroleexpander', {
         url: getRelativeServerURI('rs/role/search'),
         width: 300,
-        height: 350,
-        checkboxse: true,
+        height: 400,
         page: 14
 
 
@@ -33,56 +32,64 @@ Ext.onReady(function() {
         autoHeight: true,
         title: '',
         items: [
-            Ext.create('Abada.toolbar.ToolbarInsertUpdateDelete', {
-                listeners: {
-                    submitInsert: function() {
-                        handleFormulario('Inserta', roleGrid, 'Role', getRelativeServerURI('rs/role'), roleGrid.selModel);
-                    },
-                    submitUpdate: function() {
-                        if (roleGrid.selModel.hasSelection()) {
-                            if (roleGrid.selModel.getCount() == 1) {
-                                handleFormulario('Modifica', roleGrid, 'Usuario', getRelativeServerURI('rs/role/{idrole}', [roleGrid.selModel.getLastSelected().get('idRolePriv')]), roleGrid.selModel);
-                            } else {
-                                Ext.Msg.alert('', 'Seleccione un role');
-                            }
-                        } else
-                            Ext.Msg.alert('', 'Seleccione un role');
-                    },
-                    submitDelete: function() {
-                        if (roleGrid.selModel.hasSelection()) {
-                            handledelete(roleGrid, 'Borrado', 'idRolePriv', 'authority', getRelativeServerURI('rs/role/{idrole}', roleGrid.selModel.getLastSelected().get('idRolePriv')));
-                        } else
-                            Ext.Msg.alert('', 'Seleccione un role');
-                    }
+        Ext.create('Abada.toolbar.ToolbarInsertUpdateDelete', {
+            listeners: {
+                submitInsert: function() {
+                    handleFormulario('Inserta', roleGrid, 'Rol', getRelativeServerURI('rs/role'), roleGrid.selModel);
+                },
+                submitUpdate: function() {
+                    if (roleGrid.selModel.hasSelection()) {
+                        if (roleGrid.selModel.getCount() == 1) {
+                            handleFormulario('Modifica', roleGrid, 'Usuario', getRelativeServerURI('rs/role/{idrole}', {idrole:roleGrid.selModel.getLastSelected().get('authority')}), roleGrid.selModel);
+                        } else {
+                            Ext.Msg.alert('', 'Seleccione un rol');
+                        }
+                    } else
+                        Ext.Msg.alert('', 'Seleccione un rol');
+                },
+                submitDelete: function() {
+                    if (roleGrid.selModel.hasSelection()) {
+                        var form = {
+                            authority: roleGrid.selModel.getLastSelected().get('authority')
+                        }
+                        var opt = 'borra';
+                                 
+                        doAjaxrequestJson(getRelativeServerURI('rs/role/{idrole}', {
+                            idrole:form.authority
+                        }), form, 'DELETE', roleGrid, null, 'Rol '+opt+'do', 'Error. No se ha podido ' + opt + 'r');
+              
+                    } else
+                        Ext.Msg.alert('', 'Seleccione un rol');
                 }
+            }
 
-            }), roleGrid]//ponemos el grid
+        }), roleGrid]//ponemos el grid
 
     });
     setCentralPanel(panel);
 
 
-    function getO(form, seleuse) {
-        var id = form.getComponent("idRolePriv").getValue();
-        if (id == "") {
-            id = null;
+    function getO(form, selection) {
+        var authority = form.getComponent("authority").getValue();
+        if (authority == "") {
+            authority = null;
         }
         var o = {
-            authority: form.getComponent("authority").getValue(),
-            idRolePriv: id,
-            userList: getSelectedIds(seleuse, ['idUser'])
+            authority: authority,
+            users: getListForObject(selection, 'id')
 
         };
         return o;
     }
+    
+    
     function handleFormulario(opt, grid, title, url, selecion) {
-        var authority = 'ROLE_', idRolePriv = null, method = 'POST', tooltip = 'Insertar usuario'
+        var authority = 'ROLE_', method = 'POST', tooltip = 'Insertar rol'
 
         if (opt != 'Inserta' && selecion.hasSelection()) {
             method = 'PUT';
-            authority = selecion.getLastSelected().get('authority');
-            idRolePriv = selecion.getLastSelected().get('idRolePriv');
-            tooltip = 'Modificar usuario';
+            authority = selecion.getLastSelected().get('authority');           
+            tooltip = 'Modificar rol';
         }
         var usersGrid = Ext.create('App.manager.js.common.griduser', {
             url: getRelativeServerURI('rs/user/search'),
@@ -101,46 +108,45 @@ Ext.onReady(function() {
             monitorValid: true,
             autoWidth: true,
             items: [
-                {
-                    name: 'idRolePriv',
-                    id: 'idRolePriv',
-                    value: idRolePriv,
-                    hidden: true
-                },
-                {
-                    fieldLabel: 'Role',
-                    name: 'authority',
-                    id: 'authority',
-                    value: authority,
-                    regex: /ROLE__*/,
-                    regextext: 'Debe contener el prefijo ROLE_',
-                    allowBlank: false,
-                    columnWidth: 1
-                },
-                usersGrid
+            {
+                fieldLabel: 'Role',
+                name: 'authority',
+                id: 'authority',
+                value: authority,
+                regex: /ROLE__*/,
+                regextext: 'Debe contener el prefijo ROLE_',
+                allowBlank: false,
+                columnWidth: 1
+            },
+            usersGrid
 
 
             ],
             buttons: [{
-                    text: opt + 'r',
-                    id: 'formrole',
-                    formBind: true,
-                    handler: function() {
-                        if (formpanel.getForm().isValid()) {
-                            doAjaxrequestJson(url, getO(formpanel, usersGrid.selModel), method, roleGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error no se ha podido ' + opt + 'r');
-                        }
+                text: opt + 'r',
+                id: 'formrole',
+                formBind: true,
+                handler: function() {
+                    if (formpanel.getForm().isValid()) {
+                        doAjaxrequestJson(url, getO(formpanel, usersGrid.selModel), method, roleGrid, wind, 'Rol '+ opt + 'do', 'Error no se ha podido ' + opt + 'r');
+                    }
 
-                    },
-                    tooltip: tooltip
-                }]
+                },
+                tooltip: tooltip
+            }]
         });
-        usersGrid.getStore().load();
-        if (opt != 'Inserta') {
-            usersGrid.getStore().on('load', function() {
-                selectautogrid(usersGrid, idRolePriv, 'idRolePriv', "idUser", getRelativeServerURI('rs/role/{idrole}/users', {idrole: idRolePriv}));
-            });
-        }
-
+        
+      
+            usersGrid.getStore().load();
+            
+            if (opt != 'Inserta') {
+                usersGrid.getStore().on('load', function() {
+                    entityListPreSelected(usersGrid, authority, 'authority', "id", getRelativeServerURI('rs/role/{idrole}/users', {
+                        idrole: authority
+                    }));
+                });
+            }
+        
         var wind = Ext.create('Ext.window.Window', {
             id: 'usuario',
             autoScroll: false,

@@ -28,51 +28,60 @@ Ext.onReady(function() {
         autoHeight: true,
         title: '',
         items: [
-            Ext.create('Abada.toolbar.ToolbarInsertUpdateDelete', {
-                listeners: {
-                    submitInsert: function() {
-                        handleFormulario('Inserta', groupGrid, 'Usuario', getRelativeServerURI('rs/group'), groupGrid.selModel);
-                    },
-                    submitUpdate: function() {
-                        if (groupGrid.selModel.hasSelection()) {
-                            if (groupGrid.selModel.getCount() == 1) {
-                                handleFormulario('Modifica', groupGrid, 'Usuario', getRelativeServerURI('rs/group/{idgroup}', [groupGrid.selModel.getLastSelected().get('idGroup')]), groupGrid.selModel);
-                            } else {
-                                Ext.Msg.alert('', 'Seleccione un servicio');
-                            }
-                        } else
+        Ext.create('Abada.toolbar.ToolbarInsertUpdateDelete', {
+            listeners: {
+                submitInsert: function() {
+                    handleFormulario('Inserta', groupGrid, 'Servicio', getRelativeServerURI('rs/group'), groupGrid.selModel);
+                },
+                submitUpdate: function() {
+                    if (groupGrid.selModel.hasSelection()) {
+                        if (groupGrid.selModel.getCount() == 1) {
+                            handleFormulario('Modifica', groupGrid, 'Servicio', getRelativeServerURI('rs/group/{idgroup}', {
+                                idgroup:groupGrid.selModel.getLastSelected().get('value')
+                                }), groupGrid.selModel);
+                        } else {
                             Ext.Msg.alert('', 'Seleccione un servicio');
-                    },
-                    submitDelete: function() {
-                        if (groupGrid.selModel.hasSelection()) {
-                            handledelete(groupGrid, 'Borrado', 'idGroup', 'name', getRelativeServerURI('rs/group/{idgroup}', [groupGrid.selModel.getLastSelected().get('idGroup')]));
-                        } else
-                            Ext.Msg.alert('', 'Seleccione un Servicio');
-                    }
+                        }
+                    } else
+                        Ext.Msg.alert('', 'Seleccione un servicio');
+                },
+                submitDelete: function() {
+                    if (groupGrid.selModel.hasSelection()) {
+                        var form = {
+                            value: groupGrid.selModel.getLastSelected().get('value')
+                        }
+                        var opt = 'borra';
+                                 
+                        doAjaxrequestJson(getRelativeServerURI('rs/group/{idGroup}', {
+                            idGroup:form.value
+                            }), form, 'DELETE', groupGrid, null, 'Servicio '+opt+'do', 'Error. No se ha podido ' + opt + 'r');
+              
+                    } else
+                        Ext.Msg.alert('', 'Seleccione un servicio');
                 }
+            }
 
-            }), groupGrid]//ponemos el grid
+        }), groupGrid]//ponemos el grid
 
     });
     setCentralPanel(grid);
 
 
     //*Funcion para los frompanel
-    function getO(form, seleuse) {
-        var id = form.getComponent("idGroup").getValue();
-        if (id == "") {
-            id = null;
+    function getO(form, selection) {
+        var value = form.getComponent("value").getValue();
+        if (value == "") {
+            value = null;
         }
         var o = {
-            idGroup: id,
-            name: form.getComponent("name").getValue(),
-            userList: getSelectedIds(seleuse, ['idUser'])
+            value: value,
+            users: getListForObject(selection, 'id')
         };
         return o;
     }
 
     function handleFormulario(opt, grid, title, url, selecion) {
-        var name, idGroup, method = 'POST', tooltip = 'Insertar usuario'
+        var value, method = 'POST', tooltip = 'Insertar usuario'
         var usersGrid = Ext.create('App.manager.js.common.griduser', {
             url: getRelativeServerURI('rs/user/search'),
             width: 300,
@@ -82,8 +91,7 @@ Ext.onReady(function() {
         });
         if (opt != 'Inserta' && selecion.hasSelection()) {
             method = 'PUT';
-            name = selecion.getLastSelected().get('name');
-            idGroup = selecion.getLastSelected().get('idGroup');
+            value = selecion.getLastSelected().get('value');
             tooltip = 'Modificar Servicio';
         }
 
@@ -95,34 +103,29 @@ Ext.onReady(function() {
             defaultType: 'textfield',
             monitorValid: true,
             items: [
-                {
-                    name: 'idGroup',
-                    id: 'idGroup',
-                    value: idGroup,
-                    hidden: true
-                },
-                {
-                    fieldLabel: 'Servicio',
-                    name: 'name',
-                    id: 'name',
-                    value: name,
-                    allowBlank: false
-                },
-                usersGrid
+                
+            {
+                fieldLabel: 'Servicio',
+                name: 'value',
+                id: 'value',
+                value: value,
+                allowBlank: false
+            },
+            usersGrid
             ],
             buttons: [{
-                    text: opt + 'r',
-                    id: 'formuser',
-                    formBind: true,
-                    handler: function() {
-                        if (formpanel.getForm().isValid()) {
-                            var form = getO(formpanel, usersGrid.selModel);
-                            doAjaxrequestJson(url, form, method, groupGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error no se ha podido ' + opt + 'r');
-                        }
+                text: opt + 'r',
+                id: 'formuser',
+                formBind: true,
+                handler: function() {
+                    if (formpanel.getForm().isValid()) {
+                        var form = getO(formpanel, usersGrid.selModel);
+                        doAjaxrequestJson(url, form, method, groupGrid, wind,'Servicio '+ opt + 'do', 'Error no se ha podido ' + opt + 'r');
+                    }
 
-                    },
-                    tooltip: tooltip
-                }]
+                },
+                tooltip: tooltip
+            }]
         });
         usersGrid.getStore().load();
 
@@ -131,7 +134,9 @@ Ext.onReady(function() {
          */
         if (opt != 'Inserta') {
             usersGrid.getStore().on('load', function() {
-                selectautogrid(usersGrid, idGroup, 'idGroup', "idUser", getRelativeServerURI('rs/group/{idgroup}/users', [idGroup]));
+                entityListPreSelected(usersGrid, value, 'value', "id", getRelativeServerURI('rs/group/{value}/users', {
+                    value:value
+                }));
             });
         }
         var wind = Ext.create('Ext.window.Window', {

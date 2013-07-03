@@ -98,7 +98,7 @@ public class GroupController {
         aux.setTotal(lusers.size());
 
         model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
-        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Level1.class);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
     /**
@@ -161,7 +161,7 @@ public class GroupController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{idgroup}", method = RequestMethod.PUT)
-    public Success putGroup(@PathVariable Long idgroup, @RequestBody Group group) {
+    public Success putGroup(@PathVariable String idgroup, @RequestBody Group group) {
 
         Success result = new Success(Boolean.FALSE);
         try {
@@ -183,7 +183,7 @@ public class GroupController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{idgroup}", method = RequestMethod.DELETE)
-    public Success deleteGroup(@PathVariable Long idgroup) {
+    public Success deleteGroup(@PathVariable String idgroup) {
 
         Success result = new Success(Boolean.FALSE);
         try {

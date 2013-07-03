@@ -19,16 +19,20 @@ Ext.define('App.manager.js.common.griduserexpander', {
         '<p><b>Roles:</b></p>',
         '</tpl>',
         '<tpl for="roles">',
-        '<li><b>{#}. </b> {authority}</li>',
+        '<li style="list-style: none;font-size: 12px;'+
+        'font-weight: bold; font-family: helvetica,arial,verdana,sans-serif;'+
+        'color: #666;"><b style="color:#157fcc">{#}  </b> {authority}</li>',
         '</tpl>',
         '<tpl if="groups.length">',
         '<p><b>Servicios:</b></p>',
         '</tpl>',
         '<tpl for="groups">',
-        '<li><b>{#}. </b> {value} </li>',
+        '<li style="list-style: none;font-size: 12px;'+
+        'font-weight: bold; font-family: helvetica,arial,verdana,sans-serif;'+
+        'color: #666;"><b style="color:#157fcc">{#}  </b> {value} </li>',
         '</tpl>',
         '</div>'
-        ] 
+        ]
     }
     ]
     
