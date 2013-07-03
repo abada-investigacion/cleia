@@ -8,19 +8,23 @@ import com.abada.bpm.console.server.integration.AbadaTaskManagement;
 import com.abada.jbpm.integration.console.task.PatientTaskManagement;
 import com.abada.jbpm.task.dao.TaskDao;
 import com.abada.jbpm.task.service.TaskServiceFactory;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.drools.runtime.Environment;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.jboss.bpm.console.client.model.TaskRef;
-import org.jbpm.integration.console.StatefulKnowledgeSessionUtil;
 import org.jbpm.integration.console.Transform;
 import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.task.AccessType;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
@@ -49,7 +53,16 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
     private UserGroupCallback groupTaskManagement;
     private AbadaProcessManagementPlugin processManagement;
     private PatientTaskManagement patientTaskManagement;
+    private StatefulKnowledgeSession session;    
 
+    public StatefulKnowledgeSession getSession() {
+        return session;
+    }
+
+    public void setSession(StatefulKnowledgeSession session) {
+        this.session = session;
+    }
+    
     public TaskDao getTaskDao() {
         return taskDao;
     }
@@ -59,7 +72,7 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
     }
 
     public void setTaskClientFactory(TaskServiceFactory taskClientFactory) {
-        this.taskClientFactory=taskClientFactory;
+        this.taskClientFactory = taskClientFactory;
     }
 
     public UserGroupCallback getGroupTaskManagement() {
@@ -136,9 +149,8 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
         service.start(taskId, userId);
 
         ContentData contentData = null;
-        if (data != null) {
-
-            contentData = ContentMarshallerHelper.marshal(data, StatefulKnowledgeSessionUtil.getStatefulKnowledgeSession().getEnvironment());
+        if (data != null) {            
+            contentData = ContentMarshallerHelper.marshal(data, session.getEnvironment());
         }
 
         service.complete(taskId, userId, contentData);

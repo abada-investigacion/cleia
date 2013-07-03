@@ -85,7 +85,8 @@ Ext.onReady(function(){
         function onTaskSelected(grid,taskId,taskUrl){
             var panelAux=Ext.create('App.bam.js.common.FormCustomPanel',{
                 taskId:taskId,
-                url:taskUrl
+                url:taskUrl,
+                height:App.height
             });
             panelAux.addListener('success',function(panel,frame,response){
                 Ext.Msg.alert('Info','Tarea completada correctamente',                        

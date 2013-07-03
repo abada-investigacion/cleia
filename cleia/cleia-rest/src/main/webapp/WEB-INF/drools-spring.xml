@@ -91,6 +91,7 @@
         <property name="taskClientFactory" ref="taskServiceFactory" />
         <property name="patientTaskManagement" ref="processInstancesDao" />
         <property name="processManagement" ref="processManagement" />
+        <property name="session" ref="ksession1"/>
     </bean>
     
     <bean id="processInstanceDbLog" class="com.abada.jbpm.process.audit.ProcessInstanceDbLog">

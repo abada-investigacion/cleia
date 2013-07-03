@@ -1,26 +1,22 @@
 /**
  * Copyright 2010 JBoss Inc
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package com.abada.jbpm.integration.console.form;
 
 import com.abada.jbpm.task.service.TaskServiceFactory;
-import com.abada.jbpm.task.spring.TaskService;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,64 +31,48 @@ import org.jboss.bpm.console.server.plugin.FormAuthorityRef;
 import org.jbpm.task.Content;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.Task;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
+import org.jbpm.task.TaskService;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 
 /**
- * Sustituye {@link org.jbpm.integration.console.forms.TaskFormDispatcher}
- * jbpm 5.4.0.Final compliant
- * 
+ * Sustituye {@link org.jbpm.integration.console.forms.TaskFormDispatcher} jbpm
+ * 5.4.0.Final compliant
+ *
  * @author Kris Verlaenen
  * @author katsu
  */
-public class TaskFormDispatcher extends AbstractFormDispatcher implements Observer {    
-    private static final Log logger=LogFactory.getLog(TaskFormDispatcher.class);
-    private TaskClient client;    
-    private TaskServiceFactory taskClientFactory;  
+public class TaskFormDispatcher extends AbstractFormDispatcher implements Observer {
+
+    private static final Log logger = LogFactory.getLog(TaskFormDispatcher.class);
+    private TaskService service;
+    private TaskServiceFactory taskClientFactory;
 
     public void setTaskClientFactory(TaskServiceFactory taskClientFactory) {
         this.taskClientFactory = taskClientFactory;
     }
 
     public void connect() {
-        if (client == null) {
-            try {
-                client=taskClientFactory.getTaskClient();
-                boolean connected = client.connect();
-                if (!connected) {
-                    throw new IllegalArgumentException(
-                            "Could not connect task client");
-                }
-            } catch (Exception e) {
-                throw new IllegalArgumentException(e.getMessage());
+        if (service == null) {
+            this.service = new SyncTaskServiceWrapper(taskClientFactory.getTaskClient());
+            if (!service.connect()) {
+                throw new IllegalArgumentException(
+                        "Could not connect task client");
             }
         }
     }
 
     public DataHandler provideForm(FormAuthorityRef ref) {
         connect();
-        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
-        client.getTask(new Long(ref.getReferenceId()), getTaskResponseHandler);
-        Task task = getTaskResponseHandler.getTask();
+        Task task = service.getTask(new Long(ref.getReferenceId()));
+
         Object input = null;
-        //Task data in content
         long contentId = task.getTaskData().getDocumentContentId();
         if (contentId != -1) {
-            BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
-            client.getContent(contentId, getContentResponseHandler);
-            Content content = getContentResponseHandler.getContent();
-            ByteArrayInputStream bis = new ByteArrayInputStream(content.getContent());
-            ObjectInputStream in;
-            try {
-                in = new ObjectInputStream(bis);
-                input = in.readObject();
-                in.close();
-            } catch (IOException e) {
-                logger.error(e);
-            } catch (ClassNotFoundException e) {
-                logger.error(e);
-            }
+            Content content = null;
+
+            content = service.getContent(contentId);
+            input = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         }
 
         // check if a template exists
@@ -145,11 +125,11 @@ public class TaskFormDispatcher extends AbstractFormDispatcher implements Observ
 
     public void update(Observable o, Object o1) {
         if (o instanceof TaskService && o1 instanceof String) {
-            if (TaskService.BEFORE_STOP_EVENT.equals(o1)) {
+            if (com.abada.jbpm.task.spring.TaskService.BEFORE_STOP_EVENT.equals(o1)) {
                 try {
-                    client.disconnect();            
+                    service.disconnect();
                     logger.debug("Disconnect client.");
-                } catch (Exception ex) {                   
+                } catch (Exception ex) {
                     logger.error(ex);
                 }
             }
