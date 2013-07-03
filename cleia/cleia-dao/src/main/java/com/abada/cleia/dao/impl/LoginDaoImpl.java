@@ -2,7 +2,6 @@ package com.abada.cleia.dao.impl;
 
 import com.abada.cleia.entity.user.Group;
 import com.abada.cleia.entity.user.User;
-import com.abada.jbpm.integration.console.task.GroupTaskManagement;
 import javax.persistence.EntityManager;
 import com.abada.springframework.orm.jpa.support.JpaDaoUtils;
 import com.abada.springframework.security.authentication.dni.DniAuthenticationDao;
@@ -12,6 +11,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jbpm.task.identity.UserGroupCallback;
 import org.springframework.orm.jpa.EntityManagerFactoryInfo;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,7 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  *
  * @author katsu
  */
-public class LoginDaoImpl extends JpaDaoUtils implements GroupTaskManagement, UserDetailsService, DniAuthenticationDao {
+public class LoginDaoImpl extends JpaDaoUtils implements UserGroupCallback, UserDetailsService, DniAuthenticationDao {
 
     private static final Log logger = LogFactory.getLog(LoginDaoImpl.class);
     private EntityManagerFactory entityManagerFactory;
@@ -79,5 +79,35 @@ public class LoginDaoImpl extends JpaDaoUtils implements GroupTaskManagement, Us
             return result;
         }
         return null;
+    }
+
+    public boolean existsUser(String userId) {        
+        try{
+            if ("Administrator".equals(userId)) return true;//FIXIT
+            loadUserByUsername(userId);
+            return true;
+        }catch (UsernameNotFoundException e){
+            return false;
+        }
+    }
+
+    public boolean existsGroup(String groupId) {
+        EntityManager em = entityManagerFactory.createEntityManager();
+        try {
+            EntityTransaction et = em.getTransaction();
+            et.begin();
+            Group result = em.find(Group.class, groupId);            
+            et.commit();
+            if (result!=null) return true;            
+        } finally {
+            if (em.isOpen()) {
+                em.close();
+            }
+        }
+        return false;
+    }
+
+    public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {        
+        return getGroupByUserName(userId);
     }
 }

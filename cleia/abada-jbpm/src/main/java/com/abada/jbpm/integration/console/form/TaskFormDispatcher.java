@@ -15,7 +15,6 @@
  */
 package com.abada.jbpm.integration.console.form;
 
-import com.abada.jbpm.task.service.TaskClient;
 import com.abada.jbpm.task.service.TaskServiceFactory;
 import com.abada.jbpm.task.spring.TaskService;
 import java.io.ByteArrayInputStream;
@@ -36,6 +35,7 @@ import org.jboss.bpm.console.server.plugin.FormAuthorityRef;
 import org.jbpm.task.Content;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.Task;
+import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 

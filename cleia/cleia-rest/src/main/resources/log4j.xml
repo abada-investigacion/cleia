@@ -10,10 +10,25 @@
         </layout>
     </appender>
 
-    <logger name="com.abada">        
+    <!--logger name="com.abada.jbpm">        
         <level value="ALL" />
         <appender-ref ref="CONSOLE.OUT"/>
     </logger>
+    
+    <logger name="org.hornetq">        
+        <level value="ALL" />
+        <appender-ref ref="CONSOLE.OUT"/>
+    </logger>
+    
+    <logger name="org.jbpm">        
+        <level value="ALL" />
+        <appender-ref ref="CONSOLE.OUT"/>
+    </logger>
+    
+    <logger name="org.hibernate">        
+        <level value="ALL" />
+        <appender-ref ref="CONSOLE.OUT"/>
+    </logger-->
 
     <root>        
         <priority value="ERROR" />
