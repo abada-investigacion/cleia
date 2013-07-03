@@ -6,14 +6,17 @@ package com.abada.cleia.rest.patient;
 
 import com.abada.cleia.dao.PatientDao;
 import com.abada.cleia.dao.ProcessInstanceDao;
+import com.abada.cleia.entity.user.Genre;
 import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.Patient;
 import com.abada.cleia.entity.user.PatientHasProcessInstance;
 import com.abada.cleia.entity.user.Views;
+import com.abada.extjs.ComboBoxResponse;
 import com.abada.extjs.ExtjsStore;
 import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.factory.GridRequestFactory;
+import java.util.ArrayList;
 import com.abada.springframework.web.servlet.view.JsonView;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
@@ -90,7 +94,7 @@ public class PatientController {
     @RequestMapping(method = RequestMethod.PUT)
     public void getPatientByListId(@RequestBody Id[] lpatientid, Model model) {
         try {
-            List<Patient> lpatient = patientDao.findPatientsrepeatable(Arrays.asList(lpatientid),null);
+            List<Patient> lpatient = patientDao.findPatientsrepeatable(Arrays.asList(lpatientid), null);
             if (!lpatient.isEmpty() && lpatient.size() == 1) {
                 model.addAttribute(JsonView.JSON_VIEW_RESULT, lpatient.get(0));
                 model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
@@ -330,5 +334,27 @@ public class PatientController {
         }
 
         return result;
+    }
+
+    /**
+     * Return all Patient Genre in a ExtjsStore structure
+     *
+     * @return
+     */
+    @RequestMapping(value = "/genre/combo", method = RequestMethod.GET)
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+    public void getGenreCombo(Model model) {
+        List<ComboBoxResponse> data = new ArrayList<ComboBoxResponse>();
+        for (Genre tr : Genre.values()) {
+            ComboBoxResponse aux = new ComboBoxResponse();
+            aux.setId(tr.toString());
+            aux.setValue(tr.toString());
+            data.add(aux);
+        }
+        ExtjsStore result = new ExtjsStore();
+        result.setData(data);
+
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, result);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 }

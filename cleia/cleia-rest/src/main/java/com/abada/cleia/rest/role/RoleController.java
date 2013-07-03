@@ -64,7 +64,7 @@ public class RoleController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{idrole}/users", method = RequestMethod.GET)
-    public void getRoleUsers(@PathVariable Integer idrole, Model model) throws Exception {
+    public void getRoleUsers(@PathVariable String idrole, Model model) throws Exception {
 
 
         List<User> lusers = new ArrayList<User>();
@@ -110,13 +110,13 @@ public class RoleController {
     /**
      * Insert a role
      *
-     * @param role Rolepriv structure. Must set in JSON in the Http body
+     * @param role Role structure. Must set in JSON in the Http body
      * request.
      * @return Return success structure.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(method = RequestMethod.POST)
-    public Success postRolepriv(@RequestBody Role role) {
+    public Success postRole(@RequestBody Role role) {
 
         Success result = new Success(Boolean.FALSE);
         try {
@@ -133,18 +133,18 @@ public class RoleController {
     /**
      * Modify a user by id
      *
-     * @param idrolepriv Role id.
-     * @param rolepriv Rolepriv structure. Must set in JSON in the Http body
+     * @param idrole Role id.
+     * @param role Role structure. Must set in JSON in the Http body
      * request.
      * @return Return success structure.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/{idrolepriv}", method = RequestMethod.PUT)
-    public Success putRolepriv(@PathVariable Integer idrolepriv, @RequestBody Role rolepriv) throws Exception {
+    @RequestMapping(value = "/{idrole}", method = RequestMethod.PUT)
+    public Success putRole(@PathVariable String idrole, @RequestBody Role role) throws Exception {
 
         Success result = new Success(Boolean.FALSE);
         try {
-            roleprivDao.putRole(idrolepriv, rolepriv);
+            roleprivDao.putRole(idrole, role);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));
@@ -158,16 +158,16 @@ public class RoleController {
     /**
      * Delete a user by id
      *
-     * @param idrolepriv Role id.
+     * @param idrole Role id.
      * @return Return success structure
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/{idrolepriv}", method = RequestMethod.DELETE)
-    public Success deleteRolepriv(@PathVariable Integer idrolepriv) {
+    @RequestMapping(value = "/{idrole}", method = RequestMethod.DELETE)
+    public Success deleteRole(@PathVariable String idrole) {
 
         Success result = new Success(Boolean.FALSE);
         try {
-            roleprivDao.deleteRole(idrolepriv);
+            roleprivDao.deleteRole(idrole);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));
@@ -189,7 +189,7 @@ public class RoleController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public void getSearchRolepriv(String filter, String sort, Integer limit, Integer start, Model model) {
+    public void getSearchRole(String filter, String sort, Integer limit, Integer start, Model model) {
         List<Role> lrole;
         ExtjsStore aux = new ExtjsStore();
 

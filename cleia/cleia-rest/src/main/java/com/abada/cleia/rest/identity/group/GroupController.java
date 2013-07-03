@@ -83,7 +83,7 @@ public class GroupController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{idgroup}/users", method = RequestMethod.GET)
-    public void getGroupUsers(@PathVariable Long idgroup, Model model) throws Exception {
+    public void getGroupUsers(@PathVariable String idgroup, Model model) throws Exception {
 
 
         List<User> lusers = new ArrayList<User>();
@@ -161,7 +161,7 @@ public class GroupController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{idgroup}", method = RequestMethod.PUT)
-    public Success putGroup(@PathVariable Long idgroup, @RequestBody Group group) {
+    public Success putGroup(@PathVariable String idgroup, @RequestBody Group group) {
 
         Success result = new Success(Boolean.FALSE);
         try {
@@ -183,7 +183,7 @@ public class GroupController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{idgroup}", method = RequestMethod.DELETE)
-    public Success deleteGroup(@PathVariable Long idgroup) {
+    public Success deleteGroup(@PathVariable String idgroup) {
 
         Success result = new Success(Boolean.FALSE);
         try {

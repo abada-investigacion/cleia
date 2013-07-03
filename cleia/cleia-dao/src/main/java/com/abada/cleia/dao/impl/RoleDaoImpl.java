@@ -9,6 +9,7 @@ import com.abada.cleia.entity.user.Role;
 import com.abada.cleia.entity.user.User;
 import com.abada.springframework.orm.jpa.support.JpaDaoUtils;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -82,8 +83,8 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
      * @return 
      */
     @Transactional(value="cleia-txm",rollbackFor={Exception.class})
-    public void putRole(Integer idrolepriv, Role newrole) throws Exception {
-        Role role = entityManager.find(Role.class, idrolepriv);
+    public void putRole(String idrole, Role newrole) throws Exception {
+        Role role = entityManager.find(Role.class, idrole);
         if (role != null) {
             List<Role> lrole = entityManager.createQuery("select r from Role r where r.authority=?").setParameter(1, newrole.getAuthority()).getResultList();
             if ((lrole.isEmpty() && lrole!=null) || newrole.getAuthority().equals(role.getAuthority())) {
@@ -107,9 +108,9 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
      * @return 
      */
     @Transactional(value="cleia-txm",rollbackFor={Exception.class})
-    public void deleteRole(Integer idrolepriv) throws Exception {
+    public void deleteRole(String idrole) throws Exception {
 
-        Role role = (Role) entityManager.find(Role.class, idrolepriv);
+        Role role = (Role) entityManager.find(Role.class, idrole);
         if (role != null) {
             try {
                 for (User user : role.getUsers()) {
@@ -143,11 +144,11 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
      * @throws Exception 
      */
     @Transactional(value = "cleia-txm", readOnly = true)
-    public List<User> getUsersByIdRole(Integer idrolepriv) throws Exception {
+    public List<User> getUsersByIdRole(String authority) throws Exception {
 
         Role role = new Role();
 
-        role = entityManager.find(Role.class, idrolepriv);
+        role = entityManager.find(Role.class, authority);
 
         /*Si el role existe le fuerzo a que traiga su lista de User*/
         if (role == null) {
@@ -177,6 +178,7 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
     @Transactional(value="cleia-txm",rollbackFor={Exception.class})
     public void addUsers(Role role, List<User> luser, boolean newrole) throws Exception {
         if (luser != null) {
+            List<User> listuseraux=new ArrayList<User>(luser);
             if (!newrole) {
                 for (User u : role.getUsers()) {
                     u.getRoles().remove(role);
@@ -185,7 +187,9 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
 
                 entityManager.flush();
             }
-            for (User u : luser) {
+            
+            role.getUsers().clear();
+            for (User u : listuseraux) {
                 User user = entityManager.find(User.class, u.getId());
                 if (user != null) {
                     role.addUser(user);

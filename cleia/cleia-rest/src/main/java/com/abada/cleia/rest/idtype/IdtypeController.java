@@ -7,6 +7,7 @@ package com.abada.cleia.rest.idtype;
 import com.abada.cleia.dao.IdTypeDao;
 import com.abada.cleia.entity.user.IdType;
 import com.abada.cleia.entity.user.Views;
+import com.abada.extjs.ComboBoxResponse;
 import com.abada.extjs.ExtjsStore;
 import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
@@ -103,6 +104,40 @@ public class IdtypeController {
 
         model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
+    }
+
+    /**
+     * Search a list of IdType by params
+     *
+     * @param filter Filter conditions of results. Set in JSON by an array of
+     * FilterRequestPriv
+     * @param sort Order of results. Set in JSON by an array of OrderByRequest
+     * @param limit Set the limit of the results. Use it for pagination
+     * @param start Set the start of the results. Use it for pagination
+     * @return Return a list of results.
+     */
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/search/combo", method = RequestMethod.GET)
+    public ExtjsStore getSearchIdTypeCombo(String filter, String sort, Integer limit, Integer start) {
+
+        List<ComboBoxResponse> data = new ArrayList<ComboBoxResponse>();
+        List<IdType> lidtype = new ArrayList<IdType>();
+        try {
+            GridRequest grequest = GridRequestFactory.parse(sort, start, limit, filter);
+            lidtype = this.idtypeDao.getAll(grequest);
+        } catch (Exception e) {
+            logger.error(e);
+        }
+
+        for (IdType pid : lidtype) {
+            ComboBoxResponse aux = new ComboBoxResponse();
+            aux.setId(pid.getValue());
+            aux.setValue(pid.getValue());
+            data.add(aux);
+        }
+        ExtjsStore result = new ExtjsStore();
+        result.setData(data);
+        return result;
     }
 
     /**
