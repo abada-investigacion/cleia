@@ -9,14 +9,12 @@ import com.abada.cleia.dao.MedicalDao;
 import com.abada.cleia.dao.PatientDao;
 import com.abada.cleia.dao.UserDao;
 import com.abada.cleia.entity.user.Id;
-import com.abada.cleia.entity.user.IdType;
 import com.abada.cleia.entity.user.Medical;
-import com.abada.cleia.entity.user.User;
+import com.abada.cleia.entity.user.Patient;
 import com.abada.springframework.orm.jpa.support.JpaDaoUtils;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -33,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
 
     @Resource(name = "medicalDao")
-    private MedicalDao medicalDao;
     private static final Log logger = LogFactory.getLog(MedicalDaoImpl.class);
     @PersistenceContext(unitName = "cleiaPU")
     private EntityManager entityManager;
@@ -106,27 +103,6 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
     }
 
     /**
-     * Gets the size {@link Medical}
-     *
-     * @param filters
-     * @return Long
-     */
-    @Transactional(value = "cleia-txm", readOnly = true)
-    public Long loadSizeusermedical(GridRequest filters, String username) {
-        User user = (User) entityManager.createQuery("select u from User u where u.username = :username").setParameter("username", username).getSingleResult();
-        Map<String, Object> aux = filters.getParamsValues();
-        List<Long> result = new ArrayList();
-        if (user.getIds().size() >= 1) {
-            aux.put("ids", user.getIds());
-            result = this.find(entityManager, "from Medical p where p.ids in (:ids) " + filters.getQL("p", false), aux, filters.getStart(), filters.getLimit());
-        } else {
-            result.add(new Long(0));
-
-        }
-        return result.get(0);
-    }
-
-    /**
      * Gets the size of {@link Medical}
      *
      * @param filters
@@ -134,7 +110,7 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
      */
     @Transactional(value = "cleia-txm", readOnly = true)
     public Long loadSizeAll(GridRequest filters) {
-        List<Long> result = this.find(entityManager, "select count(*) from Medical p" + filters.getQL("p", true), filters.getParamsValues());
+        List<Long> result = this.find(entityManager, "select count(*) from Medical m" + filters.getQL("m", true), filters.getParamsValues());
         return result.get(0);
     }
 
@@ -166,7 +142,7 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
     @Transactional("cleia-txm")
     public void persistMedical(Medical medical, Medical m) {
         medical.setPatients(m.getPatients());
-       patientDao.updatePatient(medical, m);
+        patientDao.updatePatient(medical, m);
     }
 
     /**
@@ -208,8 +184,6 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
         return m;
     }
 
-  
-
     /**
      * get List Id medical
      *
@@ -218,7 +192,7 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
      */
     @Transactional(value = "cleia-txm", readOnly = true)
     public List<Id> getIdsForMedical(Long idmedical) {
-        List<Medical> lmedical = entityManager.createQuery("SELECT m FROM Medical m WHERE u.id=?").setParameter(1, idmedical).getResultList();
+        List<Medical> lmedical = entityManager.createQuery("SELECT m FROM Medical m WHERE m.id=?").setParameter(1, idmedical).getResultList();
         if (lmedical.size() > 0) {
             return lmedical.get(0).getIds();
         }
@@ -243,9 +217,16 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
                     for (Id id : medical.getIds()) {
                         idDao.postId(id);
                     }
+                    for (int i = 0; i < medical.getPatients().size(); i++) {
+                        List<Patient> lpatients = patientDao.findPatientsrepeatable(medical.getPatients().get(i).getIds(), false);
+                        if ((lpatients.isEmpty() && lpatients != null)) {
+                            patientDao.postPatientinsert(medical.getPatients().get(i));
+                        }
+                    }
+                    medical.addPatients(medical.getPatients());
                     entityManager.persist(medical);
                 } catch (Exception e) {
-                    throw new Exception("Error. Ha ocurrido un error al insertar el medico " + medical.getName() + " " + medical.getSurname() + " " + medical.getSurname1() + " " + e.toString());
+                    throw new Exception("Error. Ha ocurrido un error al insertar el medico " + medical.getName() + " " + medical.getSurname() + " " + medical.getSurname1(), e);
                 }
             } else {
                 String name = "";
@@ -273,7 +254,8 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
             if (ids != null && !ids.isEmpty()) {
                 /*Comprobamos si vienen identificadores repetidos y si ese asi insertamos sino modificamos*/
                 for (Id id : medical.getIds()) {
-                    Id idbd = idDao.getIdByvaluetype(id.getValue(), id.getType().getValue());
+                    id.setUser(medical);
+                    Id idbd = idDao.getIdByusertype(id.getUser().getId(), id.getType().getValue());
                     if (idbd != null) {//modificadomos id actual
                         idDao.putId(idbd, id);
                     } else {
@@ -313,9 +295,12 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
                 }
             }
             putMedicalid(idmedical, medical.getIds());
+
             /*Modificamos el medico*/
             try {
                 this.persistMedical(medical1, medical);
+                userDao.updateUser(medical1, medical);
+                patientDao.updatePatient(medical1, medical);
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al modificar el medico "
                         + medical.getName() + " " + medical.getSurname() + " " + medical.getSurname());
@@ -338,6 +323,8 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
             /*Modificamos el medico*/
             try {
                 this.persistMedical(medical1, medical);
+                userDao.updateUser(medical1, medical);
+                patientDao.updatePatient(medical1, medical);
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al modificar el medico "
                         + medical1.getName() + " " + medical1.getSurname() + " " + medical1.getSurname1());
@@ -348,6 +335,7 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
     }
 
     /**
+     * enable or disable medical
      *
      * @param idmedical
      * @param enable

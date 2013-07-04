@@ -10,6 +10,7 @@ import com.abada.springframework.orm.jpa.support.JpaDaoUtils;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,7 +27,7 @@ public class IdDaoImpl extends JpaDaoUtils implements IdDao {
     private EntityManager entityManager;
 
     /**
-     * Obtiene el tamaño de {@link Id}
+     * get total load
      *
      * @param filters
      * @return Long
@@ -37,25 +38,71 @@ public class IdDaoImpl extends JpaDaoUtils implements IdDao {
         return result.get(0);
     }
 
+    /**
+     * get id
+     *
+     * @param id
+     * @return
+     */
     @Transactional(value = "cleia-txm", readOnly = true)
     public Id getIdById(Long id) {
         return entityManager.find(Id.class, id);
 
     }
 
-    @Transactional(value = "cleia-txm", readOnly = true)
+    /**
+     * get id by value and type
+     *
+     * @param value
+     * @param type
+     * @return
+     */
+    @Transactional(value = "cleia-txm", readOnly = true, noRollbackFor = {NoResultException.class})
     public Id getIdByvaluetype(String value, String type) {
-        return (Id) entityManager.createQuery("select u from Id i where i.value = :value and i.type.value=:type ").setParameter("value", value).setParameter("type", type).getSingleResult();
+        List<Id> ids = entityManager.createQuery("select i from Id i where i.value = :value and i.type.value=:type ").setParameter("value", value).setParameter("type", type).getResultList();
+        if (ids != null && !ids.isEmpty()) {
+            return ids.get(0);
+        } else {
+            return null;
+        }
     }
 
+    /**
+     * get id by user and type
+     *
+     * @param id
+     * @param type
+     * @return
+     */
+    @Transactional(value = "cleia-txm", readOnly = true, noRollbackFor = {NoResultException.class})
+    public Id getIdByusertype(long id, String type) {
+        List<Id> ids = entityManager.createQuery("select i from Id i where i.user.id = :id and i.type.value=:type ").setParameter("id", id).setParameter("type", type).getResultList();
+        if (ids != null && !ids.isEmpty()) {
+            return ids.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * get all id
+     *
+     * @param filters
+     * @return
+     */
     @Transactional(value = "cleia-txm", readOnly = true)
     public List<Id> getAll(GridRequest filters) {
-
         List<Id> lidtype = this.find(entityManager, "select i from Id i" + filters.getQL("i", true), filters.getParamsValues(), filters.getStart(), filters.getLimit());
         return lidtype;
 
     }
 
+    /**
+     * insert id
+     *
+     * @param id
+     * @throws Exception
+     */
     @Transactional(value = "cleia-txm")
     public void postId(Id id) throws Exception {
         id.addUser(id.getUser());
@@ -72,7 +119,6 @@ public class IdDaoImpl extends JpaDaoUtils implements IdDao {
      */
     @Transactional(value = "cleia-txm")
     public void putId(Id idt, Id newid) throws Exception {
-
         if (idt.getType().isRepeatable()) {
             postId(newid);
         } else {

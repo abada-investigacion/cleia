@@ -16,6 +16,7 @@ import java.util.List;
  * @author katsu
  */
 public interface UserDao {
+
     /**
      *
      * @param filters
@@ -26,10 +27,10 @@ public interface UserDao {
 
     /**
      * Add patient to a Medical user.
-     * 
+     *
      * @param username
      * @param p
-     * @throws Exception 
+     * @throws Exception
      */
     public void addPatient2User(String username, Patient p) throws Exception;
 
@@ -161,4 +162,12 @@ public interface UserDao {
      * @return
      */
     public List<String> getUserGroup(String username);
+
+    /**
+     * setting user
+     *
+     * @param user
+     * @param newuser
+     */
+    public void updateUser(User user, User newuser);
 }
