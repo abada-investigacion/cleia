@@ -6,10 +6,10 @@ package com.abada.cleia.rest.patient;
 
 import com.abada.cleia.dao.PatientDao;
 import com.abada.cleia.dao.ProcessInstanceDao;
+import com.abada.cleia.entity.temporal.PatientHasProcessInstanceInfo;
 import com.abada.cleia.entity.user.Genre;
 import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.Patient;
-import com.abada.cleia.entity.user.PatientHasProcessInstance;
 import com.abada.cleia.entity.user.Views;
 import com.abada.extjs.ComboBoxResponse;
 import com.abada.extjs.ExtjsStore;
@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
