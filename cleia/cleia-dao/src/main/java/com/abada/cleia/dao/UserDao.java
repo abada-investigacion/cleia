@@ -22,7 +22,7 @@ public interface UserDao {
      * @param username
      * @return
      */
-    public User getAll(GridRequest filters, String username);
+    public User getUserByUsername(GridRequest filters, String username);
 
     /**
      * Add patient to a Medical user.

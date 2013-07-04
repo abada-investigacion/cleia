@@ -121,7 +121,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      * @return
      */
     @Transactional(value = "cleia-txm")
-    public void putGroup(Long idgroup, Group newgroup) throws Exception {
+    public void putGroup(String idgroup, Group newgroup) throws Exception {
         Group group = entityManager.find(Group.class, idgroup);
         if (group != null) {
             List<Group> lgroup = entityManager.createQuery("select g from Group g where g.value=?").setParameter(1, newgroup.getValue()).getResultList();
@@ -159,7 +159,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      * @return
      */
     @Transactional(value = "cleia-txm")
-    public void deleteGroup(Long idgroup) throws Exception {
+    public void deleteGroup(String idgroup) throws Exception {
         Group group = (Group) entityManager.find(Group.class, idgroup);
 
         if (group != null) {
@@ -188,6 +188,11 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
     public List<Group> getAll(GridRequest filters) {
 
         List<Group> lgroup = this.find(entityManager, "select g from Group g" + filters.getQL("g", true), filters.getParamsValues(), filters.getStart(), filters.getLimit());
+
+        for (Group g : lgroup) {
+            g.getUsers().size();
+        }
+
         return lgroup;
     }
 
@@ -199,12 +204,14 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      * @throws Exception
      */
     @Transactional(value = "cleia-txm", readOnly = true)
-    public List<User> getUsersByIdGroup(Long idgroup) throws Exception {
+    public List<User> getUsersByIdGroup(String idgroup) throws Exception {
 
         Group group = new Group();
         group = entityManager.find(Group.class, idgroup);
 
-        /*Si el grupo existe le fuerzo a que traiga su lista de User*/
+        /*
+         * Si el grupo existe le fuerzo a que traiga su lista de User
+         */
         if (group == null) {
             throw new Exception("Error. El servicio no existe");
         } else {
@@ -242,6 +249,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
     public void addUsers(Group group, List<User> luser, boolean newgroup) throws Exception {
 
         if (luser != null) {
+            List<User> luseraux=new ArrayList<User>(luser);
             if (!newgroup) {
                 for (User u : group.getUsers()) {
                     u.getGroups().remove(group);
@@ -250,7 +258,9 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
 
                 entityManager.flush();
             }
-            for (User u : luser) {
+            
+            group.getUsers().clear();
+            for (User u : luseraux) {
                 User user = entityManager.find(User.class, u.getId());
                 if (user != null) {
                     group.addUser(user);

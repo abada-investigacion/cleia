@@ -82,5 +82,7 @@
     <module>cleia-web</module>
     <module>abada-jbpm</module>
     <module>bam</module>
+    <module>cleia-manager</module>
+    <module>cleia-patient</module>
   </modules>
 </project>

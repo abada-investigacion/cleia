@@ -213,7 +213,7 @@ public class UserController {
         }
         
         model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
-        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Level1.class);
     }
     
     
@@ -235,7 +235,7 @@ public class UserController {
         ExtjsStore aux = new ExtjsStore();
         try {
             GridRequest grequest = GridRequestFactory.parse(sort, start, limit, filter);
-            User u= this.userDao.getAll(grequest,username);
+            User u= this.userDao.getUserByUsername(grequest,username);
             luser.add(u);
            
                 u.setPassword("");
@@ -272,9 +272,7 @@ public class UserController {
         }
         
         for (Group g : groups) {
-            for (User u : g.getUsers()) {
-                u.setPassword("");
-            }
+            g.getUsers().clear();
         }
         
         aux.setData(groups);

@@ -46,14 +46,14 @@ public interface RoleDao {
      * @param rolename
      * @return 
      */
-    public void putRole(Integer idrole, Role newrole) throws Exception;
+    public void putRole(String idrole, Role newrole) throws Exception;
 
     /**
      * Delete a role by id
      * @param idrole
      * @return 
      */
-    public void deleteRole(Integer idrole) throws Exception;
+    public void deleteRole(String idrole) throws Exception;
 
     /**
      * Search a list of roles by params
@@ -68,5 +68,5 @@ public interface RoleDao {
      * @return
      * @throws Exception 
      */
-    public List<User> getUsersByIdRole(Integer idrole) throws Exception;
+    public List<User> getUsersByIdRole(String authority) throws Exception;
 }
