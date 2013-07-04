@@ -13,6 +13,9 @@ import com.abada.jbpm.integration.console.ProcessManagement;
 import com.abada.jbpm.integration.console.task.PatientTaskManagement;
 import com.abada.jbpm.process.audit.ProcessInstanceDbLog;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -108,9 +111,22 @@ public class ProcessInstanceDaoImpl implements PatientTaskManagement, ProcessIns
                 }
                 //}
             }
+            Collections.sort(result, new PIComparator());
             return result;
         }
         return null;
+    }
+    
+    private class PIComparator implements Comparator<PatientHasProcessInstanceInfo>{
+
+        public int compare(PatientHasProcessInstanceInfo o1, PatientHasProcessInstanceInfo o2) {
+            long id1=Long.parseLong(o1.getProcessInstanceId());
+            long id2=Long.parseLong(o2.getProcessInstanceId());
+            if (id1==id2) return 0;
+            else if (id1>id2) return -1;
+            else return 1;
+        }
+        
     }
     
 }
