@@ -38,15 +38,13 @@ Ext.onReady(function(){
                 +'<div style=\"float:left;padding:10px;\"><img alt=\" \" src=\"'+getRelativeURI('/images/logos/cleia.jpg')+'\" style=\"height:60px;\" /></div>'
                 //+'<div style=\"clear: both\" />'
                 ,
-                autoHeight:true,
                 border: false,
                 height:93,
                 margins: '0 0 5 0'
             },menu]
         },{
-            //region: 'center',
-            id:'centralPanel',
-            autoScroll:true
+            //region: 'center',            
+            id:'centralPanel'
         }]
     });
     

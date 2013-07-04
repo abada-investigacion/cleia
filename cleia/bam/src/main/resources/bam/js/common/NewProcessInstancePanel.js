@@ -86,7 +86,7 @@ Ext.define('App.bam.js.common.NewProcessInstancePanel',{
         
         var win=Ext.create('Ext.window.Window', {
             title: 'Tarea '+this.cbOncoguide.getValue(),
-            height: 600,
+            height: App.height,
             width: 900,
             autoScroll:true,
             layout: 'fit',
