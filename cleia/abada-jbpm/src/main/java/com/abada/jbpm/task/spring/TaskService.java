@@ -11,6 +11,8 @@ import javax.persistence.EntityManagerFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.SystemEventListenerFactory;
+import org.jbpm.task.identity.UserGroupCallback;
+import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskServiceSession;
 import org.springframework.context.ApplicationEvent;
@@ -25,12 +27,11 @@ import org.springframework.context.event.ContextStoppedEvent;
  * @author katsu
  */
 public class TaskService extends Observable implements ApplicationListener {
-    public static final String BEFORE_STOP_EVENT="BeforeStop";
-    public static final String STOP_EVENT="Stop";
-    public static final String STOP_ERROR_EVENT="StopError";
-    public static final String START_EVENT="Start";
-    
 
+    public static final String BEFORE_STOP_EVENT = "BeforeStop";
+    public static final String STOP_EVENT = "Stop";
+    public static final String STOP_ERROR_EVENT = "StopError";
+    public static final String START_EVENT = "Start";
     private static final Log log = LogFactory.getLog(TaskService.class);
     private EntityManagerFactory entityManagerFactory;
 
@@ -41,12 +42,21 @@ public class TaskService extends Observable implements ApplicationListener {
     private TaskServiceFactory taskServiceFactory;
     private TaskServer server;
     private TaskServiceSession taskSession;
-    private Thread thread;    
+    private Thread thread;
+    private UserGroupCallback userGroupCallback;
+
+    public UserGroupCallback getUserGroupCallback() {
+        return userGroupCallback;
+    }
+
+    public void setUserGroupCallback(UserGroupCallback userGroupCallback) {
+        this.userGroupCallback = userGroupCallback;
+    }
 
     public void setTaskServiceFactory(TaskServiceFactory taskServiceFactory) {
         this.taskServiceFactory = taskServiceFactory;
     }
-    
+
     public void onApplicationEvent(ApplicationEvent event) {
         log.trace("Application Context Event Handled " + event);
         if (event instanceof ContextStoppedEvent) {
@@ -71,7 +81,7 @@ public class TaskService extends Observable implements ApplicationListener {
                 taskSession = taskService.createSession();
 
                 // start server
-                server=taskServiceFactory.getTaskServer(taskService);
+                server = taskServiceFactory.getTaskServer(taskService);
                 thread = new Thread(server);
                 thread.start();
                 int cont = 0;
@@ -84,11 +94,12 @@ public class TaskService extends Observable implements ApplicationListener {
                     log.debug("Waiting for initialization of Task Server. Count: " + cont);
                 };
                 if (server.isRunning()) {
+                    UserGroupCallbackManager.getInstance().setCallback(userGroupCallback);
                     super.setChanged();
                     super.notifyObservers(START_EVENT);
                     //taskSession.dispose();
                     log.debug("Started Task Service");
-                } else {                    
+                } else {
                     throw new Exception("Server not start");
                 }
             } catch (Exception e) {
@@ -107,15 +118,15 @@ public class TaskService extends Observable implements ApplicationListener {
                 Thread.sleep(10000);
             } catch (Exception e) {
             }
-            try{
+            try {
                 taskSession.dispose();
-            }catch (Exception e){
+            } catch (Exception e) {
                 log.error(e);
             }
 
-            try{
+            try {
                 server.stop();
-            }catch (Exception e){
+            } catch (Exception e) {
                 log.error(e);
             }
 
@@ -145,7 +156,7 @@ public class TaskService extends Observable implements ApplicationListener {
     }
 
     /*public void addDebugUsers(){
-    taskSession.addUser(new User("katsu"));
-    taskSession.addUser(new User("Administrator"));
-    }*/
+     taskSession.addUser(new User("katsu"));
+     taskSession.addUser(new User("Administrator"));
+     }*/
 }

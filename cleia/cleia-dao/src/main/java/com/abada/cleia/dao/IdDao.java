@@ -58,6 +58,13 @@ public interface IdDao {
      */
     public void deleteId(String value) throws Exception;
 
+    /**
+     * update id
+     *
+     * @param idt
+     * @param newid
+     * @throws Exception
+     */
     public void putId(Id idt, Id newid) throws Exception;
 
     /**
@@ -67,4 +74,13 @@ public interface IdDao {
      * @return
      */
     public Id getIdByvaluetype(String value, String type);
+
+    /**
+     * get id by user and type
+     *
+     * @param id
+     * @param type
+     * @return
+     */
+    public Id getIdByusertype(long id, String type);
 }

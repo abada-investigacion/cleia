@@ -4,7 +4,6 @@
  */
 package com.abada.jbpm.task.service;
 
-import com.abada.jbpm.integration.console.task.GroupTaskManagement;
 import static com.abada.jbpm.task.service.TaskClientType.HORNETQ;
 import static com.abada.jbpm.task.service.TaskClientType.JMS;
 import static com.abada.jbpm.task.service.TaskClientType.MINA;
@@ -15,6 +14,8 @@ import javax.naming.Context;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.SystemEventListenerFactory;
+import org.jbpm.task.identity.UserGroupCallback;
+import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
@@ -29,7 +30,7 @@ import org.jbpm.task.service.mina.MinaTaskServer;
 public class TaskServiceFactory {
 
     private static final Log logger = LogFactory.getLog(TaskServiceFactory.class);
-    private GroupTaskManagement groupTaskManagement;
+    private UserGroupCallback groupTaskManagement;
     private Properties properties;
     private TaskClientType type;
     private Context context;
@@ -42,7 +43,7 @@ public class TaskServiceFactory {
         this.properties = properties;
     }
 
-    public void setGroupTaskManagement(GroupTaskManagement groupTaskManagement) {
+    public void setGroupTaskManagement(UserGroupCallback groupTaskManagement) {
         this.groupTaskManagement = groupTaskManagement;
     }
 
@@ -114,7 +115,7 @@ public class TaskServiceFactory {
 
     private TaskClient getHornetQClient() {
         try {
-            TaskClient client = new TaskClient(new HornetQTaskClientConnector("HornetQ Task Client", properties.getProperty(TaskConfigurationProperties.HORNET_HOST), Integer.parseInt(properties.getProperty(TaskConfigurationProperties.HORNET_PORT)), new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())), groupTaskManagement);
+            TaskClient client = new TaskClient(new HornetQTaskClientConnector("HornetQ Task Client", properties.getProperty(TaskConfigurationProperties.HORNET_HOST), Integer.parseInt(properties.getProperty(TaskConfigurationProperties.HORNET_PORT)), new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
             logger.debug("Return HornetQ client. ");
             return client;
         } catch (Exception e) {
@@ -138,7 +139,7 @@ public class TaskServiceFactory {
         try {
             TaskClient client = new TaskClient(new MinaTaskClientConnector("Mina Task Client",
                     new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()), properties.getProperty(TaskConfigurationProperties.TASK_HOST),
-                    Integer.parseInt(properties.getProperty(TaskConfigurationProperties.TASK_PORT))), groupTaskManagement);
+                    Integer.parseInt(properties.getProperty(TaskConfigurationProperties.TASK_PORT))));
             logger.debug("Return Mina client. ");
             return client;
         } catch (Exception e) {

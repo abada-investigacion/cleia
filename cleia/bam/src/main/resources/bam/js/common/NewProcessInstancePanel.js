@@ -66,7 +66,8 @@ Ext.define('App.bam.js.common.NewProcessInstancePanel',{
     },
     onButtonClick:function(){        
         var panel=Ext.create('App.bam.js.common.FormCustomFrame',{                
-            url:getRelativeServerURI('/rs/form/process/{0}/patient/{1}/render',[this.cbOncoguide.getValue(),this.patientId])
+            url:getRelativeServerURI('/rs/form/process/{0}/patient/{1}/render',[this.cbOncoguide.getValue(),this.patientId]),
+            height:App.height
         });
         panel.addListener('success',function(frame,processInstanceId){  
             Ext.Msg.alert('Info','Oncoguia creada correctamente',                        

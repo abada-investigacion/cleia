@@ -205,7 +205,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
 
                     }
                     this.addGroupsAndRoles(user, newuser.getGroups(), newuser.getRoles(), true);
-                    this.persistUser(user, newuser);
+                    this.updateUser(user, newuser);
                 } catch (Exception e) {
 
                     throw new Exception("Error. Ha ocurrido un error al modificar el usuario " + newuser.getUsername(), e);
@@ -439,8 +439,14 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         }
     }
 
+    /**
+     * setting user
+     *
+     * @param user
+     * @param newuser
+     */
     @Transactional(value = "cleia-txm")
-    private void persistUser(User user, User newuser) {
+    public void updateUser(User user, User newuser) {
         user.setEnabled(newuser.isEnabled());
         user.setAccountNonExpired(newuser.isAccountNonExpired());
         user.setCredentialsNonExpired(newuser.isCredentialsNonExpired());
@@ -496,9 +502,9 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
     public void addGroupsAndRoles(User user, List<Group> lgroup, List<Role> lrole, boolean newUser) throws Exception {
 
         if (lgroup != null && lrole != null) {
-            List<Group> lgroupaux=new ArrayList<Group>(lgroup);
-            List<Role> lroleaux=new ArrayList<Role>(lrole);
-            
+            List<Group> lgroupaux = new ArrayList<Group>(lgroup);
+            List<Role> lroleaux = new ArrayList<Role>(lrole);
+
             //Eliminamos todos los grupos y roles de un usuario
             if (!newUser) {
                 for (Group g : user.getGroups()) {

@@ -4,8 +4,9 @@
  */
 package com.abada.jbpm.process.audit;
 
-import com.abada.gson.GsonImpl;
 import com.abada.json.Json;
+import com.abada.json.JsonFactory;
+import com.abada.json.JsonType;
 import java.io.Serializable;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -24,7 +25,7 @@ import org.jbpm.process.audit.VariableInstanceLog;
 @AttributeOverride(column=@Column(name="valueJson"),name="value")
 public class VariableInstanceLogExt extends VariableInstanceLog implements Serializable {
     private static final Log logger=LogFactory.getLog(VariableInstanceLogExt.class);
-    private static final Json json = new GsonImpl();
+    private static final Json json = JsonFactory.getInstance().getInstance(JsonType.DEFAULT);
     @Column(nullable = false)
     @Lob    
     private String valueJson;

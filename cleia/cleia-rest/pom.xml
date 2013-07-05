@@ -90,8 +90,8 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>1.4</version>
-            <scope>test</scope>
+            <version>2.4</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.abada</groupId>
@@ -126,6 +126,12 @@
                     <groupId>org.hibernate</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <artifactId>slf4j-log4j12</artifactId>
+            <groupId>org.slf4j</groupId>
+            <type>jar</type>
+            <version>1.6.4</version>
         </dependency>
     </dependencies>
     <build>

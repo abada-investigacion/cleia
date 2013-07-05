@@ -8,13 +8,14 @@ Ext.define('App.bam.js.common.FormCustomFrame',{
     extend:'Ext.Component',        
     confing:{
         url:undefined,
-        fieldResponse:undefined
+        fieldResponse:undefined,
+        height:undefined
     },    
     initComponent:function(){                        
         this.renderTpl='<iframe ';        
         this.renderTpl+='name=\"'+this.getName()+'\" ';
         this.renderTpl+='src=\"'+this.url+'\" ';
-        this.renderTpl+='frameborder=\"0\" style=\"width:100%;height:100%\"';
+        this.renderTpl+='frameborder=\"0\" style=\"width:100%;height:'+this.height+'\"';
         this.renderTpl+='onload=\"'+this.getCallBackFunctionName()+'()\";';
         this.renderTpl+='</iframe>';                
         

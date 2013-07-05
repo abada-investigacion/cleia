@@ -4,7 +4,6 @@
  */
 package com.abada.jbpm.task.spring;
 
-import com.abada.jbpm.task.service.TaskClient;
 import com.abada.jbpm.task.service.TaskConfigurationProperties;
 import com.abada.jbpm.task.service.TaskServiceFactory;
 import java.util.Observable;
@@ -13,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.runtime.KnowledgeRuntime;
 import org.jbpm.process.workitem.wsht.AsyncGenericHTWorkItemHandler;
+import org.jbpm.task.service.TaskClient;
 import org.springframework.context.support.ApplicationObjectSupport;
 
 /**
@@ -25,7 +25,7 @@ public class HumanTaskRegistrationService extends ApplicationObjectSupport imple
     private boolean loaded = false;
     private AsyncGenericHTWorkItemHandler handler;
     private TaskService taskService;
-    private TaskServiceFactory taskClientFactory;        
+    private TaskServiceFactory taskClientFactory;
 
     public void setTaskClientFactory(TaskServiceFactory taskClientFactory) {
         this.taskClientFactory = taskClientFactory;
@@ -42,19 +42,19 @@ public class HumanTaskRegistrationService extends ApplicationObjectSupport imple
                 KnowledgeRuntime session = this.getApplicationContext().getBean("ksession1", KnowledgeRuntime.class);
                 if (session != null) {
                     handler = new AsyncGenericHTWorkItemHandler(session);
-                    TaskClient client=taskClientFactory.getTaskClient();
-                    handler.setClient(client);                    
+                    TaskClient client = taskClientFactory.getTaskClient();
+                    handler.setClient(client);
                     handler.setIpAddress(taskClientFactory.getProperties().getProperty(TaskConfigurationProperties.HORNET_HOST));
                     handler.setPort(Integer.parseInt(taskClientFactory.getProperties().getProperty(TaskConfigurationProperties.HORNET_PORT)));
 
-                    if (client.connect()) {
-                        session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-                        handler.connect();
-                        loaded = true;
-                        logger.debug("Registered Human Task Handler");
-                    }else{
-                        throw new Exception("Couldn't connect to Human Server");
-                    }
+//                    if (client.connect()) {
+                    session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+                    handler.connect();
+                    loaded = true;
+                    logger.debug("Registered Human Task Handler");
+//                    }else{
+//                        throw new Exception("Couldn't connect to Human Server");
+//                    }
                 }
             } catch (Exception e) {
                 logger.error(e);

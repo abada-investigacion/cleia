@@ -94,12 +94,12 @@ Ext.define('App.bam.js.common.OncoguideGrid', {
                     type:'date',
                     dateFormat:'c'
                 },'type'],
-                sorters:[
-                {
-                    property:'processInstanceId', 
-                    direction:'desc'
-                }
-                ],
+//                sorters:[
+//                {
+//                    property:'processInstanceId', 
+//                    direction:'desc'
+//                }
+//                ],
                 extraParams:{
                     patientId:this.config.patientId
                 }

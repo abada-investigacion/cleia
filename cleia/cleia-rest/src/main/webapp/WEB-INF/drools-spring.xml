@@ -53,13 +53,15 @@
     </bean>
    
     <bean id="taskServiceFactory" class="com.abada.jbpm.task.service.TaskServiceFactory">
-        <property name="type" value="HORNETQ" />
+        <property name="type" value="MINA" />
         <!--property name="groupTaskManagement" ref="groupTaskManagement"/--><!--LDAP -->
         <property name="groupTaskManagement" ref="loginDao"/><!--BBDD --> 
         <property name="properties">
             <props>
                 <prop key="jbpm.task.hornetq.host">${jbpm.task.hornetq.host}</prop>
                 <prop key="jbpm.task.hornetq.port">${jbpm.task.hornetq.port}</prop>
+                <prop key="jbpm.task.mina.host">${jbpm.task.mina.host}</prop>
+                <prop key="jbpm.task.mina.port">${jbpm.task.mina.port}</prop>
             </props>
         </property>
     </bean>
@@ -89,6 +91,7 @@
         <property name="taskClientFactory" ref="taskServiceFactory" />
         <property name="patientTaskManagement" ref="processInstancesDao" />
         <property name="processManagement" ref="processManagement" />
+        <property name="session" ref="ksession1"/>
     </bean>
     
     <bean id="processInstanceDbLog" class="com.abada.jbpm.process.audit.ProcessInstanceDbLog">
@@ -107,7 +110,8 @@
     <!-- Human Task Service -->
     <bean id="taskService" class="com.abada.jbpm.task.spring.TaskService">
         <property name="entityManagerFactory" ref="jbpm-task-em" />        
-        <property name="taskServiceFactory" ref="taskServiceFactory"/>        
+        <property name="taskServiceFactory" ref="taskServiceFactory"/>    
+        <property name="userGroupCallback" ref="loginDao"/>    
     </bean>
     <!-- Register human task handler in the knowledge session -->
     <bean id="human-task-register-service" class="com.abada.jbpm.task.spring.HumanTaskRegistrationService" >        

@@ -8,7 +8,8 @@ Ext.define('App.bam.js.common.FormCustomPanel',{
     extend:'Ext.panel.Panel',        
     config:{
         taskId:undefined,
-        url:undefined
+        url:undefined,
+        height:undefined
     },
     initComponent:function(){        
         this.callParent();
@@ -17,8 +18,8 @@ Ext.define('App.bam.js.common.FormCustomPanel',{
         this.addEvents('success','failure');
     },    
     createIFrameForm:function(){
-        var urlComplete=this.url+'form/task/'+this.taskId+'/render';
-        this.iframe=Ext.create('App.bam.js.common.FormCustomFrame',{url:urlComplete});
+        var urlComplete=this.url;
+        this.iframe=Ext.create('App.bam.js.common.FormCustomFrame',{url:urlComplete,height:this.height});
         this.iframe.addListener('success',this.onSuccessSubmitIFrame,this);
         this.iframe.addListener('failure',this.onFailureSubmitIFrame,this);
         this.add(this.iframe);

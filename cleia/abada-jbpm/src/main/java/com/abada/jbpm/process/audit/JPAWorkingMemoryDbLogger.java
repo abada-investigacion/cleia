@@ -12,6 +12,10 @@ import javax.transaction.UserTransaction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.WorkingMemory;
+import org.drools.audit.event.LogEvent;
+import org.drools.audit.event.RuleFlowLogEvent;
+import org.drools.audit.event.RuleFlowNodeLogEvent;
+import org.drools.audit.event.RuleFlowVariableLogEvent;
 import org.drools.event.KnowledgeRuntimeEventManager;
 import org.drools.runtime.EnvironmentName;
 
@@ -52,7 +56,26 @@ public class JPAWorkingMemoryDbLogger extends org.jbpm.process.audit.JPAWorkingM
         persist(log);
     }
     
+    protected void addVariableLog(long processInstanceId, String processId, String variableInstanceId, String variableId, Object object) {
+        VariableInstanceLogExt log = new VariableInstanceLogExt(
+                processInstanceId, processId, variableInstanceId, variableId, object);
+        persist(log);
+    }
+    
     //<editor-fold defaultstate="collapsed" desc="From father">
+    @Override
+    public void logEventCreated(LogEvent logEvent) {
+        switch (logEvent.getType()) {
+            case LogEvent.AFTER_VARIABLE_INSTANCE_CHANGED:
+            	RuleFlowVariableLogEvent variableEvent = (RuleFlowVariableLogEvent) logEvent;
+            	addVariableLog(variableEvent.getProcessInstanceId(), variableEvent.getProcessId(), variableEvent.getVariableInstanceId(), variableEvent.getVariableId(), variableEvent.getObjectToString());
+                break;
+            default:
+                super.logEventCreated(logEvent);
+        }
+    }
+    
+    
     private boolean sharedEM = false;
     
     /**

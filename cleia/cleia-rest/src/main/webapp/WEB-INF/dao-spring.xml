@@ -23,7 +23,11 @@
         <property name="dataSource" ref="ds1" />
     </bean>   
 
-    <bean id="processInstancesDao" class="com.abada.cleia.dao.impl.ProcessInstanceDaoImpl"/>   
+    <bean id="processInstancesDao" class="com.abada.cleia.dao.impl.ProcessInstanceDaoImpl">   
+        <property name="processManagement" ref="processManagement"/>
+        <property name="processInstanceDbLog" ref="processInstanceDbLog"/>
+        <property name="patientDao" ref="patientDao"/>
+    </bean>
     <bean id="patientDao" class="com.abada.cleia.dao.impl.PatientDaoImpl"/>
     <bean id="groupDao" class="com.abada.cleia.dao.impl.GroupDaoImpl"/>
     <bean id="idTypeDao" class="com.abada.cleia.dao.impl.IdTypeDaoImpl"/>

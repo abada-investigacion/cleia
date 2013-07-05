@@ -85,7 +85,8 @@ Ext.onReady(function(){
         function onTaskSelected(grid,taskId,taskUrl){
             var panelAux=Ext.create('App.bam.js.common.FormCustomPanel',{
                 taskId:taskId,
-                url:getRelativeURI('/bam/')
+                url:taskUrl,
+                height:App.height
             });
             panelAux.addListener('success',function(panel,frame,response){
                 Ext.Msg.alert('Info','Tarea completada correctamente',                        
@@ -124,7 +125,7 @@ Ext.onReady(function(){
         
         var panel=  Ext.create('App.bam.js.common.TaskGrid',{
             height:App.height,        
-            url:getRelativeURI('/bam/task/task.do'),
+            url:getRelativeServerURI('rs/tasks/process/{0}/loggeduser',[processInstanceId]),
             processInstanceId:processInstanceId,
             tbar:tbar
         });      
@@ -276,7 +277,7 @@ Ext.onReady(function(){
         function onTaskSelected(grid,taskId,taskUrl){
             var panelAux=Ext.create('App.bam.js.common.FormCustomPanel',{
                 taskId:taskId,
-                url:getRelativeURI('/bam/')
+                url:taskUrl
             });
             panelAux.addListener('success',function(panel,frame,response){
                 Ext.Msg.alert('Info','Tarea completada correctamente',                        

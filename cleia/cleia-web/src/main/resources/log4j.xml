@@ -10,6 +10,11 @@
         </layout>
     </appender>
 
+    <!--logger name="com.abada">        
+        <level value="ALL" />
+        <appender-ref ref="CONSOLE.OUT"/>
+    </logger-->
+
     <root>
         <priority value="ERROR"></priority>
         <appender-ref ref="CONSOLE.OUT"/>

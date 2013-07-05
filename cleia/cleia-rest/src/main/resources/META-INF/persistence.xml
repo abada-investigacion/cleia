@@ -19,6 +19,7 @@
       <property name="hibernate.max_fetch_depth" value="3"/>
       <property name="hibernate.hbm2ddl.auto" value="${db.autogenerate}"/>
       <property name="hibernate.show_sql" value="false"/>
+      <property name="javax.persistence.query.timeout" value="60000"/>
     </properties>
   </persistence-unit>
   <persistence-unit name="com.abada.jbpm.task" transaction-type="RESOURCE_LOCAL">
@@ -68,6 +69,7 @@
       <property name="hibernate.max_fetch_depth" value="3"/>
       <property name="hibernate.hbm2ddl.auto" value="${db.autogenerate}"/>
       <property name="hibernate.show_sql" value="false"/>
+      <property name="javax.persistence.query.timeout" value="60000"/>
     </properties>
   </persistence-unit>
 </persistence>

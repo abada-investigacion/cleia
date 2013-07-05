@@ -6,10 +6,10 @@ package com.abada.cleia.rest.patient;
 
 import com.abada.cleia.dao.PatientDao;
 import com.abada.cleia.dao.ProcessInstanceDao;
+import com.abada.cleia.entity.temporal.PatientHasProcessInstanceInfo;
 import com.abada.cleia.entity.user.Genre;
 import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.Patient;
-import com.abada.cleia.entity.user.PatientHasProcessInstance;
 import com.abada.cleia.entity.user.Views;
 import com.abada.extjs.ComboBoxResponse;
 import com.abada.extjs.ExtjsStore;
@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
@@ -265,7 +264,7 @@ public class PatientController {
     @RequestMapping(value = "/{patientId}/pinstance/list", method = RequestMethod.GET)
     public void getPInstancePatients(@PathVariable Long patientId, Model model) {
         ExtjsStore result = new ExtjsStore();
-        List<PatientHasProcessInstance> aux = this.pInstancePatientDao.getProcessInstance(patientId);
+        List<PatientHasProcessInstanceInfo> aux = this.pInstancePatientDao.getProcessInstance(patientId);
         if (aux != null) {
             result.setData(aux);
         }
@@ -284,7 +283,7 @@ public class PatientController {
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
     @RequestMapping(value = "/{patientId}/pinstance/{pInstance}", method = RequestMethod.GET)
     public void getPInstancePatients(@PathVariable Long patientId, @PathVariable Long pInstance, Model model) {
-        PatientHasProcessInstance result = this.pInstancePatientDao.getProcessInstanceFromProcessIntance(patientId, pInstance);
+        PatientHasProcessInstanceInfo result = this.pInstancePatientDao.getProcessInstanceFromProcessIntance(patientId, pInstance);
         model.addAttribute(JsonView.JSON_VIEW_RESULT, result);
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
-
-<log4j:configuration>
+<!DOCTYPE log4j:configuration SYSTEM "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd">
+<log4j:configuration >
 
     <appender name="CONSOLE.OUT" class="org.apache.log4j.ConsoleAppender">
         <param name="target" value="System.out"/>
@@ -10,7 +9,22 @@
         </layout>
     </appender>
 
-    <!--logger name="org.hibernate">        
+    <!--logger name="com.abada.jbpm">        
+        <level value="ALL" />
+        <appender-ref ref="CONSOLE.OUT"/>
+    </logger>
+    
+    <logger name="org.hornetq">        
+        <level value="ALL" />
+        <appender-ref ref="CONSOLE.OUT"/>
+    </logger>
+    
+    <logger name="org.jbpm">        
+        <level value="ALL" />
+        <appender-ref ref="CONSOLE.OUT"/>
+    </logger>
+    
+    <logger name="org.hibernate">        
         <level value="ALL" />
         <appender-ref ref="CONSOLE.OUT"/>
     </logger-->
