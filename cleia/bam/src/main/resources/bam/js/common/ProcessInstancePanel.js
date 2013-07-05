@@ -26,8 +26,9 @@ Ext.define('App.bam.js.common.ProcessInstancePanel', {
     },
     addImageCmp: function() {
 
+        var url = '';
         if (this.processInstanceId) {
-            var url = getRelativeServerURI(this.urlImagePI, [this.processInstanceId]);
+            url += getRelativeServerURI(this.urlImagePI, [this.processInstanceId]);
         } else {
             if (this.processId) {
                 url += getRelativeServerURI(this.urlImageP, [this.processId]);

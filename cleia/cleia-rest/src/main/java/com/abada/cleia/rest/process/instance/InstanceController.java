@@ -200,7 +200,9 @@ public class InstanceController {
     @RequestMapping(value = "/{id}/allActiveNodeInfo", method = RequestMethod.GET)
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
     public void getAllActiveNodeInfo(@PathVariable Long id, Model model) {
-        model.addAttribute(JsonView.JSON_VIEW_RESULT, graphViewerPlugin.getAllActivateNodes(id));
+        ExtjsStore<ActiveNodeInfo> result=new ExtjsStore<ActiveNodeInfo>();
+        result.setData(graphViewerPlugin.getAllActivateNodes(id));
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, result);
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 

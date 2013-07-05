@@ -37,16 +37,18 @@ public class LoginDaoImpl extends JpaDaoUtils implements UserGroupCallback, User
             User result = (User) em.createQuery("select id.user from Id id where id.value = :dni and id.type.value =  'DNI'").setParameter("dni", dni).getSingleResult();
             if (result != null) {
                 result.getGroups().size();
-                result.getRoles().size();
-                result.setPassword("");
+                result.getRoles().size();            
             }
             et.commit();
             return result;
+        } catch (RuntimeException e) {
+            logger.warn(e.getMessage(), e);
         } finally {
             if (em.isOpen()) {
                 em.close();
             }
         }
+        return null;
     }
 
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -81,12 +83,14 @@ public class LoginDaoImpl extends JpaDaoUtils implements UserGroupCallback, User
         return null;
     }
 
-    public boolean existsUser(String userId) {        
-        try{
-            if ("Administrator".equals(userId)) return true;//FIXIT
+    public boolean existsUser(String userId) {
+        try {
+            if ("Administrator".equals(userId)) {
+                return true;//FIXIT
+            }
             loadUserByUsername(userId);
             return true;
-        }catch (UsernameNotFoundException e){
+        } catch (UsernameNotFoundException e) {
             return false;
         }
     }
@@ -96,9 +100,11 @@ public class LoginDaoImpl extends JpaDaoUtils implements UserGroupCallback, User
         try {
             EntityTransaction et = em.getTransaction();
             et.begin();
-            Group result = em.find(Group.class, groupId);            
+            Group result = em.find(Group.class, groupId);
             et.commit();
-            if (result!=null) return true;            
+            if (result != null) {
+                return true;
+            }
         } finally {
             if (em.isOpen()) {
                 em.close();
@@ -107,7 +113,7 @@ public class LoginDaoImpl extends JpaDaoUtils implements UserGroupCallback, User
         return false;
     }
 
-    public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {        
+    public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
         return getGroupByUserName(userId);
     }
 }

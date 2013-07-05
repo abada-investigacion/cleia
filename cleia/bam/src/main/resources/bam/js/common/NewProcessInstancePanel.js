@@ -7,7 +7,6 @@ Ext.define('App.bam.js.common.NewProcessInstancePanel',{
     requires: ['Abada.Ajax','Abada.form.field.SimpleGroupingComboBox','Ext.button.Button','Ext.window.MessageBox'],
     extend:'Ext.form.Panel',        
     config:{
-        urlNewOncoguide:undefined,
         urlOncoguides:undefined,
         patientId:undefined
     },
@@ -19,37 +18,6 @@ Ext.define('App.bam.js.common.NewProcessInstancePanel',{
             url:this.urlOncoguides,
             allowBlank:false
         });
-        
-//        var types = Ext.create('Ext.data.Store', {
-//            fields: ['id', 'value'],
-//            data : [
-//            {
-//                "id":"ONCOGUIDE", 
-//                "value":"Proceso Oncoguia"
-//            },
-//            {
-//                "id":"EMERGENCY", 
-//                "value":"Proceso Urgencias"
-//            },
-//            {
-//                "id":"UNDEFINED", 
-//                "value":"Proceso Tipo Desconocido"
-//            }
-//            ]
-//        });
-//
-//        // Create the combo box, attached to the states data store
-//        this.cbType=Ext.create('Ext.form.ComboBox', { 
-//            emptyText : 'seleccione tipo Oncoguia',
-//            width:200,
-//            store: types,
-//            queryMode: 'local',
-//            displayField: 'value',
-//            valueField: 'id',
-//            editable:false,
-//            allowBlank:false
-//        });
-        
         
         this.button=Ext.create('Ext.button.Button', {
             text: 'Crear',

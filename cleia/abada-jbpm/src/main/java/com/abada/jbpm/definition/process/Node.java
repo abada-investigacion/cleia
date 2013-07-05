@@ -5,6 +5,7 @@
 package com.abada.jbpm.definition.process;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Node Information
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * jbpm 5.4.0.Final compliant
  * @author katsu
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Node {
 
     /**

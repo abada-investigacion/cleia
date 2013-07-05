@@ -263,7 +263,6 @@ Ext.onReady(function() {
          */
         var newOncoguide = Ext.create('App.bam.js.common.NewProcessInstancePanel', {
             urlOncoguides: getRelativeServerURI('/rs/process/definition/list/combo'),
-            urlNewOncoguide: getRelativeURI('/bam/patient/newoncoguide.do'),
             patientId: patientId
         });
 

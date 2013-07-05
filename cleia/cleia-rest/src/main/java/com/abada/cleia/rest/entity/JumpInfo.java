@@ -5,11 +5,13 @@
 package com.abada.cleia.rest.entity;
 
 import com.abada.jbpm.version.model.NodeMap;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  *
  * @author katsu
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class JumpInfo {
     private String observation;
     private boolean fixProcess;
