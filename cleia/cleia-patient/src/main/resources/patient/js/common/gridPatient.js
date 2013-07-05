@@ -13,69 +13,67 @@ Ext.define('App.patient.js.common.gridPatient', {
         page:13
     },
     title: 'Pacientes',
-    plugins:[{
-        ptype: 'abada.rowexpander',
-        rowBodyTpl: [
-        '<div>',
-        '<p><b>ID:</b></p>',
-        '</tpl>',
-        '<tpl for="patientidList">',
-        '<li><b>{#}. </b> {idTypeidIdType.name}: {value}</li>',
-        '</tpl>',
-        '</div>'
-        ]
-     
-    
-    }],
-    columns:[           
+    //    plugins:[{
+    //        ptype: 'abada.rowexpander',
+    //        rowBodyTpl: [
+    //        '<div>',
+    //        '<p><b>ID:</b></p>',
+    //        '</tpl>',
+    //        '<tpl for="patientidList">',
+    //        '<li><b>{#}. </b> {idTypeidIdType.name}: {value}</li>',
+    //        '</tpl>',
+    //        '</div>'
+    //        ]
+    //     
+    //    
+    //    }],
+    columns:[  
+    {
+        header:'Id',
+        dataIndex:'id',
+        hidden:true
+    },
     {
         header: 'Nombre paciente', 
         dataIndex: 'name',
-        width:50
+        width:40
     
     },
     {
         header: 'Apellido', 
-        dataIndex: 'surname1',
-        width:50
+        dataIndex: 'surname',
+        width:40
     
     },
     {
         header: 'Apellido 2', 
-        dataIndex: 'surname2',
-        width:50
+        dataIndex: 'surname1',
+        width:40
     
     },
     {
         header: 'Genero', 
         dataIndex: 'genre',
-        width:50
+        width:30
     
-    } ,{
+    },
+    {
         header: 'Fecha nacimiento', 
-        dataIndex: 'birthday',
+        dataIndex: 'birthDay',
         xtype: 'datecolumn',
         sortable: true,
-        align: 'right',
-        format: 'd-m-Y'
-        
-    
+        format: 'd-m-Y',
+        width:40
     },
     {
-        header: 'Esta muerto', 
-        dataIndex: 'exitus',
-        align:'center',
-        xtype: 'checkboxcolumn',
-        width:35
-
+        header: 'Telefono', 
+        dataIndex: 'tlf',
+        width:40    
     },
     {
-        header: 'Habilitado', 
-        dataIndex: 'enabled',
-        align:'center',
-        xtype: 'checkboxcolumn',
-        width:35
-
+        header: 'Direccion', 
+        renderer:templateRenderer(new Ext.Template('{addressAddress}, {addressCity}')) ,
+        width:50    
     }
 
     ],
@@ -90,30 +88,32 @@ Ext.define('App.patient.js.common.gridPatient', {
         },
         {
             type: 'string',
-            dataIndex: 'surname1'
-        },{
-            type: 'string',
-            dataIndex: 'surname2'
+            dataIndex: 'surname'
         },
         {
-            type: 'boolean',
-            dataIndex: 'exitus'
-        },{
-            type: 'boolean',
-            dataIndex: 'enabled'
-        },{
+            type: 'string',
+            dataIndex: 'surname1'
+        },
+        {
             type: 'list',
             enumType:'com.abada.cleia.entity.user.Genre',
             dataIndex: 'genre',
             options: [['Male','Male'],
             ['Female','Female'],
             ['Undefined','Undefined']]
-        },{
-            
-            
+        },
+        {   
             type: 'date',
-            dataIndex: 'birthday',
+            dataIndex: 'birthDay',
             dateFormat : 'd-m-Y'
+        },
+        {
+            type: 'string',
+            dataIndex: 'address'
+        },
+        {
+            type: 'string',
+            dataIndex: 'tlf'
         }
 
         ]
@@ -132,11 +132,36 @@ Ext.define('App.patient.js.common.gridPatient', {
                 },
                 fields:[
                 {
-                    name:'birthday',
+                    name:'birthDay',
                     type       : 'date',
                     dateFormat : 'c' 
                 },
-                'idPatient', 'name', 'surname1','surname2','exitus','enabled','genre','patientidList','oncoguideList']
+                {
+                    name:'id',
+                    mapping:'id'
+                },
+                {
+                    name:'name',
+                    mapping:'name'
+                }, {
+                    name:'surname',
+                    mapping:'surname'
+                },{
+                    name:'surname1',
+                    mapping:'surname1'
+                },{
+                    name:'genre',
+                    mapping:'genre'
+                },{
+                    name:'addressCity',
+                    mapping:'address.city'
+                },{
+                    name:'addressAddress',
+                    mapping:'address.address'
+                },{
+                    name:'tlf',
+                    mapping:'tlf'
+                }]
                 ,
                 url:this.config.url,                
                 root:'data',                                
@@ -155,3 +180,9 @@ Ext.define('App.patient.js.common.gridPatient', {
 
     
 });
+
+function templateRenderer(template) {
+    return function(value, meta, record, rowIndex, colIndex, store) {
+        return template.applyTemplate(record.data);
+    };
+}
