@@ -19,12 +19,12 @@ Ext.define('App.bam.js.common.ProcessTabPanel',{
     loadProcessPanels:function(processId){
         this.processId=processId;
         this.removeAll();
-        Abada.Ajax.requestJsonData({
+        Abada.Ajax.requestJsonObject({
             url: getRelativeServerURI(this.urlInfo,[processId]),
             scope:this,
             method:'GET',
             success: function(json) {                                                       
-                this.addProcessInstancePanel(json.data,0);                                    
+                this.addProcessInstancePanel(json,0);                                    
                 this.doLayout();
             },
             failure:function(){                
@@ -40,7 +40,7 @@ Ext.define('App.bam.js.common.ProcessTabPanel',{
         }
         
         var panel=Ext.create('App.bam.js.common.ProcessInstancePanel',{
-            urlImage:this.urlImage,
+            urlImageP:this.urlImage,
             urlDiagramInfo:this.urlDiagramInfo,
             autoScroll:true,
             processId:records[i],

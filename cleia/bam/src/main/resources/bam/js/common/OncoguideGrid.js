@@ -102,6 +102,9 @@ Ext.define('App.bam.js.common.OncoguideGrid', {
 //                ],
                 extraParams:{
                     patientId:this.config.patientId
+                },
+                proxyConfigs:{
+                    timeout:90000
                 }
             });            
             

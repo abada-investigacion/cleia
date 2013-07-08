@@ -10,7 +10,7 @@ Ext.define('App.bam.js.common.VersionFormPanel',{
         urlOncoguides:getRelativeServerURI('/rs/process/definition/list/combo'),
         urlSubmit:undefined,
         processInstanceId:undefined,
-        urlImage:getRelativeURI('/bam/process/image.do'),
+        urlImage:'/rs/process/definition/{0}/image',
         urlInfo:'rs/process/definition/{0}/tree',
         urlDiagramInfo:'rs/process/definition/{0}/diagram',
         urlActiveNodeInfo:'rs/process/instance/{0}/allActiveNodeInfo',
@@ -62,7 +62,7 @@ Ext.define('App.bam.js.common.VersionFormPanel',{
         });
         button1.addListener('click',this.onClickButtonState,this);
 
-        this.items= [this.cbOncoguide,this.chFix,button1,this.grid,button];
+        this.items= [this.cbOncoguide,this.chFix,button1,button,this.grid];
         this.callParent();
         
         this.addEvents('success');

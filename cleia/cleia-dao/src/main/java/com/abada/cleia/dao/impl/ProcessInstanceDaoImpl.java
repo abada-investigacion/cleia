@@ -98,11 +98,12 @@ public class ProcessInstanceDaoImpl implements PatientTaskManagement, ProcessIns
                 if (pil != null) {
                     PatientHasProcessInstanceInfo po = new PatientHasProcessInstanceInfo();
                     po.setPatientId(patientId);
-                    try {
+                    /*try {
                         po.setProcessName(processManagement.getProcessDefinition(pil.getProcessId()).getName());
                     } catch (Exception e) {
                         logger.warn("Process without name. " + pil.getProcessId());
-                    }
+                    }*/
+                    po.setProcessName(pil.getProcessId());
                     po.setProcessId(pil.getProcessId());
                     po.setProcessInstanceId(((Long) pil.getProcessInstanceId()).toString());
                     po.setStart(pil.getStart());
