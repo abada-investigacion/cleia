@@ -6,7 +6,7 @@
 Ext.require([
     'Ext.form.Panel', 'Ext.form.field.Checkbox', 'Abada.Ajax', 'Ext.JSON', 'Ext.Ajax',
     'Ext.layout.container.Table', 'Abada.toolbar.ToolbarInsertUpdateDelete', 'Abada.form.field.ComboBoxDeSelect',
-    'App.patient.js.common.gridPatientid', 'Ext.form.field.Date'
+    'App.patient.js.common.gridPatientid', 'Ext.form.field.Date','Abada.form.field.ComboBox'
 
     ])
 
@@ -72,20 +72,33 @@ Ext.onReady(function() {
     setCentralPanel(grid);
 
     //*Funcion para los frompanel
-    function getO(form) {
+    function getO(form,selectionGroup) {
         var id = form.getComponent("id").getValue();
         if (id == "") {
             id = null;
         }
         var o = {
             id: id,
+            enabled: true,
+            username: form.getComponent("username").getValue(),
+            accountNonExpired: form.getComponent("accountNonExpired").getValue(),
+            credentialsNonExpired: form.getComponent("credentialsNonExpired").getValue(),
+            password: form.getComponent("password").getValue(),
+            accountNonLocked: form.getComponent("accountNonLocked").getValue(),
+            groups: getListForObject(selectionGroup,'value'),
+            roles:[],
             name: form.getComponent("name").getValue(),
             surname: form.getComponent("surname").getValue(),
             surname1: form.getComponent("surname1").getValue(),
             genre: form.getComponent("genre").getValue(),
             birthday: Ext.Date.format(form.getComponent("birthday").getValue(), 'Y-m-d H:i:s'),
-            address:{},
-            tlf:form.getComponent("tlf").getValue()          
+            tlf:form.getComponent("tlf").getValue(),
+            address:{
+                address:form.getComponent("address").getValue(),
+                city:form.getComponent("city").getValue(),
+                cp:form.getComponent("cp").getValue(),
+                country:form.getComponent("country").getValue()
+            }        
 
 
         };
@@ -93,19 +106,19 @@ Ext.onReady(function() {
     }
 
 
-    function handleFormulario(opt, grid, title, url, selecion) {
+    function handleFormulario(opt, grid, title, url, selection) {
         var method = 'POST', tooltip = 'Insertar Paciente';
-        var id, name, surname, surname1, genre, birthday = new Date(), tlf,address,city,cp,country;
+        var id, username,password, name, surname, surname1, genre, birthday = new Date(), tlf,address,city,cp,country;
 
-        if (opt != 'Inserta' && selecion.hasSelection()) {
+        if (opt != 'Inserta' && selection.hasSelection()) {
             method = 'PUT';
-            id = selecion.getLastSelected().get('id');
-            name = selecion.getLastSelected().get('name');
-            surname = selecion.getLastSelected().get('surname1');
-            surname1 = selecion.getLastSelected().get('surname2');            
-            genre = selecion.getLastSelected().get('genre');
-            birthday = selecion.getLastSelected().get('birthday');
-            tlf = selecion.getLastSelected().get('tlf');
+            id = selection.getLastSelected().get('id');
+            name = selection.getLastSelected().get('name');
+            surname = selection.getLastSelected().get('surname1');
+            surname1 = selection.getLastSelected().get('surname2');            
+            genre = selection.getLastSelected().get('genre');
+            birthday = selection.getLastSelected().get('birthday');
+            tlf = selection.getLastSelected().get('tlf');
             tooltip = 'Modificar Paciente';
             
           
@@ -115,7 +128,7 @@ Ext.onReady(function() {
             id: 'genre',
             url: getRelativeServerURI('rs/patient/genre/combo'),
             fieldLabel: 'Genero',
-            emptyText: 'seleccione un Genero',
+            emptyText: 'Seleccione un Genero',
             width: 270,
             editable: false,
             allowBlank: false,
@@ -130,6 +143,54 @@ Ext.onReady(function() {
 
         combogenre.loadStore();
         
+        var combouser = Ext.create('Abada.form.field.ComboBox', {
+            id: 'cbuser',
+            url: getRelativeServerURI('rs/user/withoutAssignedPatient/combo'),
+            emptyText: 'Cargar datos del usuario...',
+            width: 270,
+            editable: false,
+            allowBlank: true,
+            noSelection: 'Cargar datos del usuario...',
+            selectedValue: '',
+            padding:'0 5 0 15',
+            listeners: {
+                select: function() {
+                   
+                    Ext.getCmp('id').setValue(combouser.getValue());
+                    Ext.getCmp('username').setReadOnly(true);
+                    Ext.getCmp('username').setValue(combouser.getRawValue());
+                    groupGrid.selModel.deselectAll();
+                    
+                    Abada.Ajax.requestJsonData({
+                        url:getRelativeServerURI('rs/user/{iduser}/groups',{iduser:combouser.getValue()}),
+                        scope:this,
+                        method:'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        failure:function(){            
+            
+                        },
+                        success:function(object){
+                            var groups=object.data;
+                            for (var i = 0; i < groupGrid.getStore().getCount(); i++) {
+                                var record = groupGrid.getStore().getAt(i);
+                                for (var j = 0; j < groups.length; j++) {
+                                    if (record.get("value") == groups[j].value) {
+                                        groupGrid.selModel.select(record, true, true);
+                                    }
+                                }
+
+                            }
+                        }
+                    });
+                    
+                    
+                }
+            }
+        });
+
+        
         var datebirthday = Ext.create('Ext.form.field.Date', {
             id: 'birthday',
             name: 'birthday',
@@ -140,40 +201,146 @@ Ext.onReady(function() {
             width: 270
         });
 
+        var groupGrid = Ext.create('App.manager.js.common.gridgroup', {
+            url: getRelativeServerURI('rs/group/search'),
+            width: 350,
+            checkboxse: true,
+            page: 500,
+            rowspan:4,
+            padding:'10 15 0 15'
+        });
+
+        
+        var checkboxaccountNonExpired = Ext.create('Ext.form.field.Checkbox', {
+            checked: true,
+            id: 'accountNonExpired',
+            name: 'accountNonExpired',
+            inputValue: true,
+            hidden: true
+        });
+
+        var checkboxcredentialsNonExpired = Ext.create('Ext.form.field.Checkbox', {
+            checked: true,
+            id: 'credentialsNonExpired',
+            name: 'credentialsNonExpired',
+            inputValue: true,
+            hidden: true
+        });
+
+        var checkboxaccountNonLocked = Ext.create('Ext.form.field.Checkbox', {
+            checked: true,
+            id: 'accountNonLocked',
+            name: 'accountNonLocked',
+            inputValue: true,
+            hidden: true
+        });
+
 
         //form panel de insertar
-        var formpanel = Ext.create('Ext.form.Panel', {
-            title: opt + 'r',
+        var formpanel = Ext.create('Ext.form.Panel', {           
             url: url,
             monitorValid: true,
-            width: 350,
-            frame: false,           
+            frame: false,
+            bodyPadding:'10 15 0 15',
+            autoScroll: true,
+            height:500,
+            layout: {
+                type: 'vbox',
+                columns: 2
+            },
             items: [{
                 xtype:'fieldset',
-                title: 'Datos personales',
-                width:'70%',
+                title: '<b>Datos de Usuario</b>',
+                width:'100%',                
                 collapsible: false,
                 defaultType: 'textfield',
-                padding:'10 0 0 20',
-                items :[{
-                    name: 'id',
-                    id: 'id',
-                    value: id,
-                    hidden: true
+                layout:{
+                    type:'table',
+                    column:2
                 },
+                padding:'10 15 10 15',
+                items :[{
+                    xtype:'container',
+                    defaultType: 'textfield',                    
+                    layout:'vbox',
+                    items:[{
+                        fieldLabel: 'Id',
+                        name: 'id',
+                        id: 'id',
+                        value: id,
+                        readOnly:true,
+                        width: 270
+                    },{
+                        fieldLabel: 'Usuario',
+                        name: 'username',
+                        id: 'username',
+                        value: username,
+                        allowBlank: false,
+                        width: 270
+                    }, {
+                        fieldLabel: 'Contrase&ntilde;a',
+                        name: 'password',
+                        id: 'password',
+                        allowBlank: false,
+                        inputType: 'password',
+                        value: password,
+                        width: 270
+                    },
+                    {
+                        fieldLabel: 'Repita Contrase&ntilde;a',
+                        name: 'password2',
+                        id: 'password2',
+                        allowBlank: false,
+                        inputType: 'password',
+                        value: password,
+                        width: 270
+
+                    },checkboxaccountNonExpired, checkboxcredentialsNonExpired, checkboxaccountNonLocked]
+
+                },{
+                    xtype:'container',                  
+                    layout:'vbox',
+                    items:[
+                    {
+                        xtype:'container',
+                        layout:'hbox',
+                        items:[combouser,{
+                            xtype:'button',
+                            text: 'limpiar',
+                            handler: function(){
+                          
+                                Ext.getCmp('id').setValue('');
+                                Ext.getCmp('username').setReadOnly(false);
+                                Ext.getCmp('username').setValue('');
+                                Ext.getCmp('cbuser').setValue('');
+                                groupGrid.selModel.deselectAll();
+                            }
+                        }]
+                    }
+                    ,groupGrid]
+                }
+                ]
+            },{
+                xtype:'fieldset',
+                title: '<b>Datos personales</b>',
+                width:'100%',
+                collapsible: false,
+                defaultType: 'textfield',
+                padding:'10 15 10 15',
+                items :[
                 {
                     fieldLabel: 'Nombre',
                     name: 'name',
                     id: 'name',
                     value: name,
-                    width:270,
+                    width: 270,
                     allowBlank: false
                 },{
                     fieldLabel: 'Primer Apellido',
                     name: 'surname',
                     id: 'surname',
                     value: surname,
-                    width:270,
+                    width: 270,
                     allowBlank: false
 
                 }, {
@@ -181,37 +348,37 @@ Ext.onReady(function() {
                     name: 'surname1',
                     id: 'surname1',
                     value: surname1,
-                    width:270,
+                    width: 270,
                     allowBlank: false
                 }, datebirthday, {
                     fieldLabel: 'Telefono',
                     name: 'tlf',
                     id: 'tlf',
                     value: tlf,
-                    width:270,
+                    width: 270,
                     allowBlank: false
                 },combogenre]
             },{
                 xtype:'fieldset',
-                title: 'Direccion',
-                width:'70%',
+                title: '<b>Direcci&oacute;n</b>',
+                width:'100%',
                 collapsible: false,
                 defaultType: 'textfield',
-                padding:'10 0 0 20',
+                padding:'10 15 10 15',
                 items :[
                 {
                     fieldLabel: 'Direccion',
                     name: 'address',
                     id: 'address',
                     value: address,
-                    width:270,
+                    width: 270,
                     allowBlank: false
                 },{
                     fieldLabel: 'Ciudad',
                     name: 'city',
                     id: 'city',
                     value: city,
-                    width:270,
+                    width: 270,
                     allowBlank: false
 
                 }, {
@@ -219,14 +386,14 @@ Ext.onReady(function() {
                     name: 'cp',
                     id: 'cp',
                     value: cp,
-                    width:270,
+                    width: 270,
                     allowBlank: false
                 },{
                     fieldLabel: 'Pais',
                     name: 'country',
                     id: 'country',
                     value: country,
-                    width:270,
+                    width: 270,
                     allowBlank: false
                 }]
             } ],
@@ -235,23 +402,31 @@ Ext.onReady(function() {
                 id: 'formPatient',
                 formBind: true,
                 handler: function() {
-                    if (formpanel.getForm().isValid()) {
+                    alert(Ext.getCmp('username').getValue());
+                    if (formpanel.getComponent("password2").getValue() == formpanel.getComponent("password").getValue()) {
+                        if (formpanel.getForm().isValid()) {
                
-                        doAjaxrequestJson(url, getO(formpanel), method, patientsGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error no se ha podido ' + opt + 'r');
+                            doAjaxrequestJson(url, getO(formpanel,groupGrid.selModel), method, patientsGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error no se ha podido ' + opt + 'r');
                      
+                        }
+                    }else{
+                        Ext.Msg.alert('Error', 'la contrase&ntilde;a no son iguales');
                     }
 
                 },
                 tooltip: tooltip
             }]
         });
+        groupGrid.getStore().load();
+        
 
         var wind = Ext.create('Ext.window.Window', {
-            id: 'Paciente',
-            autoScroll: false,
+            title: opt + 'r',
+            id: 'Paciente',            
             closable: true,
-            modal: true,
-            autoWidth:true,
+            modal: true,            
+            width:700,
+            autoHeight:true,
             items: [formpanel]
         });
 
@@ -261,7 +436,3 @@ Ext.onReady(function() {
     }
 
 });
-
-
-
-

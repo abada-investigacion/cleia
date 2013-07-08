@@ -548,4 +548,19 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
             throw new NullPointerException("Error. Lista de servicios y roles inexistente");
         }
     }
+    
+    
+    /**
+     * Returns a list of users who are not assigned a patient 
+     * 
+     * @return 
+     */
+    @Transactional(value = "cleia-txm", readOnly = true)
+    public List<User> getUserWithoutAssignedPatient() {
+       
+          List<User> luser = entityManager.createQuery("SELECT u FROM User u WHERE u.id not in (select distinct p.id from Patient p)").getResultList();
+      
+           
+        return luser;
+    }
 }

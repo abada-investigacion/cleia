@@ -30,8 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
 
-    @Resource(name = "medicalDao")
     private static final Log logger = LogFactory.getLog(MedicalDaoImpl.class);
+    
+   
     @PersistenceContext(unitName = "cleiaPU")
     private EntityManager entityManager;
     @Autowired

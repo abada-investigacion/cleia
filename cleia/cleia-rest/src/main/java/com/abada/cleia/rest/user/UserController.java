@@ -10,6 +10,7 @@ import com.abada.cleia.entity.user.Group;
 import com.abada.cleia.entity.user.Role;
 import com.abada.cleia.entity.user.User;
 import com.abada.cleia.entity.user.Views;
+import com.abada.extjs.ComboBoxResponse;
 import com.abada.extjs.ExtjsStore;
 import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
@@ -350,4 +351,33 @@ public class UserController {
         }
         return result;
     }      
+    
+    /**
+     * Return all Patient Genre in a ExtjsStore structure
+     *
+     * @return
+     */
+    @RequestMapping(value = "/withoutAssignedPatient/combo", method = RequestMethod.GET)
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+    public ExtjsStore getUserWithoutAssignedPatientCombo() {
+       
+        List<ComboBoxResponse> data = new ArrayList<ComboBoxResponse>();
+        List<User> luser = new ArrayList<User>();
+        try {
+            luser = this.userDao.getUserWithoutAssignedPatient();
+        } catch (Exception e) {
+            logger.error(e);
+        }
+         for (User u : luser) {
+            ComboBoxResponse aux = new ComboBoxResponse();
+            aux.setId(u.getId()+"");
+            aux.setValue(u.getUsername());
+            data.add(aux);
+        }
+        
+
+        ExtjsStore result = new ExtjsStore();
+        result.setData(data);
+        return result;
+    }
 }

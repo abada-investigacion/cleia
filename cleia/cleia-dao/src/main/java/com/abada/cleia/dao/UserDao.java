@@ -170,4 +170,11 @@ public interface UserDao {
      * @param newuser
      */
     public void updateUser(User user, User newuser);
+    
+    /**
+     * Returns a list of users who are not assigned a patient 
+     * 
+     * @return 
+     */
+    public List<User> getUserWithoutAssignedPatient();
 }

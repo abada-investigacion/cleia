@@ -29,7 +29,8 @@ public class PatientsController {
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @MenuEntry(icon = "patient/image/paciente.png", menuGroup = "Pacientes", order = 0, text = "Gestión Pacientes")
     public String gridPatient(Model model) {
-        model.addAttribute("js", Arrays.asList("patient/js/common/gridPatient.js", "patient/js/patient.js"));
+        model.addAttribute("js", Arrays.asList("patient/js/common/gridPatient.js", "patient/js/patient.js",
+                "manager/js/common/gridrole.js", "manager/js/common/gridgroup.js","manager/js/manager-utils.js"));
         return "dynamic/main";
 
     }

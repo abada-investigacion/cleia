@@ -163,8 +163,7 @@ Ext.onReady(function() {
 
 
         //form panel de insertar
-        var formpanel = Ext.create('Ext.form.Panel', {
-            title: opt + 'r',
+        var formpanel = Ext.create('Ext.form.Panel', {            
             url: url,
             defaultType: 'textfield',
             monitorValid: true,
@@ -262,6 +261,7 @@ Ext.onReady(function() {
 
 
         var wind = Ext.create('Ext.window.Window', {
+            title: opt + 'r',
             id: 'usuario',
             autoScroll: false,
             closable: true,
