@@ -38,7 +38,6 @@ Ext.onReady(function() {
         });
 
         var panel = Ext.create('App.bam.js.common.SignalGrid', {
-            height:App.height,
             url: getRelativeServerURI('rs/process/definition/{0}/eventnodes', [processId]),
             processInstanceId: processInstanceId,
             processId: processId,
@@ -103,10 +102,9 @@ Ext.onReady(function() {
 
             var win = Ext.create('Ext.window.Window', {
                 title: 'Tarea ' + taskId,
-                height:App.height,
                 autoScroll: true,
                 layout: 'fit',
-                modal: true,                
+                modal: true,
                 width: 900,
                 items: [panelAux]
             });
@@ -124,7 +122,6 @@ Ext.onReady(function() {
         });
 
         var panel = Ext.create('App.bam.js.common.TaskGrid', {
-            height:App.height,
             url: getRelativeServerURI('rs/tasks/process/{0}/loggeduser', [processInstanceId]),
             processInstanceId: processInstanceId,
             tbar: tbar
@@ -148,7 +145,6 @@ Ext.onReady(function() {
         });
 
         var grid = Ext.create('App.bam.js.common.DataGrid', {
-            height:App.height,
             tbar: tbar,
             processInstanceId: processInstanceId,
             url: getRelativeServerURI('rs/process/instance/{0}/variables/extjs', [processInstanceId])
@@ -171,7 +167,6 @@ Ext.onReady(function() {
         });
 
         var grid = Ext.create('App.bam.js.common.NodeHistoryGrid', {
-            height:App.height,
             tbar: tbar,
             processInstanceId: processInstanceId,
             url: getRelativeServerURI('rs/process/instance/{0}/history', [processInstanceId])
@@ -215,7 +210,6 @@ Ext.onReady(function() {
         });
 
         var oncoguide = Ext.create('App.bam.js.common.OncoguideGrid', {
-            height:App.height,
             url: getRelativeServerURI('rs/patient/{0}/pinstance/list', [patientId]),
             patientId: patientId
         });
@@ -263,7 +257,8 @@ Ext.onReady(function() {
          */
         var newOncoguide = Ext.create('App.bam.js.common.NewProcessInstancePanel', {
             urlOncoguides: getRelativeServerURI('/rs/process/definition/list/combo'),
-            patientId: patientId
+            patientId: patientId,
+            heigth:App.height
         });
 
         newOncoguide.addListener('success', function(nOncoguide, processInstanceId) {
@@ -276,8 +271,7 @@ Ext.onReady(function() {
         function onTaskSelected(grid, taskId, taskUrl) {
             var panelAux = Ext.create('App.bam.js.common.FormCustomPanel', {
                 taskId: taskId,
-                url: taskUrl,
-                height:App.height
+                url: taskUrl
             });
             panelAux.addListener('success', function(panel, frame, response) {
                 Ext.Msg.alert('Info', 'Tarea completada correctamente',
@@ -294,10 +288,9 @@ Ext.onReady(function() {
 
             var win = Ext.create('Ext.window.Window', {
                 title: 'Tarea ' + taskId,
-                height:App.height,
                 autoScroll: true,
                 layout: 'fit',
-                modal: true,                
+                modal: true,
                 width: 900,
                 items: [panelAux]
             });
@@ -308,9 +301,8 @@ Ext.onReady(function() {
         }
 
         var taskGrid = Ext.create('App.bam.js.common.TaskGrid', {
-            url: getRelativeServerURI('rs/tasks/patient/{patientId}/loggeduser',{patientId:patientId}),
-            patientId: patientId,
-            height:App.height
+            url: getRelativeServerURI('rs/tasks/patient/{patientId}/loggeduser', {patientId: patientId}),
+            patientId: patientId
         });
         taskGrid.addListener('taskselected', onTaskSelected);
         /**
@@ -318,7 +310,7 @@ Ext.onReady(function() {
          */
         var panel = Ext.create('Abada.tab.panel.TabPanel', {
             title: 'Id Paciente: ' + patientId,
-            //autoScroll:true,
+            layout:'fit',
             items: [{
                     title: 'Actuales',
                     items: [oncoguide]
@@ -349,7 +341,6 @@ Ext.onReady(function() {
      */
     function modePatient() {
         var panelPatient = Ext.create('App.bam.js.common.PatientGrid', {
-            height:App.height,
             url: getRelativeServerURI('rs/patient/search')
         });
         panelPatient.addListener('patientselected', function(grid, patientId, patientname) {
