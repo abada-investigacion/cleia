@@ -237,7 +237,7 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
             
             if(patient.getUser() != null && patient.getUser().getId() > 0){
                 userDao.postUser(patient.getUser());
-            }else{
+            }else if (patient.getUser() != null){
                 patient.setUser(userDao.getUserById(patient.getUser().getId()));
             }
             entityManager.persist(patient);
