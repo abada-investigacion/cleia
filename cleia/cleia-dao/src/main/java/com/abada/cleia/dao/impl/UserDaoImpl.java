@@ -27,7 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @author david
  */
 public class UserDaoImpl extends JpaDaoUtils implements UserDao {
-
+    
+    private static final String DEFAUL_ROLE = "ROLE_USER";
     private static final Log logger = LogFactory.getLog(UserDaoImpl.class);
     @PersistenceContext(unitName = "cleiaPU")
     private EntityManager entityManager;
@@ -158,6 +159,13 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
                 org.jbpm.task.User usertask = new org.jbpm.task.User();
                 usertask.setId(user.getUsername());
                 taskService.getTaskSession().addUser(usertask);
+                
+                if(user.getRoles() == null){
+                    Role r = new Role();
+                    r.setAuthority(DEFAUL_ROLE);
+                    user.addRole(r);
+                }
+                
                 this.addGroupsAndRoles(user, user.getGroups(), user.getRoles(), true);
                 user.setPassword(sha1PasswordEncoder.encodePassword(user.getPassword(), null));
 
