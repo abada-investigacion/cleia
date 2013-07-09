@@ -72,32 +72,31 @@ Ext.onReady(function() {
     setCentralPanel(grid);
 
     //*Funcion para los frompanel
-    function getO(form,selectionGroup) {
-        var id = form.getComponent("id").getValue();
-        if (id == "") {
+    function getO(selectionGroup) {
+        var id = Ext.getCmp('id').getValue();
+        if (id == '') {
             id = null;
         }
         var o = {
             id: id,
             enabled: true,
-            username: form.getComponent("username").getValue(),
-            accountNonExpired: form.getComponent("accountNonExpired").getValue(),
-            credentialsNonExpired: form.getComponent("credentialsNonExpired").getValue(),
-            password: form.getComponent("password").getValue(),
-            accountNonLocked: form.getComponent("accountNonLocked").getValue(),
+            username: Ext.getCmp('username').getValue(),
+            accountNonExpired: Ext.getCmp('accountNonExpired').getValue(),
+            credentialsNonExpired: Ext.getCmp('credentialsNonExpired').getValue(),
+            password: Ext.getCmp('password').getValue(),
+            accountNonLocked: Ext.getCmp('accountNonLocked').getValue(),
             groups: getListForObject(selectionGroup,'value'),
-            roles:[],
-            name: form.getComponent("name").getValue(),
-            surname: form.getComponent("surname").getValue(),
-            surname1: form.getComponent("surname1").getValue(),
-            genre: form.getComponent("genre").getValue(),
-            birthday: Ext.Date.format(form.getComponent("birthday").getValue(), 'Y-m-d H:i:s'),
-            tlf:form.getComponent("tlf").getValue(),
+            name: Ext.getCmp('name').getValue(),
+            surname: Ext.getCmp('surname').getValue(),
+            surname1: Ext.getCmp('surname1').getValue(),
+            genre: Ext.getCmp('genre').getValue(),
+            birthDay: Ext.Date.format(Ext.getCmp('birthday').getValue(), 'Y-m-d H:i:s'),
+            tlf:Ext.getCmp('tlf').getValue(),
             address:{
-                address:form.getComponent("address").getValue(),
-                city:form.getComponent("city").getValue(),
-                cp:form.getComponent("cp").getValue(),
-                country:form.getComponent("country").getValue()
+                address:Ext.getCmp('address').getValue(),
+                city:Ext.getCmp('city').getValue(),
+                cp:Ext.getCmp('cp').getValue(),
+                countryAddress:Ext.getCmp('country').getValue()
             }        
 
 
@@ -367,7 +366,7 @@ Ext.onReady(function() {
                 padding:'10 15 10 15',
                 items :[
                 {
-                    fieldLabel: 'Direccion',
+                    fieldLabel: 'Direcci&oacute;n',
                     name: 'address',
                     id: 'address',
                     value: address,
@@ -402,15 +401,15 @@ Ext.onReady(function() {
                 id: 'formPatient',
                 formBind: true,
                 handler: function() {
-                    alert(Ext.getCmp('username').getValue());
-                    if (formpanel.getComponent("password2").getValue() == formpanel.getComponent("password").getValue()) {
+                    
+                    if (Ext.getCmp('password2').getValue() == Ext.getCmp('password').getValue()) {
                         if (formpanel.getForm().isValid()) {
                
-                            doAjaxrequestJson(url, getO(formpanel,groupGrid.selModel), method, patientsGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error no se ha podido ' + opt + 'r');
+                            doAjaxrequestJson(url, getO(groupGrid.selModel), method, patientsGrid, wind,'Paciente '+ opt + 'do', 'Error. No se ha podido ' + opt + 'r');
                      
                         }
                     }else{
-                        Ext.Msg.alert('Error', 'la contrase&ntilde;a no son iguales');
+                        Ext.Msg.alert('Error', 'Las contrase&ntilde;as no son iguales');
                     }
 
                 },
