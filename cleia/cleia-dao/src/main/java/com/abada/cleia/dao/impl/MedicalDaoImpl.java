@@ -31,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
 
     private static final Log logger = LogFactory.getLog(MedicalDaoImpl.class);
+    
+   
     @PersistenceContext(unitName = "cleiaPU")
     private EntityManager entityManager;
     @Autowired
@@ -293,16 +295,16 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
                     }
                 }
             }
-            putMedicalid(idmedical, medical.getIds());
+            putMedicalid(idmedical, medical.getPatient().getUser().getIds());
 
             /*Modificamos el medico*/
             try {
                 this.persistMedical(medical1, medical);
-                userDao.updateUser(medical1, medical);
-                patientDao.updatePatient(medical1, medical);
+                userDao.updateUser(medical1.getPatient().getUser(), medical.getPatient().getUser());
+                patientDao.updatePatient(medical1.getPatient(), medical.getPatient());
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al modificar el medico "
-                        + medical.getName() + " " + medical.getSurname() + " " + medical.getSurname());
+                        + medical.getPatient().getName() + " " + medical.getPatient().getSurname() + " " + medical.getPatient().getSurname1());
             }
         } else {
             throw new Exception("Error. El medico no existe");
@@ -322,11 +324,11 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
             /*Modificamos el medico*/
             try {
                 this.persistMedical(medical1, medical);
-                userDao.updateUser(medical1, medical);
-                patientDao.updatePatient(medical1, medical);
+                userDao.updateUser(medical1.getPatient().getUser(), medical.getPatient().getUser());
+                patientDao.updatePatient(medical1.getPatient(), medical.getPatient());
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al modificar el medico "
-                        + medical1.getName() + " " + medical1.getSurname() + " " + medical1.getSurname1());
+                        + medical1.getPatient().getName() + " " + medical1.getPatient().getSurname() + " " + medical1.getPatient().getSurname1());
             }
         } else {
             throw new Exception("Error. El medico no existe");
@@ -344,16 +346,16 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
         Medical medical = entityManager.find(Medical.class, idmedical);
         String habilitar = "";
         if (medical != null) {
-            if ((!medical.isEnabled() && enable) || (medical.isEnabled() && !enable)) {
+            if ((!medical.getPatient().getUser().isEnabled() && enable) || (medical.getPatient().getUser().isEnabled() && !enable)) {
                 try {
-                    medical.setEnabled(enable);
+                    medical.getPatient().getUser().setEnabled(enable);
                 } catch (Exception e) {
                     if (enable) {
                         habilitar = "habilitar";
                     } else {
                         habilitar = "deshabilitar";
                     }
-                    throw new Exception("Error. Ha ocurrido un error al" + habilitar + " al medico " + medical.getName() + " " + medical.getSurname() + " " + medical.getSurname1());
+                    throw new Exception("Error. Ha ocurrido un error al" + habilitar + " al medico " + medical.getPatient().getName() + " " + medical.getPatient().getSurname() + " " + medical.getPatient().getSurname1());
                 }
             } else {
                 if (!enable) {
@@ -361,7 +363,7 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
                 } else {
                     habilitar = "habilitado";
                 }
-                throw new Exception("Error. El medico " + medical.getName() + " " + medical.getSurname() + " " + medical.getSurname1() + " ya esta " + habilitar);
+                throw new Exception("Error. El medico " + medical.getPatient().getName() + " " + medical.getPatient().getSurname() + " " + medical.getPatient().getSurname1() + " ya esta " + habilitar);
             }
         } else {
             throw new Exception("Error. El usuario no existe");
