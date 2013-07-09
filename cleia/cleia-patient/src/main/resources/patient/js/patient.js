@@ -79,18 +79,20 @@ Ext.onReady(function() {
         }
         var o = {
             id: id,
-            enabled: true,
-            username: Ext.getCmp('username').getValue(),
-            accountNonExpired: Ext.getCmp('accountNonExpired').getValue(),
-            credentialsNonExpired: Ext.getCmp('credentialsNonExpired').getValue(),
-            password: Ext.getCmp('password').getValue(),
-            accountNonLocked: Ext.getCmp('accountNonLocked').getValue(),
-            groups: getListForObject(selectionGroup,'value'),
+            user:{
+                enabled: true,
+                username: Ext.getCmp('username').getValue(),
+                accountNonExpired: true,
+                credentialsNonExpired: true,
+                password: Ext.getCmp('password').getValue(),
+                accountNonLocked: true,
+                groups: getListForObject(selectionGroup,'value')
+            },
             name: Ext.getCmp('name').getValue(),
             surname: Ext.getCmp('surname').getValue(),
             surname1: Ext.getCmp('surname1').getValue(),
             genre: Ext.getCmp('genre').getValue(),
-            birthDay: Ext.Date.format(Ext.getCmp('birthday').getValue(), 'Y-m-d H:i:s'),
+            birthDay: Ext.Date.format(Ext.getCmp('birthDay').getValue(), 'Y-m-d H:i:s'),
             tlf:Ext.getCmp('tlf').getValue(),
             address:{
                 address:Ext.getCmp('address').getValue(),
@@ -107,17 +109,30 @@ Ext.onReady(function() {
 
     function handleFormulario(opt, grid, title, url, selection) {
         var method = 'POST', tooltip = 'Insertar Paciente';
-        var id, username,password, name, surname, surname1, genre, birthday = new Date(), tlf,address,city,cp,country;
+        var id,
+        username,
+        password, 
+        name, 
+        surname, 
+        surname1, 
+        genre, 
+        birthDay = new Date(), 
+        tlf,address,city,cp,country;
 
         if (opt != 'Inserta' && selection.hasSelection()) {
             method = 'PUT';
             id = selection.getLastSelected().get('id');
+            username=selection.getLastSelected().get('username');
             name = selection.getLastSelected().get('name');
-            surname = selection.getLastSelected().get('surname1');
-            surname1 = selection.getLastSelected().get('surname2');            
+            surname = selection.getLastSelected().get('surname');
+            surname1 = selection.getLastSelected().get('surname1');            
             genre = selection.getLastSelected().get('genre');
-            birthday = selection.getLastSelected().get('birthday');
+            birthDay = selection.getLastSelected().get('birthDay');
             tlf = selection.getLastSelected().get('tlf');
+            address=selection.getLastSelected().get('address');
+            city=selection.getLastSelected().get('city');
+            cp=selection.getLastSelected().get('cp');
+            country=selection.getLastSelected().get('country');
             tooltip = 'Modificar Paciente';
             
           
@@ -146,7 +161,7 @@ Ext.onReady(function() {
             id: 'cbuser',
             url: getRelativeServerURI('rs/user/withoutAssignedPatient/combo'),
             emptyText: 'Cargar datos del usuario...',
-            width: 270,
+            width: 260,
             editable: false,
             allowBlank: true,
             noSelection: 'Cargar datos del usuario...',
@@ -160,29 +175,7 @@ Ext.onReady(function() {
                     Ext.getCmp('username').setValue(combouser.getRawValue());
                     groupGrid.selModel.deselectAll();
                     
-                    Abada.Ajax.requestJsonData({
-                        url:getRelativeServerURI('rs/user/{iduser}/groups',{iduser:combouser.getValue()}),
-                        scope:this,
-                        method:'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        failure:function(){            
-            
-                        },
-                        success:function(object){
-                            var groups=object.data;
-                            for (var i = 0; i < groupGrid.getStore().getCount(); i++) {
-                                var record = groupGrid.getStore().getAt(i);
-                                for (var j = 0; j < groups.length; j++) {
-                                    if (record.get("value") == groups[j].value) {
-                                        groupGrid.selModel.select(record, true, true);
-                                    }
-                                }
-
-                            }
-                        }
-                    });
+                    selectGroupGrid(combouser.getValue(),groupGrid);
                     
                     
                 }
@@ -191,12 +184,12 @@ Ext.onReady(function() {
 
         
         var datebirthday = Ext.create('Ext.form.field.Date', {
-            id: 'birthday',
-            name: 'birthday',
+            id: 'birthDay',
+            name: 'birthDay',
             format: 'd/m/Y',
             altFormats: 'd/m/Y',
             fieldLabel: 'Fecha Nacimiento',
-            value: birthday,
+            value: birthDay,
             width: 270
         });
 
@@ -208,34 +201,8 @@ Ext.onReady(function() {
             rowspan:4,
             padding:'10 15 0 15'
         });
-
-        
-        var checkboxaccountNonExpired = Ext.create('Ext.form.field.Checkbox', {
-            checked: true,
-            id: 'accountNonExpired',
-            name: 'accountNonExpired',
-            inputValue: true,
-            hidden: true
-        });
-
-        var checkboxcredentialsNonExpired = Ext.create('Ext.form.field.Checkbox', {
-            checked: true,
-            id: 'credentialsNonExpired',
-            name: 'credentialsNonExpired',
-            inputValue: true,
-            hidden: true
-        });
-
-        var checkboxaccountNonLocked = Ext.create('Ext.form.field.Checkbox', {
-            checked: true,
-            id: 'accountNonLocked',
-            name: 'accountNonLocked',
-            inputValue: true,
-            hidden: true
-        });
-
-
-        //form panel de insertar
+        groupGrid.getStore().load();
+     
         var formpanel = Ext.create('Ext.form.Panel', {           
             url: url,
             monitorValid: true,
@@ -294,7 +261,7 @@ Ext.onReady(function() {
                         value: password,
                         width: 270
 
-                    },checkboxaccountNonExpired, checkboxcredentialsNonExpired, checkboxaccountNonLocked]
+                    }]
 
                 },{
                     xtype:'container',                  
@@ -305,6 +272,7 @@ Ext.onReady(function() {
                         layout:'hbox',
                         items:[combouser,{
                             xtype:'button',
+                            id:'clearbutton',
                             text: 'limpiar',
                             handler: function(){
                           
@@ -416,7 +384,17 @@ Ext.onReady(function() {
                 tooltip: tooltip
             }]
         });
-        groupGrid.getStore().load();
+        
+                
+        if (opt != 'Inserta' && selection.hasSelection()) {
+            
+            Ext.getCmp('cbuser').disable();
+            Ext.getCmp('clearbutton').disable();
+            
+            groupGrid.getStore().on('load', function() {
+                selectGroupGrid(id,groupGrid);
+            });
+        }
         
 
         var wind = Ext.create('Ext.window.Window', {
@@ -433,5 +411,36 @@ Ext.onReady(function() {
 
         return formpanel;
     }
+    
+    
+    function selectGroupGrid(userid,groupGrid){
+        
+        Abada.Ajax.requestJsonData({
+            url:getRelativeServerURI('rs/user/{iduser}/groups',{
+                iduser:userid
+            }),
+            scope:this,
+            method:'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            failure:function(){            
+            
+            },
+            success:function(object){
+                var groups=object.data;
+                for (var i = 0; i < groupGrid.getStore().getCount(); i++) {
+                    var record = groupGrid.getStore().getAt(i);
+                    for (var j = 0; j < groups.length; j++) {
+                        if (record.get("value") == groups[j].value) {
+                            groupGrid.selModel.select(record, true, true);
+                        }
+                    }
+
+                }
+            }
+        });
+        
+    };
 
 });
