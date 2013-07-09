@@ -56,8 +56,15 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/main.htm", method = RequestMethod.GET)
-    public String getMain(HttpServletRequest request, Model model) {
-        return "dynamic/main";
+    public String getMain(HttpServletRequest request, Model model, Device device) {
+        request.getSession().invalidate();
+        if (device.isMobile() || device.isTablet()) {            
+            model.addAttribute("js", Arrays.asList("js_m/main.js"));
+            return "dynamic_mobile/main";
+        }else{
+            model.addAttribute("js", Arrays.asList("js/main.js"));
+            return "dynamic/main";
+        }
     }
 
     @RequestMapping(value = "/mainmenu.do")
