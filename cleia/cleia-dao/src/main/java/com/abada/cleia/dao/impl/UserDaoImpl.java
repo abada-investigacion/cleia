@@ -78,11 +78,11 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
                 u.getGroups().size();
                 u.getRoles().size();
                 u.getIds().size();
-                if (u instanceof Patient) {
+                /*if (u instanceof Patient) {
                     Patient p = (Patient) u;
                     p.getMedicals().size();
                     p.getProcessInstances().size();
-                }
+                }*/
 
             }
         }
@@ -120,11 +120,11 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
             user.getGroups().size();
             user.getRoles().size();
             user.getIds().size();
-            if (user instanceof Patient) {
+            /*if (user instanceof Patient) {
                 Patient p = (Patient) user;
                 p.getMedicals().size();
                 p.getProcessInstances();
-            }
+            }*/
             return user;
         }
 
@@ -237,11 +237,11 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
                 u.getGroups().size();
                 u.getRoles().size();
                 u.getIds().size();
-                if (u instanceof Patient) {
+                /*if (u instanceof Patient) {
                     Patient p = (Patient) u;
                     p.getProcessInstances().size();
                     p.getMedicals().size();
-                }
+                }*/
 
             }
         }
@@ -260,11 +260,11 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         u.getGroups().size();
         u.getRoles().size();
         u.getIds().size();
-        if (u instanceof Patient) {
+        /*if (u instanceof Patient) {
             Patient p = (Patient) u;
             p.getMedicals().size();
             p.getProcessInstances().size();
-        }
+        }*/
 
         return u;
     }

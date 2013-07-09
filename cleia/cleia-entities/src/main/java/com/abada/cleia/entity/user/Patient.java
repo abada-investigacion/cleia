@@ -5,6 +5,7 @@
 package com.abada.cleia.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,8 +16,10 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -25,7 +28,10 @@ import javax.persistence.TemporalType;
  * @author katsu
  */
 @Entity
-public class Patient extends User{    
+public class Patient implements Serializable{  
+    @JsonView(Views.Public.class)
+    @javax.persistence.Id    
+    private Long id;
     @JsonView(Views.Public.class)
     @Column(nullable = false,length = 255)
     private String name;
@@ -54,6 +60,26 @@ public class Patient extends User{
     @JsonView(Views.Level3.class)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "patientId")
     private List<PatientHasProcessInstance> processInstances;
+    @JsonView(Views.Public.class)
+    @OneToOne(optional = false)
+    @JoinColumn(name = "id",nullable = false)
+    private User user;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Genre getGenre() {
         return genre;

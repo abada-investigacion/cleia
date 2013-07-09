@@ -49,9 +49,9 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     public Patient getPatientById(long patientId) {
         Patient result = entityManager.find(Patient.class, patientId);
         if (result != null) {
-            result.getGroups().size();
-            result.getRoles().size();
-            result.getIds().size();
+            result.getUser().getGroups().size();
+            result.getUser().getRoles().size();
+            result.getUser().getIds().size();
             result.getProcessInstances().size();
         }
         return result;
@@ -66,9 +66,9 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     public List<Patient> getAllPatients() {
         List<Patient> lpatient = entityManager.createQuery("SELECT p FROM Patient p").getResultList();
         for (Patient patient : lpatient) {
-            patient.getGroups().size();
-            patient.getRoles().size();
-            patient.getIds().size();
+            patient.getUser().getGroups().size();
+            patient.getUser().getRoles().size();
+            patient.getUser().getIds().size();
             patient.getProcessInstances().size();
         }
         return lpatient;
@@ -84,16 +84,16 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     @Transactional(value = "cleia-txm", readOnly = true)
     public List<Patient> getPatientUser(GridRequest filters, String username) {
         List<Patient> lp = new ArrayList<Patient>();
-        User user = (User) entityManager.createQuery("select u from User u where u.username = :username").setParameter("username", username).getSingleResult();
-        if (user instanceof Patient) {
-            Patient patient = (Patient) user;
-            patient.getGroups().size();
-            patient.getRoles().size();
-            patient.getIds().size();
-            patient.getProcessInstances().size();
-            lp.add(patient);
+        Patient patient = (Patient) entityManager.createQuery("select p from Patient p where p.user.username = :username").setParameter("username", username).getSingleResult();
 
-        }
+
+        patient.getUser().getGroups().size();
+        patient.getUser().getRoles().size();
+        patient.getUser().getIds().size();
+        patient.getProcessInstances().size();
+        lp.add(patient);
+
+
         return lp;
 
     }
@@ -120,9 +120,9 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     public List<Patient> getAll(GridRequest filters) {
         List<Patient> lpatient = this.find(entityManager, "select p from Patient p" + filters.getQL("p", true), filters.getParamsValues(), filters.getStart(), filters.getLimit());
         for (Patient patient : lpatient) {
-            patient.getGroups().size();
-            patient.getRoles().size();
-            patient.getIds().size();
+            patient.getUser().getGroups().size();
+            patient.getUser().getRoles().size();
+            patient.getUser().getIds().size();
             patient.getProcessInstances().size();
         }
         return lpatient;
@@ -180,9 +180,9 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
                 query.append(")");
                 p = entityManager.createQuery(query.toString()).getResultList();
                 for (Patient patient : p) {
-                    patient.getGroups().size();
-                    patient.getRoles().size();
-                    patient.getIds().size();
+                    patient.getUser().getGroups().size();
+                    patient.getUser().getRoles().size();
+                    patient.getUser().getIds().size();
                     patient.getProcessInstances().size();
                 }
 
@@ -201,7 +201,7 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     public List<Id> getIdsForPatient(Long idpatient) {
         List<Patient> lp = entityManager.createQuery("SELECT p FROM Patient p WHERE p.id=?").setParameter(1, idpatient).getResultList();
         if (lp.size() > 0) {
-            return lp.get(0).getIds();
+            return lp.get(0).getUser().getIds();
         }
         return null;
     }
@@ -214,21 +214,16 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
      */
     @Transactional(value = "cleia-txm")
     public void postPatient(Patient patient) throws Exception {
-        if (patient.getIds() != null && !patient.getIds().isEmpty()) {
-            List<Patient> lpatients = this.findPatientsrepeatable(patient.getIds(), false);
-            /*Si no hay ningun paciente con el mismo identificador lo insertamos*/
-            if ((lpatients.isEmpty() && lpatients != null)) {
-                postPatientinsert(patient);
-            } else {
-                String name = "";
-                for (Patient pat : lpatients) {
-                    name = pat.getName() + " " + pat.getSurname() + " " + pat.getSurname() + ", ";
-                }
-                throw new Exception("Error. Ya existe el paciente " + name + " con esos identificadores");
-            }
+
+        if (patient.getId() > 0) {
+            entityManager.merge(patient);
         } else {
-            throw new Exception("Error. Ningún identificador enviado");
+            postPatientinsert(patient);
         }
+
+        /* } else {
+         throw new Exception("Error. Ningún identificador enviado");
+         }*/
 
     }
 
@@ -240,12 +235,15 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
      */
     @Transactional(value = "cleia-txm")
     public void postPatientinsert(Patient patient) throws Exception {
-        patient.setPassword(sha1PasswordEncoder.encodePassword(patient.getPassword(), null));
+        patient.getUser().setPassword(sha1PasswordEncoder.encodePassword(patient.getUser().getPassword(), null));
         try {
-            for (Id id : patient.getIds()) {
-                idDao.postId(id);
+            if (patient.getUser().getIds() != null) {
+                for (Id id : patient.getUser().getIds()) {
+                    idDao.postId(id);
+                }
             }
             entityManager.persist(patient);
+
         } catch (Exception e) {
             throw new Exception("Error. Ha ocurrido un error al insertar el paciente " + patient.getName() + " " + patient.getSurname() + " " + patient.getSurname1() + " " + e.toString());
         }
@@ -264,7 +262,7 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
             if (ids != null && !ids.isEmpty()) {
                 /*Comprobamos si vienen identificadores repetidos y si ese asi insertamos sino modificamos*/
                 for (Id id : ids) {
-                    id.setUser(patient);
+                    id.setUser(patient.getUser());
                     Id idbd = idDao.getIdByusertype(patient.getId(), id.getType().getValue());
                     if (idbd != null && !idbd.getType().isRepeatable()) {//modificadomos id actual
                         idDao.putId(idbd, id);
@@ -293,7 +291,7 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     public void putPatient(Long idpatient, Patient patient) throws Exception {
         Patient patient1 = entityManager.find(Patient.class, idpatient);
         if (patient1 != null) {
-            List<Patient> lpatients = this.findPatientsrepeatable(patient.getIds(), false);
+            List<Patient> lpatients = this.findPatientsrepeatable(patient.getUser().getIds(), false);
             if (!lpatients.isEmpty() && lpatients != null) {
                 if (lpatients.size() > 1 || (lpatients.size() == 1 && lpatients.get(0).getId() != patient.getId())) {
                     for (Patient aux : lpatients) {
@@ -304,11 +302,11 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
                     }
                 }
             }
-            putPatientid(idpatient, patient.getIds());
+            putPatientid(idpatient, patient.getUser().getIds());
             /*Modificamos el paciente*/
             try {
                 this.updatePatient(patient1, patient);
-                userDao.updateUser(patient1, patient);
+                userDao.updateUser(patient1.getUser(), patient.getUser());
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al modificar el paciente "
                         + patient.getName() + " " + patient.getSurname() + " " + patient.getSurname());
@@ -331,7 +329,7 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
             /*Modificamos el paciente*/
             try {
                 this.updatePatient(patient1, patient);
-                userDao.updateUser(patient1, patient);
+                userDao.updateUser(patient1.getUser(), patient.getUser());
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al modificar el paciente "
                         + patient1.getName() + " " + patient1.getSurname() + " " + patient1.getSurname1());
@@ -352,9 +350,9 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
         Patient patient = entityManager.find(Patient.class, idpatient);
         String habilitar = "";
         if (patient != null) {
-            if ((!patient.isEnabled() && enable) || (patient.isEnabled() && !enable)) {
+            if ((!patient.getUser().isEnabled() && enable) || (patient.getUser().isEnabled() && !enable)) {
                 try {
-                    patient.setEnabled(enable);
+                    patient.getUser().setEnabled(enable);
                 } catch (Exception e) {
                     if (enable) {
                         habilitar = "habilitar";

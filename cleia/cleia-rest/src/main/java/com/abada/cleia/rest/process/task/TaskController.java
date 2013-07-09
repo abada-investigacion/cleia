@@ -100,9 +100,10 @@ public class TaskController {
      * you belong to.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-    @RequestMapping(value = "/{userId}/participation", method = RequestMethod.GET)
-    public ExtjsStore<TaskRef> getTasksForIdRefPaticipation(@PathVariable String userId) {
-        List<TaskRef> aux=processTaskListResponse(taskManagement.getUnassignedTasks(userId, null));
+    @RequestMapping(value = "/participation/loggeduser", method = RequestMethod.GET)
+    public ExtjsStore<TaskRef> getTasksForIdRefPaticipation(HttpServletRequest request) {
+        AbstractAuthenticationToken principal=(AbstractAuthenticationToken)request.getUserPrincipal();
+        List<TaskRef> aux=processTaskListResponse(taskManagement.getUnassignedTasks(principal.getName(), null));
         ExtjsStore<TaskRef> result=new ExtjsStore<TaskRef>();
         result.setData(aux);
         return result;

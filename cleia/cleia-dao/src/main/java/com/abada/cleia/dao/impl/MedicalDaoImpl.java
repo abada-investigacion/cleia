@@ -54,10 +54,10 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
     public Medical getMedicalById(long id) {
         Medical result = entityManager.find(Medical.class, id);
         if (result != null) {
-            result.getGroups().size();
-            result.getRoles().size();
-            result.getIds().size();
-            result.getProcessInstances().size();
+            result.getPatient().getUser().getGroups().size();
+            result.getPatient().getUser().getRoles().size();
+            result.getPatient().getUser().getIds().size();
+            result.getPatient().getProcessInstances().size();
         }
         return result;
     }
@@ -71,10 +71,10 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
     public List<Medical> getAllMedicals() {
         List<Medical> lmedical = entityManager.createQuery("SELECT m FROM Medical m").getResultList();
         for (Medical medical : lmedical) {
-            medical.getGroups().size();
-            medical.getRoles().size();
-            medical.getIds().size();
-            medical.getProcessInstances().size();
+            medical.getPatient().getUser().getGroups().size();
+            medical.getPatient().getUser().getRoles().size();
+            medical.getPatient().getUser().getIds().size();
+            medical.getPatient().getProcessInstances().size();
         }
         return lmedical;
 
@@ -92,10 +92,10 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
         Medical m = (Medical) entityManager.createQuery("select m from Medical m where m.username = :username").setParameter("username", username).getSingleResult();
         if (m instanceof Medical) {
             Medical medical = (Medical) m;
-            medical.getGroups().size();
-            medical.getRoles().size();
-            medical.getIds().size();
-            medical.getProcessInstances().size();
+            medical.getPatient().getUser().getGroups().size();
+            medical.getPatient().getUser().getRoles().size();
+            medical.getPatient().getUser().getIds().size();
+            medical.getPatient().getProcessInstances().size();
             lm.add(medical);
 
         }
@@ -125,10 +125,10 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
     public List<Medical> getAll(GridRequest filters) {
         List<Medical> lmedical = this.find(entityManager, "select m from Medical m" + filters.getQL("m", true), filters.getParamsValues(), filters.getStart(), filters.getLimit());
         for (Medical medical : lmedical) {
-            medical.getGroups().size();
-            medical.getRoles().size();
-            medical.getIds().size();
-            medical.getProcessInstances().size();
+            medical.getPatient().getUser().getGroups().size();
+            medical.getPatient().getUser().getRoles().size();
+            medical.getPatient().getUser().getIds().size();
+            medical.getPatient().getProcessInstances().size();
         }
         return lmedical;
 
@@ -143,7 +143,7 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
     @Transactional("cleia-txm")
     public void persistMedical(Medical medical, Medical m) {
         medical.setPatients(m.getPatients());
-        patientDao.updatePatient(medical, m);
+        //FIXME patientDao.updatePatient(medical, m);
     }
 
     /**
@@ -195,7 +195,7 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
     public List<Id> getIdsForMedical(Long idmedical) {
         List<Medical> lmedical = entityManager.createQuery("SELECT m FROM Medical m WHERE m.id=?").setParameter(1, idmedical).getResultList();
         if (lmedical.size() > 0) {
-            return lmedical.get(0).getIds();
+            return lmedical.get(0).getPatient().getUser().getIds();
         }
         return null;
     }
@@ -209,17 +209,17 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
     @Transactional(value = "cleia-txm")
     public void postMedical(Medical medical) throws Exception {
         Medical m = null;
-        if (medical.getIds() != null && !medical.getIds().isEmpty()) {
-            List<Medical> lmedicals = this.findMedicalsrepeatable(medical.getIds(), false);
+        if (medical.getPatient().getUser().getIds() != null && !medical.getPatient().getUser().getIds().isEmpty()) {
+            List<Medical> lmedicals = this.findMedicalsrepeatable(medical.getPatient().getUser().getIds(), false);
             /*Si no hay ningun medico con el mismo identificador lo insertamos*/
             if ((lmedicals.isEmpty() && lmedicals != null)) {
-                medical.setPassword(sha1PasswordEncoder.encodePassword(medical.getPassword(), null));
+                medical.getPatient().getUser().setPassword(sha1PasswordEncoder.encodePassword(medical.getPatient().getUser().getPassword(), null));
                 try {
-                    for (Id id : medical.getIds()) {
+                    for (Id id : medical.getPatient().getUser().getIds()) {
                         idDao.postId(id);
                     }
                     for (int i = 0; i < medical.getPatients().size(); i++) {
-                        List<Patient> lpatients = patientDao.findPatientsrepeatable(medical.getPatients().get(i).getIds(), false);
+                        List<Patient> lpatients = patientDao.findPatientsrepeatable(medical.getPatients().get(i).getUser().getIds(), false);
                         if ((lpatients.isEmpty() && lpatients != null)) {
                             patientDao.postPatientinsert(medical.getPatients().get(i));
                         }
@@ -227,12 +227,12 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
                     medical.addPatients(medical.getPatients());
                     entityManager.persist(medical);
                 } catch (Exception e) {
-                    throw new Exception("Error. Ha ocurrido un error al insertar el medico " + medical.getName() + " " + medical.getSurname() + " " + medical.getSurname1(), e);
+                    throw new Exception("Error. Ha ocurrido un error al insertar el medico " + medical.getPatient().getName() + " " + medical.getPatient().getSurname() + " " + medical.getPatient().getSurname1(), e);
                 }
             } else {
                 String name = "";
                 for (Medical me : lmedicals) {
-                    name = me.getName() + " " + me.getSurname() + " " + me.getSurname() + ", ";
+                    name = me.getPatient().getName() + " " + me.getPatient().getSurname() + " " + me.getPatient().getSurname() + ", ";
                 }
                 throw new Exception("Error. Ya existe el medico " + name + " con esos identificadores");
             }
@@ -254,8 +254,8 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
         if (medical != null) {
             if (ids != null && !ids.isEmpty()) {
                 /*Comprobamos si vienen identificadores repetidos y si ese asi insertamos sino modificamos*/
-                for (Id id : medical.getIds()) {
-                    id.setUser(medical);
+                for (Id id : medical.getPatient().getUser().getIds()) {
+                    id.setUser(medical.getPatient().getUser());
                     Id idbd = idDao.getIdByusertype(id.getUser().getId(), id.getType().getValue());
                     if (idbd != null) {//modificadomos id actual
                         idDao.putId(idbd, id);
@@ -284,27 +284,27 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
     public void putMedical(Long idmedical, Medical medical) throws Exception {
         Medical medical1 = entityManager.find(Medical.class, idmedical);
         if (medical1 != null) {
-            List<Medical> lmedicals = this.findMedicalsrepeatable(medical.getIds(), false);
+            List<Medical> lmedicals = this.findMedicalsrepeatable(medical.getPatient().getUser().getIds(), false);
             if (!lmedicals.isEmpty() && lmedicals != null) {
                 if (lmedicals.size() > 1 || (lmedicals.size() == 1 && lmedicals.get(0).getId() != medical.getId())) {
                     for (Medical aux : lmedicals) {
                         if (aux.getId() != medical1.getId()) {
-                            throw new Exception("Error. El medico " + aux.getName() + " "
-                                    + aux.getSurname() + " " + aux.getSurname1() + " ya tiene asignado uno de los identificadores enviados");
+                            throw new Exception("Error. El medico " + aux.getPatient().getName() + " "
+                                    + aux.getPatient().getSurname() + " " + aux.getPatient().getSurname1() + " ya tiene asignado uno de los identificadores enviados");
                         }
                     }
                 }
             }
-            putMedicalid(idmedical, medical.getIds());
+            putMedicalid(idmedical, medical.getPatient().getUser().getIds());
 
             /*Modificamos el medico*/
             try {
                 this.persistMedical(medical1, medical);
-                userDao.updateUser(medical1, medical);
-                patientDao.updatePatient(medical1, medical);
+                userDao.updateUser(medical1.getPatient().getUser(), medical.getPatient().getUser());
+                patientDao.updatePatient(medical1.getPatient(), medical.getPatient());
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al modificar el medico "
-                        + medical.getName() + " " + medical.getSurname() + " " + medical.getSurname());
+                        + medical.getPatient().getName() + " " + medical.getPatient().getSurname() + " " + medical.getPatient().getSurname1());
             }
         } else {
             throw new Exception("Error. El medico no existe");
@@ -324,11 +324,11 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
             /*Modificamos el medico*/
             try {
                 this.persistMedical(medical1, medical);
-                userDao.updateUser(medical1, medical);
-                patientDao.updatePatient(medical1, medical);
+                userDao.updateUser(medical1.getPatient().getUser(), medical.getPatient().getUser());
+                patientDao.updatePatient(medical1.getPatient(), medical.getPatient());
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al modificar el medico "
-                        + medical1.getName() + " " + medical1.getSurname() + " " + medical1.getSurname1());
+                        + medical1.getPatient().getName() + " " + medical1.getPatient().getSurname() + " " + medical1.getPatient().getSurname1());
             }
         } else {
             throw new Exception("Error. El medico no existe");
@@ -346,16 +346,16 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
         Medical medical = entityManager.find(Medical.class, idmedical);
         String habilitar = "";
         if (medical != null) {
-            if ((!medical.isEnabled() && enable) || (medical.isEnabled() && !enable)) {
+            if ((!medical.getPatient().getUser().isEnabled() && enable) || (medical.getPatient().getUser().isEnabled() && !enable)) {
                 try {
-                    medical.setEnabled(enable);
+                    medical.getPatient().getUser().setEnabled(enable);
                 } catch (Exception e) {
                     if (enable) {
                         habilitar = "habilitar";
                     } else {
                         habilitar = "deshabilitar";
                     }
-                    throw new Exception("Error. Ha ocurrido un error al" + habilitar + " al medico " + medical.getName() + " " + medical.getSurname() + " " + medical.getSurname1());
+                    throw new Exception("Error. Ha ocurrido un error al" + habilitar + " al medico " + medical.getPatient().getName() + " " + medical.getPatient().getSurname() + " " + medical.getPatient().getSurname1());
                 }
             } else {
                 if (!enable) {
@@ -363,7 +363,7 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
                 } else {
                     habilitar = "habilitado";
                 }
-                throw new Exception("Error. El medico " + medical.getName() + " " + medical.getSurname() + " " + medical.getSurname1() + " ya esta " + habilitar);
+                throw new Exception("Error. El medico " + medical.getPatient().getName() + " " + medical.getPatient().getSurname() + " " + medical.getPatient().getSurname1() + " ya esta " + habilitar);
             }
         } else {
             throw new Exception("Error. El usuario no existe");
