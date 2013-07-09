@@ -8,9 +8,6 @@ Ext.require([
 ]);
 
 Ext.setup({
-    viewport: {
-        cls: ['body-abada']
-    },
     onReady: function() {
 
         function formSubmit() {

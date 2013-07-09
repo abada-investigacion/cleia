@@ -4,16 +4,16 @@
  */
 
 Ext.require([
-    'Ext.window.MessageBox'
+    'Ext.MessageBox'
 ])
 
 Ext.onReady(function() {
 
- Ext.Msg.show({
+ Ext.MessageBox.show({
      title:'Error Inesperado',
      msg: 'Ha ocurrido un error inesperado. Contacte con el servicio tecnico',
    //  buttons: Ext.Msg.YESNOCANCEL,
-     icon: Ext.Msg.ERROR,
+     icon: Ext.MessageBox.ERROR,
      closable:false
 });
 

@@ -5,7 +5,7 @@
 <link rel="stylesheet" type="text/css" href="<@spring.url relativeUrl="/touch/resources/css/sencha-touch.css"/>" />
 <!--Tocuch base -->
 <script src="<@spring.url relativeUrl="/touch/sencha-touch-all.js"/>" type="text/javascript"></script>
-<script src="<@spring.url relativeUrl="/abada/ext-abada-utils.js"/>" type="text/javascript"></script>
+<script src="<@spring.url relativeUrl="/abada-touch/ext-abada-utils.js"/>" type="text/javascript"></script>
 
 <script type="text/javascript">
     Ext.Loader.setConfig({
@@ -14,7 +14,7 @@
         paths:{
             'Ext': '<@spring.url relativeUrl="/touch/src" />',
             'App': '<@spring.url relativeUrl="/" />',
-            'Abada': '<@spring.url relativeUrl="/abada" />'
+            'Abada': '<@spring.url relativeUrl="/abada-touch" />'
         }
     });
 
