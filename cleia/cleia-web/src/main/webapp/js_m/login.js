@@ -3,17 +3,14 @@
  * and open the template in the editor.
  */
 Ext.require([
-    'Ext.form.Panel',
-    'Ext.form.field.Text',
-    'Ext.form.action.StandardSubmit',
-    'Ext.button.Button',
-    'Ext.window.Window',
-    'Ext.util.KeyNav',
     'Abada.Ajax',
     'Abada.Base64'
 ]);
 
 Ext.setup({
+    viewport: {
+        cls: ['body-abada']
+    },
     onReady: function() {
 
         function formSubmit() {
@@ -34,89 +31,59 @@ Ext.setup({
         }
 
         function getBasicAuthentication() {
-            return 'Basic ' + Abada.Base64.encode(login.getForm().findField('j_username').getValue() + ':' + login.getForm().findField('j_password').getValue());
+            return 'Basic ' + Abada.Base64.encode(login.getAt(0).getValue() + ':' + login.getAt(1).getValue());
         }
 
         function formSubmitPriv() {
-            if (login.getForm().isValid()) {
-                login.getForm().submit({
-                    method: 'POST',
-                    waitTitle: 'Conectando',
-                    waitMsg: 'Comprobando usuario y contrase&ntilde;a...',
-                    failure: function(form, action) {
-                    },
-                    success: function() {
-                        //window.location='main.htm';
-                    }
-                });
-            }
+            login.submit({
+                method: 'POST',
+                waitTitle: 'Conectando',
+                waitMsg: 'Comprobando usuario y contrase&ntilde;a...',
+                failure: function(form, action) {
+                },
+                success: function() {
+                    //window.location='main.htm';
+                }
+            });
         }
 
         var login = Ext.create('Ext.form.Panel', {
-            region: 'center',
             url: 'j_spring_security_check',
-            defaultType: 'textfield',
-            monitorValid: true,
-            frame: false,
+            fullscreen: true,
             standardSubmit: true,
-            bodyPadding: '15 10 15 10',
-            defaults: {
-                labelStyle: 'margin-left: 15px;',
-                labelPad: 5,
-                labelWidth: 130
-            },
             items: [
                 {
-                    fieldLabel: 'Nombre de Usuario',
-                    name: 'j_username',
-                    id: 'j_username',
-                    allowBlank: false
-                }, {
-                    fieldLabel: 'Contrase&ntilde;a',
-                    name: 'j_password',
-                    id: 'j_password',
-                    allowBlank: false,
-                    inputType: 'password'
-                }],
-            buttons: [
-                {
-                    xtype: 'component',
-                    style: {
-                        top: 0
+                    xtype: 'fieldset',
+                    title: 'Acceder',
+                    instructions: 'Please enter the information above.',
+                    defaults: {
+                        required: true
                     },
-                    html: '<a href="main.htm">' +
-                            '<img alt=\" \" src=\"' + getRelativeURI('/images/logos/dnie.png') + '\" style=\"height:30px;\" />' +
-                            '</a>'
-                }, '->'
-                        , {
-                    text: 'Acceso',
-                    id: 'blogin',
-                    formBind: true,
-                    handler: formSubmit,
-                    tooltip: 'Acceso a la aplicaci&oacute;n'
+                    items: [{
+                            xtype: 'textfield',
+                            label: 'Usuario',
+                            name: 'j_username',
+                            id: 'j_username'
+                        }, {
+                            xtype: 'passwordfield',
+                            label: 'Contrase&ntilde;a',
+                            name: 'j_password',
+                            id: 'j_password'
+                        }]
+                },
+                {
+                    xtype: 'toolbar',
+                    docked: 'top',
+                    height:30,
+                    items: [{
+                            text: 'Acceso',
+                            ui: 'round',
+                            id: 'blogin',
+                            scope: this,
+                            handler: formSubmit
+                        }]
                 }]
         });
 
-        var win = Ext.create('Ext.window.Window', {
-            id: 'wlogin',
-            closable: false,
-            title: 'Acceder',
-            items: [login]
-        });
-
-        var view = Ext.create('Ext.Viewport', {
-            //layout: 'ux.center',               
-            autoScroll: true,
-            cls: ['body-abada'],
-            items: [
-            ]
-        });
-
-        win.show();
-
-        new Ext.util.KeyNav('wlogin', {
-            'enter': formSubmit,
-            scope: login
-        });
-
+        Ext.Viewport.add(login);
     }});
