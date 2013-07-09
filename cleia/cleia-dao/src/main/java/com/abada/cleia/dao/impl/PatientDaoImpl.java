@@ -215,11 +215,8 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     @Transactional(value = "cleia-txm")
     public void postPatient(Patient patient) throws Exception {
 
-        if (patient.getId() > 0) {
-            entityManager.merge(patient);
-        } else {
-            postPatientinsert(patient);
-        }
+
+        postPatientinsert(patient);
 
         /* } else {
          throw new Exception("Error. Ningún identificador enviado");
@@ -237,10 +234,11 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     public void postPatientinsert(Patient patient) throws Exception {
         patient.getUser().setPassword(sha1PasswordEncoder.encodePassword(patient.getUser().getPassword(), null));
         try {
-            if (patient.getUser().getIds() != null) {
-                for (Id id : patient.getUser().getIds()) {
-                    idDao.postId(id);
-                }
+            
+            if(patient.getUser() != null && patient.getUser().getId() > 0){
+                userDao.postUser(patient.getUser());
+            }else{
+                patient.setUser(userDao.getUserById(patient.getUser().getId()));
             }
             entityManager.persist(patient);
 
