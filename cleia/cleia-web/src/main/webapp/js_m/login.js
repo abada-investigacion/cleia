@@ -52,7 +52,6 @@ Ext.setup({
                 {
                     xtype: 'fieldset',
                     title: 'Acceder',
-                    instructions: 'Please enter the information above.',
                     defaults: {
                         required: true
                     },
