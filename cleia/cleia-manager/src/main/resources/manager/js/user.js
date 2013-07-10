@@ -163,8 +163,7 @@ Ext.onReady(function() {
 
 
         //form panel de insertar
-        var formpanel = Ext.create('Ext.form.Panel', {
-            title: opt + 'r',
+        var formpanel = Ext.create('Ext.form.Panel', {            
             url: url,
             defaultType: 'textfield',
             monitorValid: true,
@@ -215,10 +214,10 @@ Ext.onReady(function() {
                     if (formpanel.getComponent("password2").getValue() == formpanel.getComponent("password").getValue()) {
                         if (formpanel.getForm().isValid()) {
                             var form = getO(formpanel, groupGrid.selModel, roleGrid.selModel)
-                            doAjaxrequestJson(url, form, method, usersGrid, wind, 'Usuario '+ opt + 'do', 'Error no se ha podido ' + opt + 'r');
+                            doAjaxrequestJson(url, form, method, usersGrid, wind, 'Usuario '+ opt + 'do', 'Error. No se ha podido ' + opt + 'r');
                         }
                     } else {
-                        Ext.Msg.alert('Error', 'la contrase&ntilde;a no son iguales');
+                        Ext.Msg.alert('Error', 'Las contrase&ntilde;as no son iguales');
 
                     }
                 },
@@ -262,6 +261,7 @@ Ext.onReady(function() {
 
 
         var wind = Ext.create('Ext.window.Window', {
+            title: opt + 'r',
             id: 'usuario',
             autoScroll: false,
             closable: true,
