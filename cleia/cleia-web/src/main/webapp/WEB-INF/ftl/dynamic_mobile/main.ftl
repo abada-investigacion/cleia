@@ -7,8 +7,6 @@
         </#list>
     </#if>
 
-    <script src="<@spring.url relativeUrl="/js/main.js"/>" type="text/javascript"></script>    
-
     <#if extjs??>
         <#list extjs as j>
     <script src="${j}" type="text/javascript"></script>

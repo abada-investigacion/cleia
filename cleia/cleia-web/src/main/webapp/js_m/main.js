@@ -3,13 +3,20 @@
  * and open the template in the editor.
  */
 
+Ext.require(['Abada.menu.MainMenu']);
+
 Ext.setup({
+    viewport: {
+        fullscreen: true
+    },
     onReady: function() {
+
         var menu = Ext.create('Abada.menu.MainMenu', {
             url: getRelativeURI('mainmenu.do'),
-            autoLoadData: true
+            title:'Men&uacute;'
         });
         
         Ext.Viewport.add(menu);
+
     }});
 
