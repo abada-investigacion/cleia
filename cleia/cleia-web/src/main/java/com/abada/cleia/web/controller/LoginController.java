@@ -67,7 +67,7 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/mainmenu.do")
-    public ExtjsStore getMenu(HttpServletRequest request) {
+    public ExtjsStore getMenu(HttpServletRequest request, Device device) {
         String[] roles = null;
         if (request.getUserPrincipal() instanceof AbstractAuthenticationToken) {
             AbstractAuthenticationToken user = (AbstractAuthenticationToken) request.getUserPrincipal();
@@ -78,7 +78,14 @@ public class LoginController {
             }
         }
         ExtjsStore result = new ExtjsStore();
-        result.setData(this.menuService.getMenus(request.getContextPath(), roles));
+        com.abada.springframework.web.servlet.menu.Device deviceAux;
+        if (device.isMobile())
+            deviceAux=com.abada.springframework.web.servlet.menu.Device.MOBILE;
+        else if (device.isNormal())
+            deviceAux=com.abada.springframework.web.servlet.menu.Device.DESKTOP;
+        else
+            deviceAux=com.abada.springframework.web.servlet.menu.Device.TABLET;
+        result.setData(this.menuService.getMenus(request.getContextPath(),deviceAux, roles));
         return result;
     }
 }
