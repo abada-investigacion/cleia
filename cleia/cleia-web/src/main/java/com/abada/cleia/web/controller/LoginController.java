@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mobile.device.Device;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,16 +35,18 @@ public class LoginController {
     public String getLogin(HttpServletRequest request, Model model, Device device) {
         request.getSession().invalidate();
         if (device.isMobile() || device.isTablet()) {            
+            model.addAttribute("isDesktop", false);
             model.addAttribute("js", Arrays.asList("js_m/login.js"));
-            return "dynamic_mobile/login";
+            return "dynamic/login";
         }else{
+            model.addAttribute("isDesktop", device.isNormal());
             model.addAttribute("js", Arrays.asList("js/login.js"));
             return "dynamic/login";
         }
     }
 
     @RequestMapping(value = "/exit.htm", method = RequestMethod.GET)
-    @MenuEntry(icon = "images/logout.png", menuGroup = "Salir", order = 0, text = "Salir")
+    @MenuEntry(icon = "images/logout.png", menuGroup = "Salir", order = 0, text = "Salir",devices = {com.abada.springframework.web.servlet.menu.Device.DESKTOP, com.abada.springframework.web.servlet.menu.Device.MOBILE, com.abada.springframework.web.servlet.menu.Device.TABLET})
     public String getExit(HttpServletRequest request, Model model) {
         model.addAttribute("js", Arrays.asList("js/exit.js"));
         return "dynamic/login";
@@ -56,23 +59,38 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/main.htm", method = RequestMethod.GET)
-    public String getMain(HttpServletRequest request, Model model) {
-        return "dynamic/main";
+    public String getMain(HttpServletRequest request, Model model, Device device) {
+        if (device.isMobile() || device.isTablet()) {          
+            model.addAttribute("isDesktop", false);
+            model.addAttribute("js", Arrays.asList("js_m/menu.js"));
+            return "dynamic/main";
+        }else{
+            model.addAttribute("isDesktop", device.isNormal());
+            model.addAttribute("js", Arrays.asList("js/main.js"));
+            return "dynamic/main";
+        }
     }
 
     @RequestMapping(value = "/mainmenu.do")
-    public ExtjsStore getMenu(HttpServletRequest request) {
+    public ExtjsStore getMenu(HttpServletRequest request, Device device) {
         String[] roles = null;
         if (request.getUserPrincipal() instanceof AbstractAuthenticationToken) {
             AbstractAuthenticationToken user = (AbstractAuthenticationToken) request.getUserPrincipal();
             roles = new String[user.getAuthorities().size()];
-            Object[] ga = user.getAuthorities().toArray();
+            GrantedAuthority[] ga = user.getAuthorities().toArray(new GrantedAuthority[0]);
             for (int i = 0; i < user.getAuthorities().size(); i++) {
-                roles[i] = ga[i].toString();
+                roles[i] = ga[i].getAuthority();
             }
         }
         ExtjsStore result = new ExtjsStore();
-        result.setData(this.menuService.getMenus(request.getContextPath(), roles));
+        com.abada.springframework.web.servlet.menu.Device deviceAux;
+        if (device.isMobile())
+            deviceAux=com.abada.springframework.web.servlet.menu.Device.MOBILE;
+        else if (device.isNormal())
+            deviceAux=com.abada.springframework.web.servlet.menu.Device.DESKTOP;
+        else
+            deviceAux=com.abada.springframework.web.servlet.menu.Device.TABLET;
+        result.setData(this.menuService.getMenus(request.getContextPath(),deviceAux, roles));
         return result;
     }
 }
