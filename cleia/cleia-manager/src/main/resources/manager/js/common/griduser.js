@@ -8,7 +8,7 @@
 Ext.define('App.manager.js.common.griduser', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'
     ,'Ext.ux.grid.FiltersFeature','Ext.selection.CheckboxModel', 'Ext.ux.CheckColumn',
-    'Abada.grid.column.CheckBox',],
+    'Abada.grid.column.CheckBox'],
     extend:'Ext.grid.Panel',
     config:{
         checkboxse:undefined,

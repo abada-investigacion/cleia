@@ -21,7 +21,7 @@ Ext.onReady(function() {
                     if (usersGrid.selModel.getCount() == 1) {
                         handleFormulario('Modifica', usersGrid, 'Usuario', getRelativeServerURI('rs/user/{iduser}', {
                             iduser:usersGrid.selModel.getLastSelected().get('id')
-                            }), usersGrid.selModel);
+                        }), usersGrid.selModel);
                     } else {
                         Ext.Msg.alert('', 'Seleccione un usuario');
                     }
@@ -42,7 +42,7 @@ Ext.onReady(function() {
                     doAjaxrequestJson(getRelativeServerURI('rs/user/{iduser}/{enable}', {
                         iduser:form.id,
                         enable:form.enabled
-                        }), form, 'PUT', usersGrid, null, 'Usuario '+status+'do', 'Error. No se ha podido ' + status + 'r');
+                    }), form, 'PUT', usersGrid, null, 'Usuario '+status+'do', 'Error. No se ha podido ' + status + 'r');
               
                 } else
                     Ext.Msg.alert('', 'Seleccione un usuario');
@@ -66,7 +66,6 @@ Ext.onReady(function() {
     });
 
     var grid = Ext.create('Ext.panel.Panel', {
-        frame: true,
         autoWidth: true,
         autoHeight: true,
         title: '',
@@ -77,23 +76,32 @@ Ext.onReady(function() {
     setCentralPanel(grid);
 
     //*Funcion para los frompanel
-    function getO(form, selectionGroup, selectionRole) {
-        var id = form.getComponent("id").getValue();
+    function getO(form, selectionGroup, selectionRole,idGridData) {
+        var pollitas=  idGridData[0].getData();
+        var id = Ext.getCmp("id").getValue();
         if (id == "") {
             id = null;
         }
         var o = {
             id: id,
-            enabled: form.getComponent("enabled").getValue(),
-            username: form.getComponent("username").getValue(),
-            accountNonExpired: form.getComponent("accountNonExpired").getValue(),
-            credentialsNonExpired: form.getComponent("credentialsNonExpired").getValue(),
-            password: form.getComponent("password").getValue(),
-            accountNonLocked: form.getComponent("accountNonLocked").getValue(),
+            enabled: Ext.getCmp("enabled").getValue(),
+            username: Ext.getCmp("username").getValue(),
+            accountNonExpired: true,
+            credentialsNonExpired: true,
+            password: Ext.getCmp("password").getValue(),
+            accountNonLocked: true,
             groups: getListForObject(selectionGroup,'value'),
-            roles: getListForObject(selectionRole,'authority')
+            roles: getListForObject(selectionRole,'authority'),
+            ids:[{
+                value:'asfasfa',
+                idtype:{
+                    value:'adsfasfd'
+                }
+            }]
+        
 
         };
+        
         return o;
     }
     
@@ -113,96 +121,175 @@ Ext.onReady(function() {
         }
 
         var groupGrid = Ext.create('App.manager.js.common.gridgroup', {
+            title:'',
             url: getRelativeServerURI('rs/group/search'),
-            width: 250,
+            width: 400,
             height: 250,
             checkboxse: true,
             page: 500,
             rowspan: 4
         });
         var roleGrid = Ext.create('App.manager.js.common.gridrole', {
+            title:'',
             url: getRelativeServerURI('rs/role/search'),
-            width: 250,
+            width: 400,
             height: 250,
             checkboxse: true,
             page: 500,
             rowspan: 4
         });
+        
+        var idGrid = Ext.create('App.manager.js.common.gridids', {
+            title:'',
+            width: 400,
+            height: 250,
+            checkboxse: true,
+            page: 500,
+            rowspan: 4
+        });
+        
+        var comboidtype = Ext.create('Abada.form.field.ComboBox', {
+            id: 'cbidtype',
+            url: getRelativeServerURI('rs/idtype/search/combo'),
+            fieldLabel: 'Tipo',
+            emptyText: 'Seleccione un Tipo',
+            padding:'0 15 10 0',
+            width: 150,
+            editable: false,
+            labelWidth:50,
+            labelAlign:'top',
+            selectedValue: ''
+        });
+
+        comboidtype.loadStore();
 
         var checkboxenabled = Ext.create('Ext.form.field.Checkbox', {
             checked: enabled,
             fieldLabel: 'Habilitar',
             id: 'enabled',
             name: 'enabled',
-            width: 250
+            labelWidth:125
 
         });
-        var checkboxaccountNonExpired = Ext.create('Ext.form.field.Checkbox', {
-            checked: true,
-            id: 'accountNonExpired',
-            name: 'accountNonExpired',
-            inputValue: true,
-            hidden: true
-        });
-
-        var checkboxcredentialsNonExpired = Ext.create('Ext.form.field.Checkbox', {
-            checked: true,
-            id: 'credentialsNonExpired',
-            name: 'credentialsNonExpired',
-            inputValue: true,
-            hidden: true
-        });
-
-        var checkboxaccountNonLocked = Ext.create('Ext.form.field.Checkbox', {
-            checked: true,
-            id: 'accountNonLocked',
-            name: 'accountNonLocked',
-            inputValue: true,
-            hidden: true
-        });
-
-
+     
         //form panel de insertar
         var formpanel = Ext.create('Ext.form.Panel', {            
             url: url,
             defaultType: 'textfield',
             monitorValid: true,
+            bodyPadding:'10 15 0 15',
+            autoScroll: true, 
+            height:500,            
             layout: {
-                type: 'table',
-                columns: 3
+                type: 'vbox',
+                columns: 2
             },
-            items: [
-            {
-                fieldLabel: 'Usuario',
-                name: 'username',
-                id: 'username',
-                value: username,
-                allowBlank: false,
-                width: 220
-            }, groupGrid, roleGrid, {
-                fieldLabel: 'Contrase&ntilde;a',
-                name: 'password',
-                id: 'password',
-                allowBlank: false,
-                inputType: 'password',
-                value: contrasena,
-                width: 220
+            defaults:{
+                
             },
-            {
-                fieldLabel: 'Repita Contrase&ntilde;a',
-                name: 'password2',
-                id: 'password2',
-                allowBlank: false,
-                inputType: 'password',
-                value: contrasena,
-                width: 220
+            items: [{
+                xtype:'fieldset',
+                title: '<b>Datos de Usuario</b>',
+                width:'100%',                
+                collapsible: false,
+                defaultType: 'textfield',
+                padding:'10 15 10 15',
+                items :[
+                {
+                    fieldLabel: 'Usuario',
+                    name: 'username',
+                    id: 'username',
+                    value: username,
+                    allowBlank: false,
+                    labelWidth:125,
+                    width: 400
+                }, {
+                    fieldLabel: 'Contrase&ntilde;a',
+                    name: 'password',
+                    id: 'password',
+                    allowBlank: false,
+                    inputType: 'password',
+                    value: contrasena,
+                    labelWidth:125,
+                    width: 400
+                },
+                {
+                    fieldLabel: 'Repita Contrase&ntilde;a',
+                    name: 'password2',
+                    id: 'password2',
+                    allowBlank: false,
+                    inputType: 'password',
+                    value: contrasena,
+                    labelWidth:125,
+                    width: 400
 
-            }, checkboxenabled, checkboxaccountNonExpired, {
-                name: 'id',
-                id: 'id',
-                value: id,
-                hidden: true
-            }, checkboxcredentialsNonExpired, checkboxaccountNonLocked
+                }, checkboxenabled, {
+                    name: 'id',
+                    id: 'id',
+                    value: id,
+                    hidden: true
+                }]
+            },{
+                xtype:'fieldset',
+                title: '<b>Identificadores</b>',
+                width:'100%',                
+                collapsible: false,               
+                padding:'10 15 10 15',
+                items :[                    
+                {
+                    xtype:'container',
+                    layout:'hbox',
+                    items:[{
+                        xtype:'textfield',
+                        fieldLabel: 'N&uacute;mero',
+                        name: 'idnumber',
+                        id: 'idnumber',                        
+                        padding:'0 15 10 0',
+                        labelWidth:50,
+                        labelAlign:'top',
+                        width: 150
+
+                    },comboidtype,{
+                        xtype:'button',
+                        id:'addbutton', 
+                        icon:getRelativeURI('images/custom/add.png'),
+                        handler: function(){
+                          
+                            idGrid.getStore().insert(0,{
+                                value:Ext.getCmp("idnumber").getValue(),
+                                idtype:Ext.getCmp("cbidtype").getRawValue()
+                            });
+                            
+                            Ext.getCmp("idnumber").setValue('');
+                            Ext.getCmp("cbidtype").setValue('');
+                        }
+                    },{
+                        xtype:'button',
+                        id:'deletebutton', 
+                        icon:getRelativeURI('images/custom/delete.gif'),
+                        handler: function(){
+                          
+                        // do mierdas
+                          
+                        }
+                    }]
+                },idGrid
+                ]
+            }, {
+                xtype:'fieldset',
+                title: '<b>Servicios</b>',
+                width:'100%',                
+                collapsible: false,
+                padding:'10 15 10 15',
+                items :[groupGrid]
+            }, {
+                xtype:'fieldset',
+                title: '<b>Roles</b>',
+                width:'100%',                
+                collapsible: false,
+                padding:'10 15 10 15',
+                items :[roleGrid]
+            }
 
 
             ],
@@ -211,9 +298,9 @@ Ext.onReady(function() {
                 id: 'formuser',
                 formBind: true,
                 handler: function() {
-                    if (formpanel.getComponent("password2").getValue() == formpanel.getComponent("password").getValue()) {
+                    if (Ext.getCmp("password2").getValue() == Ext.getCmp("password").getValue()) {
                         if (formpanel.getForm().isValid()) {
-                            var form = getO(formpanel, groupGrid.selModel, roleGrid.selModel)
+                            var form = getO(formpanel, groupGrid.selModel, roleGrid.selModel,idGrid.getStore().getNewRecords())
                             doAjaxrequestJson(url, form, method, usersGrid, wind, 'Usuario '+ opt + 'do', 'Error. No se ha podido ' + opt + 'r');
                         }
                     } else {
@@ -223,28 +310,39 @@ Ext.onReady(function() {
                 },
                 tooltip: tooltip
             }]
-        });
-        roleGrid.getStore().load();
-        groupGrid.getStore().load();
-        /*
-         *en caso de modificar seleciona los id de los grupos y roles del usuario elegido
-         */
+        });        
+      
 
-        roleGrid.getStore().on('load', function() {
+        var wind = Ext.create('Ext.window.Window', {
+            title: opt + 'r',
+            id: 'usuario',
+            autoScroll: false,
+            closable: true,
+            modal: true,
+            width:500,
+            autoHeight:true,
+            items: [formpanel]
+        });
+
+        wind.show();
+        
+        if (opt != 'Inserta') {
+            roleGrid.getStore().on('load', function() {
           
-            if (opt != 'Inserta') {
-                var roles = selection.getLastSelected().get('roles');
-                for (var i = 0; i < roleGrid.getStore().getCount(); i++) {
-                    var record = roleGrid.getStore().getAt(i);
-                    for (var j = 0; j < roles.length; j++) {
-                        if (record.get("authority") == roles[j].authority) {
-                            roleGrid.selModel.select(record, true, true);
+                if (opt != 'Inserta') {
+                    var roles = selection.getLastSelected().get('roles');
+                    for (var i = 0; i < roleGrid.getStore().getCount(); i++) {
+                        var record = roleGrid.getStore().getAt(i);
+                        for (var j = 0; j < roles.length; j++) {
+                            if (record.get("authority") == roles[j].authority) {
+                                roleGrid.selModel.select(record, true, true);
+                            }
                         }
                     }
                 }
-            }
-        });
-        if (opt != 'Inserta') {
+            });
+        
+        
             groupGrid.getStore().on('load', function() {
                 var groups = selection.getLastSelected().get('groups');
                 for (var i = 0; i < groupGrid.getStore().getCount(); i++) {
@@ -258,18 +356,11 @@ Ext.onReady(function() {
                 }
             });
         }
-
-
-        var wind = Ext.create('Ext.window.Window', {
-            title: opt + 'r',
-            id: 'usuario',
-            autoScroll: false,
-            closable: true,
-            modal: true,
-            items: [formpanel]
-        });
-
-        wind.show();
+        
+        roleGrid.getStore().load();
+        groupGrid.getStore().load();
+        
+      
 
         return formpanel;
     }

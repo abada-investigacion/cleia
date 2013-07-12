@@ -18,18 +18,15 @@ Ext.define('App.patient.js.common.gridIdtype', {
     columns:[           
     {
         header: 'Id', 
-        dataIndex: 'idIdType',
-        hidden:true,
+        dataIndex: 'value',
         width:50    
-    },
-    {
-        header: 'Nombre', 
-        dataIndex: 'name',
+    },{
+        header: 'Descripci&oacute;n', 
+        dataIndex: 'description',
         width:50
-    },
-    {
+    },{
         header: 'Se puede repetir', 
-        dataIndex: 'isrepeatable',
+        dataIndex: 'repeatable',
         xtype: 'checkboxcolumn',
         width:50
     }
@@ -41,10 +38,10 @@ Ext.define('App.patient.js.common.gridIdtype', {
         encode:true,
         filters: [ {
             type: 'boolean',
-            dataIndex: 'isrepeatable'
+            dataIndex: 'repeatable'
         },{
             type: 'string',
-            dataIndex: 'name'
+            dataIndex: 'value'
         }]
     }],
     forceFit:true,    
@@ -54,18 +51,18 @@ Ext.define('App.patient.js.common.gridIdtype', {
             this.store=Ext.create('Abada.data.JsonStore',{
                 storeId:'grididtypeStore',
                 sorters: {
-                    property: 'name',
+                    property: 'value',
                     direction: 'ASC'
                 },
                 fields:[{
-                    name:'idIdType',
-                    mapping:'idIdType'
+                    name:'value',
+                    mapping:'value'
                 },{
-                    name:'name',
-                    mapping:'name'
+                    name:'description',
+                    mapping:'description'
                 },{
-                    name:'isrepeatable',
-                    mapping:'isrepeatable',
+                    name:'repeatable',
+                    mapping:'repeatable',
                     type: 'boolean'
 
                 }],

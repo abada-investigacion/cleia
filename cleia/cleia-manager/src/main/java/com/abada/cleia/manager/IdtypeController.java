@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.abada.cleia.patient.controller;
+package com.abada.cleia.manager;
 
 import com.abada.springframework.web.servlet.menu.MenuEntry;
 import java.util.Arrays;
@@ -26,9 +26,9 @@ public class IdtypeController {
      */
     @RequestMapping(value = "/patient/idtype.htm")
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @MenuEntry(icon = "patient/image/identificacion.png", menuGroup = "Pacientes", order = 0, text = "Identificación Pacientes")
+    @MenuEntry(icon = "manager/image/identificacion.png", menuGroup = "Manager", order = 0, text = "Identificación Usuarios")
     public String gridIdtype(Model model) {
-        model.addAttribute("js", Arrays.asList("patient/js/common/gridIdtype.js", "patient/js/Idtype.js"));
+        model.addAttribute("js", Arrays.asList("manager/js/common/gridIdtype.js", "manager/js/Idtype.js","manager/js/manager-utils.js"));
         return "dynamic/main";
     }
 }

@@ -20,7 +20,9 @@ Ext.onReady(function() {
             submitUpdate: function() {
                 if (patientsGrid.selModel.hasSelection()) {
                     if (patientsGrid.selModel.getCount() == 1) {
-                        handleFormulario('Modifica', patientsGrid, 'Paciente', getRelativeServerURI('rs/patient/{idpatient}', [patientsGrid.selModel.getLastSelected().get('idPatient')]), patientsGrid.selModel);
+                        handleFormulario('Modifica', patientsGrid, 'Paciente', getRelativeServerURI('rs/patient/{idpatient}', {
+                            idpatient:patientsGrid.selModel.getLastSelected().get('id')
+                            }), patientsGrid.selModel);
                     } else {
                         Ext.Msg.alert('', 'Seleccione un Paciente');
                     }
@@ -33,13 +35,15 @@ Ext.onReady(function() {
                         enabled: !patientsGrid.selModel.getLastSelected().get('enabled'),
                         id: patientsGrid.selModel.getLastSelected().get('id')
                     }
-                    var opt = 'modifica', title = 'habilitando';
-                    var habilitar = 'Deshabilitado: ';
-                    if (!patientsGrid.selModel.getLastSelected().get('enabled')) {
-                        habilitar = 'habilitado: '
-                    }
-                    habilitar = habilitar + patientsGrid.selModel.getLastSelected().get('name');
-                    doAjaxrequestJson(getRelativeServerURI('rs/patient/{idpatient}/{enable}',[form.id,form.enabled]), form, 'PUT', patientsGrid, null, opt + 'ndo', opt + 'ndo ' + title + '...', habilitar, 'error no se ha podido ' + opt + 'r');
+                    var opt = 'modifica', status = 'habilita';
+                 
+                    if (patientsGrid.selModel.getLastSelected().get('enabled')) {
+                        status = 'deshabilita'
+                    } 
+                    doAjaxrequestJson(getRelativeServerURI('rs/patient/{idpatient}/{enable}',{
+                        idpatient:form.id,
+                        enable:form.enabled
+                        }), form, 'PUT', patientsGrid, null, 'Paciente '+status+'do', 'Error. No se ha podido ' + opt + 'r');
                 } else
                     Ext.Msg.alert('', 'Seleccione un Paciente');
             }
@@ -77,9 +81,9 @@ Ext.onReady(function() {
         if (id == '') {
             id = null;
         }
-        var o = {
-            id: id,
+        var o = {            
             user:{
+                id: id,
                 enabled: true,
                 username: Ext.getCmp('username').getValue(),
                 accountNonExpired: true,
@@ -372,7 +376,7 @@ Ext.onReady(function() {
                     
                     if (Ext.getCmp('password2').getValue() == Ext.getCmp('password').getValue()) {
                         if (formpanel.getForm().isValid()) {
-               
+     
                             doAjaxrequestJson(url, getO(groupGrid.selModel), method, patientsGrid, wind,'Paciente '+ opt + 'do', 'Error. No se ha podido ' + opt + 'r');
                      
                         }

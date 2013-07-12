@@ -170,6 +170,9 @@ Ext.define('App.patient.js.common.gridPatient', {
                 },{
                     name:'username',
                     mapping:'user.username'
+                },{
+                    name:'enabled',
+                    mapping:'user.enabled'
                 }],
                 url:this.config.url,                
                 root:'data',                                
