@@ -7,6 +7,7 @@ package com.abada.cleia.rest.user;
 import com.abada.cleia.dao.GroupDao;
 import com.abada.cleia.dao.UserDao;
 import com.abada.cleia.entity.user.Group;
+import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.Role;
 import com.abada.cleia.entity.user.User;
 import com.abada.cleia.entity.user.Views;
@@ -304,6 +305,31 @@ public class UserController {
         
         aux.setData(lrole);
         aux.setTotal(lrole.size());
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
+    }
+    /**
+     * Returns a list of all ids from a user
+     *
+     * @param iduser User id.
+     * @return Return a list of all roles from a user.
+     * @throws Exception
+     */
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/{iduser}/ids", method = RequestMethod.GET)
+    public void getUserIds(@PathVariable Long iduser,Model model) throws Exception {
+        
+        
+        List<Id> lid = new ArrayList<Id>();
+        ExtjsStore aux = new ExtjsStore();
+        try {
+            lid = this.userDao.getIdsByIdUser(iduser);
+        } catch (Exception e) {
+            logger.error(e);
+        }
+        
+        aux.setData(lid);
+        aux.setTotal(lid.size());
         model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }

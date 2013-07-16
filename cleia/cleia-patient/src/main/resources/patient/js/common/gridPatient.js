@@ -72,7 +72,7 @@ Ext.define('App.patient.js.common.gridPatient', {
     },
     {
         header: 'Direccion', 
-        renderer:templateRenderer(new Ext.Template('{addressAddress}, {addressCity}')) ,
+        renderer:templateRenderer(new Ext.Template('{address}, {city}, {cp}, {country}')) ,
         width:50    
     }
 
@@ -153,16 +153,27 @@ Ext.define('App.patient.js.common.gridPatient', {
                     name:'genre',
                     mapping:'genre'
                 },{
-                    name:'addressCity',
+                    name:'city',
                     mapping:'address.city'
                 },{
-                    name:'addressAddress',
+                    name:'address',
                     mapping:'address.address'
+                },{
+                    name:'cp',
+                    mapping:'address.cp'
+                },{
+                    name:'country',
+                    mapping:'address.countryAddress'
                 },{
                     name:'tlf',
                     mapping:'tlf'
-                }]
-                ,
+                },{
+                    name:'username',
+                    mapping:'user.username'
+                },{
+                    name:'enabled',
+                    mapping:'user.enabled'
+                }],
                 url:this.config.url,                
                 root:'data',                                
                 scope:this,

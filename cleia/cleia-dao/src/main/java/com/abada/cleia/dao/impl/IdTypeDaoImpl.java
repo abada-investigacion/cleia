@@ -58,12 +58,12 @@ public class IdTypeDaoImpl extends JpaDaoUtils implements IdTypeDao {
     }
 
     @Transactional(value = "cleia-txm")
-    public void putIdType(Integer ididtype, IdType idtype) throws Exception {
+    public void putIdType(String ididtype, IdType idtype) throws Exception {
 
         IdType idt = entityManager.find(IdType.class, ididtype);
         if (idtype != null) {
-            deleteIdType(idt.getValue());
-            postIdType(idtype);
+            idt.setDescription(idtype.getDescription());
+            idt.setRepeatable(idtype.isRepeatable());
 
         }
     }
@@ -75,8 +75,10 @@ public class IdTypeDaoImpl extends JpaDaoUtils implements IdTypeDao {
      */
     @Transactional(value = "cleia-txm")
     public void deleteIdType(String value) throws Exception {
-        entityManager.remove(value);
-
+        
+        IdType idType=entityManager.find(IdType.class, value);
+        entityManager.remove(idType);
+        
     }
 
     /**

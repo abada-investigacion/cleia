@@ -65,7 +65,7 @@ public interface IdTypeDao {
      * @param idtype
      * @return
      */
-    public void putIdType(Integer ididtype, IdType idtype) throws Exception;
+    public void putIdType(String ididtype, IdType idtype) throws Exception;
 
     /**
      * Delete a IdType by id

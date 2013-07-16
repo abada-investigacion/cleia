@@ -5,6 +5,7 @@
 package com.abada.cleia.dao;
 
 import com.abada.cleia.entity.user.Group;
+import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.Patient;
 import com.abada.cleia.entity.user.Role;
 import com.abada.cleia.entity.user.User;
@@ -118,6 +119,15 @@ public interface UserDao {
      * @throws Exception
      */
     public List<Role> getRolesByIdUser(Long iduser) throws Exception;
+    
+    /**
+     * Returns a list of all ids from a user
+     *
+     * @param iduser
+     * @return
+     * @throws Exception
+     */
+    public List<Id> getIdsByIdUser(Long iduser) throws Exception;
 
     /**
      * Modifies the relationship between a user and a group
