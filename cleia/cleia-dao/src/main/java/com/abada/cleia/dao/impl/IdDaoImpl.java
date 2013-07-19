@@ -137,8 +137,8 @@ public class IdDaoImpl extends JpaDaoUtils implements IdDao {
      * @throws Exception
      */
     @Transactional(value = "cleia-txm")
-    public void deleteId(String value) throws Exception {
-        Id id = (Id) entityManager.find(Id.class, value);
+    public void deleteId(long pk) throws Exception {
+        Id id = (Id) entityManager.find(Id.class, pk);
         entityManager.remove(id);
     }
 

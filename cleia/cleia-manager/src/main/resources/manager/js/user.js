@@ -146,12 +146,12 @@ Ext.onReady(function() {
             title:'',
             width: 400,
             height: 250,
-            checkboxse: true,
+            
             page: 500,
             rowspan: 4
         };
         if(id){
-            configIdGrid.url = getRelativeServerURI('/'+id+'/ids');
+            configIdGrid.url = getRelativeServerURI('/rs/user/'+id+'/ids');
         }
         var idGrid = Ext.create('App.manager.js.common.gridids', configIdGrid);
         
@@ -275,8 +275,10 @@ Ext.onReady(function() {
                         id:'deletebutton', 
                         icon:getRelativeURI('images/custom/delete.gif'),
                         handler: function(){
-                          
-                        // do mierdas
+                    
+                            if(idGrid.getSelectionModel().getCount() > 0 ){
+                                idGrid.getStore().remove(idGrid.getSelectionModel().getSelection());
+                            }
                           
                         }
                     }]

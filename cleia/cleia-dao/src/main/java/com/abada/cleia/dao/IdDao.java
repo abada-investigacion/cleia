@@ -56,7 +56,7 @@ public interface IdDao {
      * @param value
      * @return
      */
-    public void deleteId(String value) throws Exception;
+    public void deleteId(long id) throws Exception;
 
     /**
      * update id

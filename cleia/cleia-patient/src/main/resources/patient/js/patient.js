@@ -180,7 +180,7 @@ Ext.onReady(function() {
                     groupGrid.selModel.deselectAll();
                     
                     selectGroupGrid(combouser.getValue(),groupGrid);
-                    
+                    loadIdGrid(combouser.getValue());
                     
                 }
             }
@@ -206,7 +206,35 @@ Ext.onReady(function() {
             padding:'10 15 0 15'
         });
         groupGrid.getStore().load();
-     
+        
+        var configIdGrid = {
+            id:'idGrid',
+            title:'',
+            width: 400,
+            height: 250,
+            url:null,
+            page: 500,
+            rowspan: 4
+        };
+        
+        var idGrid = Ext.create('App.manager.js.common.gridids', configIdGrid);
+        
+        
+         var comboidtype = Ext.create('Abada.form.field.ComboBox', {
+            id: 'cbidtype',
+            url: getRelativeServerURI('rs/idtype/search/combo'),
+            fieldLabel: 'Tipo',
+            emptyText: 'Seleccione un Tipo',
+            padding:'0 15 10 0',
+            width: 150,
+            editable: false,
+            labelWidth:50,
+            labelAlign:'top',
+            selectedValue: ''
+        });
+
+        comboidtype.loadStore();
+        
         var formpanel = Ext.create('Ext.form.Panel', {           
             url: url,
             monitorValid: true,
@@ -290,6 +318,54 @@ Ext.onReady(function() {
                     }
                     ,groupGrid]
                 }
+                ]
+            },{
+                xtype:'fieldset',
+                title: '<b>Identificadores</b>',
+                width:'100%',                
+                collapsible: false,               
+                padding:'10 15 10 15',
+                items :[                    
+                {
+                    xtype:'container',
+                    layout:'hbox',
+                    items:[{
+                        xtype:'textfield',
+                        fieldLabel: 'N&uacute;mero',
+                        name: 'idnumber',
+                        id: 'idnumber',                        
+                        padding:'0 15 10 0',
+                        labelWidth:50,
+                        labelAlign:'top',
+                        width: 150
+
+                    },comboidtype,{
+                        xtype:'button',
+                        id:'addbutton', 
+                        icon:getRelativeURI('images/custom/add.png'),
+                        handler: function(){
+                          
+                            idGrid.getStore().insert(0,{
+                                value:Ext.getCmp("idnumber").getValue(),
+                                idtype:Ext.getCmp("cbidtype").getRawValue()
+                            });
+                            
+                            Ext.getCmp("idnumber").setValue('');
+                            Ext.getCmp("cbidtype").setValue('');
+                        }
+                    },{
+                        xtype:'button',
+                        id:'deletebutton', 
+                        icon:getRelativeURI('images/custom/delete.gif'),
+                        handler: function(){
+                    
+                            if(idGrid.getSelectionModel().getCount() > 0 ){
+                                idGrid.getStore().remove(idGrid.getSelectionModel().getSelection());
+                            }
+                          
+                        }
+                    }]
+                },idGrid
                 ]
             },{
                 xtype:'fieldset',
@@ -446,5 +522,16 @@ Ext.onReady(function() {
         });
         
     };
+    
+    function loadIdGrid(id){
+        if(id){
+            var idGrid = Ext.getCmp('idGrid');
+            idGrid.getStore().getProxy().setConfig({url:getRelativeServerURI('/rs/user/'+id+'/ids')});
+            idGrid.getStore().load();
+        }else{
+            idGrig.getStore().removeAll();
+        }
+        
+    }
 
 });

@@ -13,8 +13,7 @@ Ext.define('App.manager.js.common.gridids', {
     config:{
         checkboxse:undefined,
         loadMask: true,
-        page:14,
-        url: null
+        page:14
     },
     title: 'Usuarios',
  
@@ -31,19 +30,22 @@ Ext.define('App.manager.js.common.gridids', {
     }
     ],
     forceFit:true,
+    
     constructor:function(config){
         this.initConfig(config);  
-       
-            this.store=Ext.create('Ext.data.Store',{
+            
+            this.store=Ext.create('Abada.data.JsonStore',{
                 storeId:'gridIdStore',
-                url : url,
+             
                 fields:[{
                     name:'value',
                     mapping:'value'
                 },{
                     name:'idtype',
-                    mapping:'idtype'
-                }],                           
+                    mapping:'type.value'
+                }],             
+                url:this.config.url,                
+                root:'data',
                 scope:this,
                 pageSize:config.page
             }); 

@@ -4,6 +4,7 @@
  */
 package com.abada.cleia.dao.impl;
 
+import com.abada.cleia.dao.IdDao;
 import com.abada.cleia.dao.UserDao;
 import com.abada.cleia.entity.user.Group;
 import com.abada.cleia.entity.user.Id;
@@ -16,6 +17,7 @@ import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.apache.commons.logging.Log;
@@ -37,6 +39,8 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
     private TaskService taskService;
     @Autowired
     private ShaPasswordEncoder sha1PasswordEncoder;
+    @Resource(name = "idDao")
+    private IdDao idDao;
 
     /**
      * Returns all actors that an actor has in their groups
@@ -164,6 +168,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
                 taskService.getTaskSession().addUser(usertask);
 
                 this.addGroupsAndRoles(user, user.getGroups(), user.getRoles(), true);
+                this.addIds(user, user.getIds(), true);
                 user.setPassword(sha1PasswordEncoder.encodePassword(user.getPassword(), null));
 
                 entityManager.persist(user);
@@ -209,7 +214,8 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
                         taskService.getTaskSession().addUser(usertask);
 
                     }
-                    this.addGroupsAndRoles(user, newuser.getGroups(), newuser.getRoles(), true);
+                    this.addGroupsAndRoles(user, newuser.getGroups(), newuser.getRoles(), false);
+                     this.addIds(user, newuser.getIds(), false);
                     this.updateUser(user, newuser);
                 } catch (Exception e) {
 
@@ -342,7 +348,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         if (user == null) {
             throw new Exception("Error. El usuario no existe");
         } else {
-            user.getRoles().size();
+            user.getIds().size();
         }
 
         return (List<Id>) user.getIds();
@@ -590,5 +596,51 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
 
 
         return luser;
+    }
+    @Transactional(value = "cleia-txm")
+    private void addIds(User user, List<Id> ids, boolean newUser) throws Exception {
+        if(ids != null){
+            
+            if(newUser){
+                user.setIds(null);
+                for(Id id : ids){
+                    idDao.postId(id);
+                    user.addId(id);
+                }
+            }else{
+                List<Id> oids = user.getIds();
+                user.setIds(null);
+                //check for remove ids
+                for(Id id : oids){
+                    boolean remove = true;
+                    for(Id idn : ids){
+                        if(id.getId() == idn.getId()){
+                            remove = false;
+                            user.addId(id);
+                        }
+                        
+                    }
+                    if(remove){
+                        idDao.deleteId(id.getId());
+                    }
+                    
+                }
+                // Add new ids
+                for(Id id : ids){
+                    
+                    if(id.getId() == 0){
+                        
+                        idDao.postId(id);
+                        user.addId(id);
+                        
+                    }
+            
+                }
+                
+                
+            }
+            
+        }
+        
     }
 }
