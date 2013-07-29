@@ -105,6 +105,9 @@ public class TaskFormDispatcher extends AbstractFormDispatcher implements Observ
             }
         }
 
+        if (ref instanceof com.abada.bpm.console.server.plugin.FormAuthorityRef){
+            renderContext.put("WEB_BROWSER_DEVICE", ((com.abada.bpm.console.server.plugin.FormAuthorityRef)ref).getDevice());
+        }
         return processTemplate(name, template, renderContext);
     }
 
