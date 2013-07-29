@@ -29,7 +29,7 @@
                 </db.configuration>
                 <jbpm.console.guvnor.changeset>
                     <![CDATA[
-                    <resource source='http://imasd.abadasoft.com:8080/guvnor-5.5.0/org.drools.guvnor.Guvnor/package/com.abada/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />                    
+                    <resource source='http://imasd.abadasoft.com:8080/guvnor-5.5.0/org.drools.guvnor.Guvnor/package/com.abada/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />
                     ]]>
                 </jbpm.console.guvnor.changeset>
                 <deploy.path.rest>/cleia-rest</deploy.path.rest>
@@ -62,15 +62,23 @@
                     ]]>
                 </db.configuration>
                 <jbpm.console.guvnor.changeset>
-                    <![CDATA[                    
+                    <![CDATA[
+                    <resource source='http://imasd.abadasoft.com:8080/guvnor-5.5.0/org.drools.guvnor.Guvnor/package/com.abada/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />                    
                     ]]>
                 </jbpm.console.guvnor.changeset>  
-                <deploy.path.rest>/cleia-rest</deploy.path.rest>
-                <deploy.path.web>/cleia-web</deploy.path.web>
-                <cleia.server.url>http://cleia-rest.cfimasd.abadasoft.com/</cleia.server.url>
-                <cleia.server.secure.url>http://cleia-rest.cfimasd.abadasoft.com/</cleia.server.secure.url>
+                <deploy.path.rest>/</deploy.path.rest>
+                <deploy.path.web>/</deploy.path.web>
+                <jbpm.task.hornetq.host>localhost</jbpm.task.hornetq.host>
+                <jbpm.task.hornetq.port>1234</jbpm.task.hornetq.port>
+                <jbpm.task.mina.port>1234</jbpm.task.mina.port>
+                <jbpm.task.mina.host>localhost</jbpm.task.mina.host>
+                <cleia.server.url>http://cleia-rest.paas.abadasoft.com/</cleia.server.url>
+                <cleia.server.secure.url>https://cleia-rest.paas.abadasoft.com/</cleia.server.secure.url>
                 <cleia.server.url.roles>/rs/identity/user/roles/list</cleia.server.url.roles>            
                 <cleia.server.url.dni.roles>/rs/identity/user/dni/roles/list</cleia.server.url.dni.roles>
+                <jbpm.console.guvnor.url>http://imasd.abadasoft.com:8080/guvnor-5.5.0</jbpm.console.guvnor.url>
+                <jbpm.console.guvnor.user>admin</jbpm.console.guvnor.user>
+                <jbpm.console.guvnor.password>admin</jbpm.console.guvnor.password>
             </properties>
         </profile>
     </profiles>
