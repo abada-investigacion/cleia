@@ -44,4 +44,6 @@ public interface MedicalDao {
     public List<Id> getIdsForMedical(Long id);
 
     public void putMedicalid(Long id, List<Id> ids) throws Exception;
+
+    public void addpatientMedical(Medical m) throws Exception;
 }

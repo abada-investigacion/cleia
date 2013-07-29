@@ -93,7 +93,7 @@ public class PatientController {
     @RequestMapping(method = RequestMethod.PUT)
     public void getPatientByListId(@RequestBody Id[] lpatientid, Model model) {
         try {
-            List<Patient> lpatient = patientDao.findPatientsrepeatable(Arrays.asList(lpatientid), null);
+            List<Patient> lpatient = patientDao.findPatientsbylisId(Arrays.asList(lpatientid), null);
             if (!lpatient.isEmpty() && lpatient.size() == 1) {
                 model.addAttribute(JsonView.JSON_VIEW_RESULT, lpatient.get(0));
                 model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
