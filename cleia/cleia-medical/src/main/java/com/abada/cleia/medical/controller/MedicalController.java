@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.abada.cleia.patient.controller;
+package com.abada.cleia.medical.controller;
 
 import com.abada.springframework.web.servlet.menu.MenuEntry;
 import java.util.Arrays;
@@ -13,22 +13,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  *
- * @author mmartin
+ * @author david
  */
 @Controller
-public class IdtypeController {
+public class MedicalController {
 
     /**
-     * js idtype load
+     * js Medical load
      *
      * @param model
      * @return
+     *
      */
-    @RequestMapping(value = "/patient/idtype.htm")
+    @RequestMapping(value = "/medical/medical.htm")
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @MenuEntry(icon = "patient/image/identificacion.png", menuGroup = "Pacientes", order = 0, text = "Identificación Pacientes")
-    public String gridIdtype(Model model) {
-        model.addAttribute("js", Arrays.asList("patient/js/common/gridIdtype.js", "patient/js/Idtype.js"));
+    @MenuEntry(icon = "medical/image/paciente.png", menuGroup = "Medicos", order = 0, text = "Gestión Medicos")
+    public String gridPatient(Model model) {
+        model.addAttribute("js", Arrays.asList("medical/js/common/gridMedical.js", "medical/js/medical.js",
+                "manager/js/common/gridrole.js", "manager/js/common/gridgroup.js","manager/js/manager-utils.js"));
         return "dynamic/main";
+
     }
 }

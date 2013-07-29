@@ -173,7 +173,7 @@ public class IdtypeController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{ididtype}", method = RequestMethod.PUT)
-    public Success putIdType(@PathVariable Integer ididtype, @RequestBody IdType idtype) {
+    public Success putIdType(@PathVariable String ididtype, @RequestBody IdType idtype) {
 
         Success result = new Success(Boolean.FALSE);
         try {

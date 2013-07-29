@@ -45,7 +45,5 @@ public interface PatientDao {
 
     public List<Id> getIdsForPatient(Long idpatient);
 
-    public void putPatientid(Long idpatient, List<Id> ids) throws Exception;
-    
-    public void postPatientinsert(Patient patient) throws Exception;
+ 
 }

@@ -4,8 +4,10 @@
  */
 package com.abada.cleia.dao.impl;
 
+import com.abada.cleia.dao.IdDao;
 import com.abada.cleia.dao.UserDao;
 import com.abada.cleia.entity.user.Group;
+import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.Patient;
 import com.abada.cleia.entity.user.Role;
 import com.abada.cleia.entity.user.User;
@@ -15,6 +17,7 @@ import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.apache.commons.logging.Log;
@@ -28,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class UserDaoImpl extends JpaDaoUtils implements UserDao {
 
+    private static final String DEFAUL_ROLE = "ROLE_USER";
     private static final Log logger = LogFactory.getLog(UserDaoImpl.class);
     @PersistenceContext(unitName = "cleiaPU")
     private EntityManager entityManager;
@@ -35,6 +39,8 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
     private TaskService taskService;
     @Autowired
     private ShaPasswordEncoder sha1PasswordEncoder;
+    @Resource(name = "idDao")
+    private IdDao idDao;
 
     /**
      * Returns all actors that an actor has in their groups
@@ -79,10 +85,10 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
                 u.getRoles().size();
                 u.getIds().size();
                 /*if (u instanceof Patient) {
-                    Patient p = (Patient) u;
-                    p.getMedicals().size();
-                    p.getProcessInstances().size();
-                }*/
+                 Patient p = (Patient) u;
+                 p.getMedicals().size();
+                 p.getProcessInstances().size();
+                 }*/
 
             }
         }
@@ -121,10 +127,10 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
             user.getRoles().size();
             user.getIds().size();
             /*if (user instanceof Patient) {
-                Patient p = (Patient) user;
-                p.getMedicals().size();
-                p.getProcessInstances();
-            }*/
+             Patient p = (Patient) user;
+             p.getMedicals().size();
+             p.getProcessInstances();
+             }*/
             return user;
         }
 
@@ -146,19 +152,23 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
     @Transactional(value = "cleia-txm")
     public void postUser(User user) throws Exception {
 
-        if (user.getGroups().isEmpty() || user.getGroups() == null) {
+        if (user.getGroups() == null || user.getGroups().isEmpty()) {
             throw new Exception("Error. El usuario debe pertenecer a un servicio");
-        } else if (user.getRoles().isEmpty() || user.getRoles() == null) {
-            throw new Exception("Error. El usuario debe tener asignado un rol");
+        } else if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            Role r = new Role();
+            r.setAuthority(DEFAUL_ROLE);
+            user.addRole(r);
         }
         List<User> luser = entityManager.createQuery("select u from User u where u.username=?").setParameter(1, user.getUsername()).getResultList();
-        if (luser.isEmpty() && luser != null) {
+        if (luser != null && luser.isEmpty() ) {
 
             try {
                 org.jbpm.task.User usertask = new org.jbpm.task.User();
                 usertask.setId(user.getUsername());
                 taskService.getTaskSession().addUser(usertask);
+
                 this.addGroupsAndRoles(user, user.getGroups(), user.getRoles(), true);
+                this.addIds(user, user.getIds(), true);
                 user.setPassword(sha1PasswordEncoder.encodePassword(user.getPassword(), null));
 
                 entityManager.persist(user);
@@ -186,10 +196,12 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
      */
     @Transactional(value = "cleia-txm")
     public void putUser(Long iduser, User newuser) throws Exception {
-        if (newuser.getGroups().isEmpty() || newuser.getGroups() == null) {
+        if (newuser.getGroups() == null || newuser.getGroups().isEmpty() ) {
             throw new Exception("Error. El usuario debe pertenecer a un servicio");
-        } else if (newuser.getRoles().isEmpty() || newuser.getRoles() == null) {
-            throw new Exception("Error. El usuario debe tener asignado un rol");
+        } else if (newuser.getRoles() == null || newuser.getRoles().isEmpty()) {
+            Role r = new Role();
+            r.setAuthority(DEFAUL_ROLE);
+            newuser.addRole(r);
         }
         User user = entityManager.find(User.class, iduser);
 
@@ -204,7 +216,8 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
                         taskService.getTaskSession().addUser(usertask);
 
                     }
-                    this.addGroupsAndRoles(user, newuser.getGroups(), newuser.getRoles(), true);
+                    this.addGroupsAndRoles(user, newuser.getGroups(), newuser.getRoles(), false);
+                     this.addIds(user, newuser.getIds(), false);
                     this.updateUser(user, newuser);
                 } catch (Exception e) {
 
@@ -238,10 +251,10 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
                 u.getRoles().size();
                 u.getIds().size();
                 /*if (u instanceof Patient) {
-                    Patient p = (Patient) u;
-                    p.getProcessInstances().size();
-                    p.getMedicals().size();
-                }*/
+                 Patient p = (Patient) u;
+                 p.getProcessInstances().size();
+                 p.getMedicals().size();
+                 }*/
 
             }
         }
@@ -261,10 +274,10 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         u.getRoles().size();
         u.getIds().size();
         /*if (u instanceof Patient) {
-            Patient p = (Patient) u;
-            p.getMedicals().size();
-            p.getProcessInstances().size();
-        }*/
+         Patient p = (Patient) u;
+         p.getMedicals().size();
+         p.getProcessInstances().size();
+         }*/
 
         return u;
     }
@@ -317,6 +330,30 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         }
 
         return (List<Role>) user.getRoles();
+    }
+    
+    /**
+     * Returns a list of all roles from a user
+     *
+     * @param iduser
+     * @return
+     * @throws Exception
+     */
+    @Transactional(value = "cleia-txm", readOnly = true)
+    public List<Id> getIdsByIdUser(Long iduser) throws Exception {
+
+        User user = new User();
+        user = entityManager.find(User.class, iduser);
+        /*
+         * Si el usuario existe le fuerzo a que traiga su lista de Role
+         */
+        if (user == null) {
+            throw new Exception("Error. El usuario no existe");
+        } else {
+            user.getIds().size();
+        }
+
+        return (List<Id>) user.getIds();
     }
 
     /**
@@ -548,19 +585,64 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
             throw new NullPointerException("Error. Lista de servicios y roles inexistente");
         }
     }
-    
-    
+
     /**
-     * Returns a list of users who are not assigned a patient 
-     * 
-     * @return 
+     * Returns a list of users who are not assigned a patient
+     *
+     * @return
      */
     @Transactional(value = "cleia-txm", readOnly = true)
     public List<User> getUserWithoutAssignedPatient() {
-       
-          List<User> luser = entityManager.createQuery("SELECT u FROM User u WHERE u.id not in (select distinct p.id from Patient p)").getResultList();
-      
-           
+
+        List<User> luser = entityManager.createQuery("SELECT u FROM User u WHERE u.id not in (select distinct p.id from Patient p)").getResultList();
+
+
         return luser;
+    }
+    @Transactional(value = "cleia-txm")
+    private void addIds(User user, List<Id> ids, boolean newUser) throws Exception {
+        if(ids != null){
+            
+            if(newUser){
+                user.setIds(null);
+                for(Id id : ids){
+                    idDao.postId(id);
+                    user.addId(id);
+                }
+            }else{
+                List<Id> oids = user.getIds();
+                user.setIds(null);
+                //check for remove ids
+                for(Id id : oids){
+                    boolean remove = true;
+                    for(Id idn : ids){
+                        if(id.getId() == idn.getId()){
+                            remove = false;
+                            user.addId(id);
+                        }
+                        
+                    }
+                    if(remove){
+                        idDao.deleteId(id.getId());
+                    }
+                    
+                }
+                // Add new ids
+                for(Id id : ids){
+                    
+                    if(id.getId() == 0){
+                        
+                        idDao.postId(id);
+                        user.addId(id);
+                        
+                    }
+            
+                }
+                
+                
+            }
+            
+        }
+        
     }
 }

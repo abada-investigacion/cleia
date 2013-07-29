@@ -84,5 +84,6 @@
     <module>bam</module>
     <module>cleia-manager</module>
     <module>cleia-patient</module>
+    <module>cleia-medical</module>
   </modules>
 </project>

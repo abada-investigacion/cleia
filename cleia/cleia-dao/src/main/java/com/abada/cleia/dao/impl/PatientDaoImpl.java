@@ -215,70 +215,25 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     @Transactional(value = "cleia-txm")
     public void postPatient(Patient patient) throws Exception {
 
-        if (patient.getId() > 0) {
-            entityManager.merge(patient);
-        } else {
-            postPatientinsert(patient);
-        }
 
-        /* } else {
-         throw new Exception("Error. Ningún identificador enviado");
-         }*/
-
-    }
-
-    /**
-     * insert patient
-     *
-     * @param patient
-     * @throws Exception
-     */
-    @Transactional(value = "cleia-txm")
-    public void postPatientinsert(Patient patient) throws Exception {
         patient.getUser().setPassword(sha1PasswordEncoder.encodePassword(patient.getUser().getPassword(), null));
         try {
-            if (patient.getUser().getIds() != null) {
-                for (Id id : patient.getUser().getIds()) {
-                    idDao.postId(id);
-                }
+            
+            if(patient.getUser() != null && patient.getUser().getId() <= 0){
+                userDao.postUser(patient.getUser());
+                patient.setId(patient.getUser().getId());
+            }else if (patient.getUser() != null){
+                patient.setId(patient.getUser().getId());
+                patient.getUser().setRoles(entityManager.find(patient.getUser().getClass(), patient.getUser().getId()).getRoles());
+                userDao.putUser(patient.getUser().getId(), patient.getUser());
+                patient.setUser(entityManager.find(patient.getUser().getClass(), patient.getUser().getId()));
             }
             entityManager.persist(patient);
 
         } catch (Exception e) {
             throw new Exception("Error. Ha ocurrido un error al insertar el paciente " + patient.getName() + " " + patient.getSurname() + " " + patient.getSurname1() + " " + e.toString());
         }
-    }
 
-    /**
-     * update id patient
-     *
-     * @param idpatient
-     * @param ids
-     * @throws Exception
-     */
-    public void putPatientid(Long idpatient, List<Id> ids) throws Exception {
-        Patient patient = entityManager.find(Patient.class, idpatient);
-        if (patient != null) {
-            if (ids != null && !ids.isEmpty()) {
-                /*Comprobamos si vienen identificadores repetidos y si ese asi insertamos sino modificamos*/
-                for (Id id : ids) {
-                    id.setUser(patient.getUser());
-                    Id idbd = idDao.getIdByusertype(patient.getId(), id.getType().getValue());
-                    if (idbd != null && !idbd.getType().isRepeatable()) {//modificadomos id actual
-                        idDao.putId(idbd, id);
-                    } else {
-                        idDao.postId(id);
-                    }
-                }
-
-
-            } else {
-                throw new Exception("Error. Ningún identificador enviado");
-            }
-
-        } else {
-            throw new Exception("Error. El paciente no existe");
-        }
     }
 
     /**
@@ -291,25 +246,14 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     public void putPatient(Long idpatient, Patient patient) throws Exception {
         Patient patient1 = entityManager.find(Patient.class, idpatient);
         if (patient1 != null) {
-            List<Patient> lpatients = this.findPatientsrepeatable(patient.getUser().getIds(), false);
-            if (!lpatients.isEmpty() && lpatients != null) {
-                if (lpatients.size() > 1 || (lpatients.size() == 1 && lpatients.get(0).getId() != patient.getId())) {
-                    for (Patient aux : lpatients) {
-                        if (aux.getId() != patient1.getId()) {
-                            throw new Exception("Error. El paciente " + aux.getName() + " "
-                                    + aux.getSurname() + " " + aux.getSurname1() + " ya tiene asignado uno de los identificadores enviados");
-                        }
-                    }
-                }
-            }
-            putPatientid(idpatient, patient.getUser().getIds());
-            /*Modificamos el paciente*/
+           
             try {
+                patient.getUser().setRoles(entityManager.find(patient.getUser().getClass(), patient.getUser().getId()).getRoles());
+                userDao.putUser(patient.getUser().getId(), patient.getUser());
                 this.updatePatient(patient1, patient);
-                userDao.updateUser(patient1.getUser(), patient.getUser());
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al modificar el paciente "
-                        + patient.getName() + " " + patient.getSurname() + " " + patient.getSurname());
+                        + patient.getName() + " " + patient.getSurname() + " " + patient.getSurname(), e);
             }
         } else {
             throw new Exception("Error. El paciente no existe");

@@ -185,4 +185,14 @@ public class User implements UserDetails {
 
 
     }
+    
+    public void addId(Id id){
+        
+        if(this.getIds() == null){
+            
+            this.ids = new ArrayList<Id>();
+        }
+        id.setUser(this);
+        this.ids.add(id);
+    }
 }

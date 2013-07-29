@@ -33,7 +33,6 @@ public interface MedicalDao {
 
     public List<Medical> getMedicalUser(GridRequest grequest, String username);
 
-
     public void postMedical(Medical medical) throws Exception;
 
     public void putMedical(Long id, Medical medical) throws Exception;

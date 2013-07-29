@@ -4,7 +4,7 @@
  */
 
 Ext.require([
-    'Ext.form.Panel', 'Ext.form.field.Checkbox', 'Abada.Ajax', 'Ext.JSON', 'Ext.Ajax'])
+    'Ext.form.Panel', 'Ext.form.field.Checkbox', 'Abada.Ajax', 'Ext.JSON', 'Ext.Ajax','Abada.toolbar.ToolbarInsertUpdateDelete'])
 
 Ext.onReady(function() {
 
@@ -16,7 +16,9 @@ Ext.onReady(function() {
             submitUpdate: function() {
                 if (idtypeGrid.selModel.hasSelection()) {
                     if (idtypeGrid.selModel.getCount() == 1) {
-                        handleFormulario('Modifica', idtypeGrid, 'Tipo de Identificador', getRelativeServerURI('rs/idtype/{ididtype}', [idtypeGrid.selModel.getLastSelected().get('idIdType')]), idtypeGrid.selModel);
+                        handleFormulario('Modifica', idtypeGrid, 'Tipo de Identificador', getRelativeServerURI('rs/idtype/{ididtype}', {
+                            ididtype:idtypeGrid.selModel.getLastSelected().get('value')
+                        }), idtypeGrid.selModel);
                     } else {
                         Ext.Msg.alert('', 'Seleccione un tipo de identificador');
                     }
@@ -25,7 +27,13 @@ Ext.onReady(function() {
             },
             submitDelete: function() {
                 if (idtypeGrid.selModel.hasSelection()) {
-                    handledelete(idtypeGrid, 'Borrado', 'idIdType', 'name', getRelativeServerURI('rs/idtype/{ididtype}', [idtypeGrid.selModel.getLastSelected().get('idIdType')]));
+                 
+                    var status='borra';
+                    
+                    doAjaxrequestJson(getRelativeServerURI('rs/idtype/{ididtype}', {
+                        ididtype:idtypeGrid.selModel.getLastSelected().get('value')
+                    }), null, 'DELETE', idtypeGrid, null, 'Identificador de usuario '+status+'do', 'Error. No se ha podido ' + status + 'r');
+              
                 } else
                     Ext.Msg.alert('', 'Seleccione un Tipo de Identificador');
             }
@@ -35,7 +43,7 @@ Ext.onReady(function() {
 
     var idtypeGrid = Ext.create('App.patient.js.common.gridIdtype', {
         url: getRelativeServerURI('rs/idtype/search'),
-        width: 300,
+        width: 500,
         height: 400,
         checkboxse: true,
         page: 14
@@ -61,75 +69,75 @@ Ext.onReady(function() {
 
     //*Funcion para los formpanel
     function getO(form) {
-        var id = form.getComponent("idIdType").getValue();
+        var id = form.getComponent("value").getValue();
         if (id == "") {
             id = null;
         }
         var o = {
-            idIdType: id,
-            name: form.getComponent("name").getValue(),
-            isrepeatable: form.getComponent("repeat").getValue()
+            value: id,
+            description: form.getComponent("description").getValue(),
+            repeatable: form.getComponent("repeatable").getValue()
         };
         return o;
     }
 
     function handleFormulario(opt, grid, title, url, selection) {
-        var name, idIdType, method = 'POST', tooltip = 'Insertar Tipo de Identificador', isrepeatable = false
+        var value, description, method = 'POST', tooltip = 'Insertar Tipo de Identificador', repeatable = false
 
         if (opt != 'Inserta' && selection.hasSelection()) {
             method = 'PUT';
-            name = selection.getLastSelected().get('name');
-            idIdType = selection.getLastSelected().get('idIdType');
-            isrepeatable = selection.getLastSelected().get('isrepeatable');
+            value = selection.getLastSelected().get('value');
+            description=selection.getLastSelected().get('description');
+            repeatable = selection.getLastSelected().get('repeatable');
             tooltip = 'Modificar Tipo de Identificador';
         }
 
 
         var repeat = Ext.create('Ext.form.field.Checkbox', {
-            checked: isrepeatable,
-            fieldLabel: 'Se puede repetir?',
-            id: 'repeat',
-            name: 'repeat'
+            checked: repeatable,
+            fieldLabel: '¿Se puede repetir?',
+            id: 'repeatable',
+            name: 'repeatable'
         });
 
 
         //form panel de insertar
         var formpanel = Ext.create('Ext.form.Panel', {
-            title: opt + 'r',
             url: url,
             defaultType: 'textfield',
             monitorValid: true,
             items: [
-                {
-                    name: 'idIdType',
-                    id: 'idIdType',
-                    value: idIdType,
-                    hidden: true
-                },
-                {
-                    fieldLabel: 'Nombre Identificador',
-                    name: 'name',
-                    id: 'name',
-                    value: name,
-                    allowBlank: false
-                }, repeat
+            {
+                fieldLabel:'Nombre',
+                name: 'value',
+                id: 'value',
+                value: value
+            },
+            {
+                fieldLabel: 'Descripci&oacute;n',
+                name: 'description',
+                id: 'description',
+                value: description,
+                allowBlank: false
+            }, repeat
             ],
             buttons: [{
-                    text: opt + 'r',
-                    id: 'formIdtype',
-                    formBind: true,
-                    handler: function() {
-                        if (formpanel.getForm().isValid()) {
-                            var form = getO(formpanel)
-                            doAjaxrequestJson(url, form, method, idtypeGrid, wind, opt + 'ndo', opt + 'ndo ' + title + '...', opt + 'do', 'Error. No se ha podido ' + opt + 'r');
-                        }
-                    },
-                    tooltip: tooltip
-                }]
+                text: opt + 'r',
+                id: 'formIdtype',
+                formBind: true,
+                handler: function() {
+                    if (formpanel.getForm().isValid()) {
+                      
+                        doAjaxrequestJson(url, getO(formpanel), method, idtypeGrid, wind, 'Tipo de identificador '+ opt + 'do', 'Error. No se ha podido ' + opt + 'r');
+                    }
+                },
+                tooltip: tooltip
+            }]
         });
 
         var wind = Ext.create('Ext.window.Window', {
-            id: 'usuario',
+            title: opt + 'r',
+            id: 'winidtype',
             autoScroll: false,
             closable: true,
             modal: true,

@@ -7,9 +7,11 @@ package com.abada.cleia.rest.user;
 import com.abada.cleia.dao.GroupDao;
 import com.abada.cleia.dao.UserDao;
 import com.abada.cleia.entity.user.Group;
+import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.Role;
 import com.abada.cleia.entity.user.User;
 import com.abada.cleia.entity.user.Views;
+import com.abada.extjs.ComboBoxResponse;
 import com.abada.extjs.ExtjsStore;
 import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
@@ -306,6 +308,31 @@ public class UserController {
         model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
+    /**
+     * Returns a list of all ids from a user
+     *
+     * @param iduser User id.
+     * @return Return a list of all roles from a user.
+     * @throws Exception
+     */
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/{iduser}/ids", method = RequestMethod.GET)
+    public void getUserIds(@PathVariable Long iduser,Model model) throws Exception {
+        
+        
+        List<Id> lid = new ArrayList<Id>();
+        ExtjsStore aux = new ExtjsStore();
+        try {
+            lid = this.userDao.getIdsByIdUser(iduser);
+        } catch (Exception e) {
+            logger.error(e);
+        }
+        
+        aux.setData(lid);
+        aux.setTotal(lid.size());
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
+    }
 
     /**
      * Modifies the relationship between a user and a role
@@ -350,4 +377,33 @@ public class UserController {
         }
         return result;
     }      
+    
+    /**
+     * Return all Patient Genre in a ExtjsStore structure
+     *
+     * @return
+     */
+    @RequestMapping(value = "/withoutAssignedPatient/combo", method = RequestMethod.GET)
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+    public ExtjsStore getUserWithoutAssignedPatientCombo() {
+       
+        List<ComboBoxResponse> data = new ArrayList<ComboBoxResponse>();
+        List<User> luser = new ArrayList<User>();
+        try {
+            luser = this.userDao.getUserWithoutAssignedPatient();
+        } catch (Exception e) {
+            logger.error(e);
+        }
+         for (User u : luser) {
+            ComboBoxResponse aux = new ComboBoxResponse();
+            aux.setId(u.getId()+"");
+            aux.setValue(u.getUsername());
+            data.add(aux);
+        }
+        
+
+        ExtjsStore result = new ExtjsStore();
+        result.setData(data);
+        return result;
+    }
 }
