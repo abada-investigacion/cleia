@@ -187,4 +187,13 @@ public interface UserDao {
      * @return 
      */
     public List<User> getUserWithoutAssignedPatient();
+    
+    /**
+     * find users with id
+     * @param asList
+     * @param repeatable
+     * @return
+     * @throws Exceptio 
+     */
+    public List<User> findUsersrepeatable(List<Id> asList, Boolean repeatable) throws Exception;
 }
