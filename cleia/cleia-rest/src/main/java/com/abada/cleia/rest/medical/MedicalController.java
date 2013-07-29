@@ -5,7 +5,6 @@
 package com.abada.cleia.rest.medical;
 
 import com.abada.cleia.dao.MedicalDao;
-import com.abada.cleia.dao.PatientDao;
 import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.Medical;
 import com.abada.cleia.entity.user.Views;
@@ -178,6 +177,31 @@ public class MedicalController {
 
         return result;
     }
+    
+    
+     /**
+     * add patient a medical
+     *
+     * @param medical Medical structure. Must set in JSON in the Http body.
+     * request.
+     * @return Return success structure.
+     */
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+       @RequestMapping(value = "/assignpatient", method = RequestMethod.POST)
+    public Success postaddPatient(@RequestBody Medical medical) {
+
+        Success result = new Success(Boolean.FALSE);
+        try {
+            medicalDao.addpatientMedical(medical);
+            result.setSuccess(Boolean.TRUE);
+        } catch (Exception e) {
+            result.setErrors(new com.abada.extjs.Error(e.getMessage()));
+            logger.error(e);
+        }
+
+        return result;
+    }
+
 
     /**
      * Modify a medical by id
