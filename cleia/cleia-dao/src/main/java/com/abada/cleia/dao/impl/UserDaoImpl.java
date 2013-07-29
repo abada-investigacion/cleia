@@ -198,8 +198,10 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
     public void putUser(Long iduser, User newuser) throws Exception {
         if (newuser.getGroups() == null || newuser.getGroups().isEmpty() ) {
             throw new Exception("Error. El usuario debe pertenecer a un servicio");
-        } else if ( newuser.getRoles() == null || newuser.getRoles().isEmpty()) {
-            throw new Exception("Error. El usuario debe tener asignado un rol");
+        } else if (newuser.getRoles() == null || newuser.getRoles().isEmpty()) {
+            Role r = new Role();
+            r.setAuthority(DEFAUL_ROLE);
+            newuser.addRole(r);
         }
         User user = entityManager.find(User.class, iduser);
 

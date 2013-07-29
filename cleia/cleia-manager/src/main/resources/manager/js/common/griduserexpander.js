@@ -31,6 +31,14 @@ Ext.define('App.manager.js.common.griduserexpander', {
         'font-weight: bold; font-family: helvetica,arial,verdana,sans-serif;'+
         'color: #666;"><b style="color:#157fcc">{#}  </b> {value} </li>',
         '</tpl>',
+        '<tpl if="ids.length">',
+        '<p><b>Identificadores:</b></p>',
+        '</tpl>',
+        '<tpl for="ids">',
+        '<li style="list-style: none;font-size: 12px;'+
+        'font-weight: bold; font-family: helvetica,arial,verdana,sans-serif;'+
+        'color: #666;"><b style="color:#157fcc">{#}  </b> {type.value}: {value} </li>',
+        '</tpl>',
         '</div>'
         ]
     }

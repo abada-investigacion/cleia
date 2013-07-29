@@ -6,7 +6,7 @@
 Ext.require([
     'Ext.form.Panel', 'Ext.form.field.Checkbox', 'Abada.Ajax', 'Ext.JSON', 'Ext.Ajax',
     'Ext.layout.container.Table', 'Abada.toolbar.ToolbarInsertUpdateDelete', 'Abada.form.field.ComboBoxDeSelect',
-    'App.patient.js.common.gridPatientid', 'Ext.form.field.Date','Abada.form.field.ComboBox'
+    , 'Ext.form.field.Date','Abada.form.field.ComboBox','App.manager.js.common.gridids'
 
     ])
 
@@ -22,7 +22,7 @@ Ext.onReady(function() {
                     if (patientsGrid.selModel.getCount() == 1) {
                         handleFormulario('Modifica', patientsGrid, 'Paciente', getRelativeServerURI('rs/patient/{idpatient}', {
                             idpatient:patientsGrid.selModel.getLastSelected().get('id')
-                            }), patientsGrid.selModel);
+                        }), patientsGrid.selModel);
                     } else {
                         Ext.Msg.alert('', 'Seleccione un Paciente');
                     }
@@ -43,7 +43,7 @@ Ext.onReady(function() {
                     doAjaxrequestJson(getRelativeServerURI('rs/patient/{idpatient}/{enable}',{
                         idpatient:form.id,
                         enable:form.enabled
-                        }), form, 'PUT', patientsGrid, null, 'Paciente '+status+'do', 'Error. No se ha podido ' + opt + 'r');
+                    }), form, 'PUT', patientsGrid, null, 'Paciente '+status+'do', 'Error. No se ha podido ' + opt + 'r');
                 } else
                     Ext.Msg.alert('', 'Seleccione un Paciente');
             }
@@ -65,7 +65,6 @@ Ext.onReady(function() {
     });
 
     var grid = Ext.create('Ext.panel.Panel', {
-        frame: true,
         autoWidth: true,
         autoHeight: true,
         title: '',
@@ -76,11 +75,27 @@ Ext.onReady(function() {
     setCentralPanel(grid);
 
     //*Funcion para los frompanel
-    function getO(selectionGroup) {
+    function getO(selectionGroup,idGridStore) {
         var id = Ext.getCmp('id').getValue();
         if (id == '') {
             id = null;
         }
+        
+         var nid=  idGridStore.getCount();
+        var ids = new Array();
+        for(var i=0 ; i<nid ; i++){
+            oid = idGridStore.getAt(i).getData();
+            
+            ids[i] = {
+                value: oid.value ,
+            
+                type:{
+                    value: oid.idtype
+                    }
+            };
+            
+        }
+        
         var o = {            
             user:{
                 id: id,
@@ -90,7 +105,8 @@ Ext.onReady(function() {
                 credentialsNonExpired: true,
                 password: Ext.getCmp('password').getValue(),
                 accountNonLocked: true,
-                groups: getListForObject(selectionGroup,'value')
+                groups: getListForObject(selectionGroup,'value'),
+                ids:ids
             },
             name: Ext.getCmp('name').getValue(),
             surname: Ext.getCmp('surname').getValue(),
@@ -180,7 +196,7 @@ Ext.onReady(function() {
                     groupGrid.selModel.deselectAll();
                     
                     selectGroupGrid(combouser.getValue(),groupGrid);
-                    loadIdGrid(combouser.getValue());
+                    loadIdGrid(combouser.getValue(),idGrid);
                     
                 }
             }
@@ -220,7 +236,7 @@ Ext.onReady(function() {
         var idGrid = Ext.create('App.manager.js.common.gridids', configIdGrid);
         
         
-         var comboidtype = Ext.create('Abada.form.field.ComboBox', {
+        var comboidtype = Ext.create('Abada.form.field.ComboBox', {
             id: 'cbidtype',
             url: getRelativeServerURI('rs/idtype/search/combo'),
             fieldLabel: 'Tipo',
@@ -313,6 +329,7 @@ Ext.onReady(function() {
                                 Ext.getCmp('username').setValue('');
                                 Ext.getCmp('cbuser').setValue('');
                                 groupGrid.selModel.deselectAll();
+                                idGrid.getStore().removeAll();
                             }
                         }]
                     }
@@ -453,7 +470,7 @@ Ext.onReady(function() {
                     if (Ext.getCmp('password2').getValue() == Ext.getCmp('password').getValue()) {
                         if (formpanel.getForm().isValid()) {
      
-                            doAjaxrequestJson(url, getO(groupGrid.selModel), method, patientsGrid, wind,'Paciente '+ opt + 'do', 'Error. No se ha podido ' + opt + 'r');
+                            doAjaxrequestJson(url, getO(groupGrid.selModel,idGrid.getStore()), method, patientsGrid, wind,'Paciente '+ opt + 'do', 'Error. No se ha podido ' + opt + 'r');
                      
                         }
                     }else{
@@ -474,12 +491,20 @@ Ext.onReady(function() {
             groupGrid.getStore().on('load', function() {
                 selectGroupGrid(id,groupGrid);
             });
+       
+       
+            if(combouser.getValue()!=null && combouser.getValue()!=undefined){
+                loadIdGrid(combouser.getValue(),idGrid);
+            }else{
+                loadIdGrid(Ext.getCmp('id').getValue(),idGrid);
+            }
+            
         }
         
 
         var wind = Ext.create('Ext.window.Window', {
             title: opt + 'r',
-            id: 'Paciente',            
+            id: 'patientWindow',            
             closable: true,
             modal: true,            
             width:700,
@@ -523,15 +548,16 @@ Ext.onReady(function() {
         
     };
     
-    function loadIdGrid(id){
+    function loadIdGrid(id,idGrid){
         if(id){
-            var idGrid = Ext.getCmp('idGrid');
-            idGrid.getStore().getProxy().setConfig({url:getRelativeServerURI('/rs/user/'+id+'/ids')});
+            
+            idGrid.getStore().getProxy().url=getRelativeServerURI('rs/user/{iduser}/ids',{
+                iduser:id
+            }); 
+            
             idGrid.getStore().load();
-        }else{
-            idGrig.getStore().removeAll();
-        }
         
+        }
     }
 
 });

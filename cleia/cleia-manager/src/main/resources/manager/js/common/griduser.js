@@ -83,6 +83,9 @@ Ext.define('App.manager.js.common.griduser', {
                 },{
                     name:'groups',
                     mapping:'groups' //grupo
+                },{
+                    name:'ids',
+                    mapping:'ids'
                 }],
                 url:this.config.url,                
                 root:'data',                                

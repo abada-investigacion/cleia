@@ -312,28 +312,6 @@ public class PatientController {
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
-    /**
-     * Modify a patient by id.
-     *
-     * @param idpatient Patient id.
-     * @param patient Patient structure. Must set in JSON in the Http body.
-     * @return Return success structure.
-     */
-    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/{idpatient}/id", method = RequestMethod.PUT)
-    public Success putPatientid(@PathVariable Long idpatient, @RequestBody Id[] lpatientid) {
-
-        Success result = new Success(Boolean.FALSE);
-        try {
-            patientDao.putPatientid(idpatient, Arrays.asList(lpatientid));
-            result.setSuccess(Boolean.TRUE);
-        } catch (Exception e) {
-            result.setErrors(new com.abada.extjs.Error(e.getMessage()));
-            logger.error(e);
-        }
-
-        return result;
-    }
 
     /**
      * Return all Patient Genre in a ExtjsStore structure

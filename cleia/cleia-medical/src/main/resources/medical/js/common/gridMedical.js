@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-Ext.define('App.patient.js.common.gridPatient', {
+Ext.define('App.medical.js.common.gridMedical', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'
     ,'Ext.ux.grid.FiltersFeature', 'Ext.ux.CheckColumn',
     'Abada.grid.column.CheckBox','Ext.grid.column.Date','Abada.grid.RowExpander'],
@@ -12,7 +12,7 @@ Ext.define('App.patient.js.common.gridPatient', {
         loadMask: true,
         page:13
     },
-    title: 'Pacientes',
+    title: 'Medicos',
     columns:[  
     {
         header:'Id',
@@ -20,7 +20,7 @@ Ext.define('App.patient.js.common.gridPatient', {
         hidden:true
     },
     {
-        header: 'Nombre paciente', 
+        header: 'Nombre medico', 
         dataIndex: 'name',
         width:40
     
@@ -45,7 +45,7 @@ Ext.define('App.patient.js.common.gridPatient', {
     },
     {
         header: 'Fecha nacimiento', 
-        dataIndex: 'birthDay',
+        dataIndex: 'patient.birthDay',
         xtype: 'datecolumn',
         sortable: true,
         format: 'd-m-Y',
@@ -70,6 +70,7 @@ Ext.define('App.patient.js.common.gridPatient', {
 
     }
 
+
     ],
     features:[{
         ftype: 'filters',
@@ -78,36 +79,36 @@ Ext.define('App.patient.js.common.gridPatient', {
         encode:true,
         filters: [ {
             type: 'string',
-            dataIndex: 'name'
+            dataIndex: 'patient.name'
         },
         {
             type: 'string',
-            dataIndex: 'surname'
+            dataIndex: 'patient.surname'
         },
         {
             type: 'string',
-            dataIndex: 'surname1'
+            dataIndex: 'patient.surname1'
         },
         {
             type: 'list',
             enumType:'com.abada.cleia.entity.user.Genre',
-            dataIndex: 'genre',
+            dataIndex: 'patient.genre',
             options: [['Male','Male'],
             ['Female','Female'],
             ['Undefined','Undefined']]
         },
         {   
             type: 'date',
-            dataIndex: 'birthDay',
+            dataIndex: 'patient.birthDay',
             dateFormat : 'd-m-Y'
         },
         {
             type: 'string',
-            dataIndex: 'address'
+            dataIndex: 'patient.address'
         },
         {
             type: 'string',
-            dataIndex: 'tlf'
+            dataIndex: 'patient.tlf'
         }
 
         ]
@@ -121,12 +122,12 @@ Ext.define('App.patient.js.common.gridPatient', {
             this.store=Ext.create('Abada.data.JsonStore',{
                 storeId:'gridPatientStore',
                 sorters: {
-                    property: 'name',
+                    property: 'patient.name',
                     direction: 'ASC'
                 },
                 fields:[
                 {
-                    name:'birthDay',
+                    name:'patient.birthDay',
                     type       : 'date',
                     dateFormat : 'c' 
                 },
@@ -136,37 +137,37 @@ Ext.define('App.patient.js.common.gridPatient', {
                 },
                 {
                     name:'name',
-                    mapping:'name'
+                    mapping:'patient.name'
                 }, {
                     name:'surname',
-                    mapping:'surname'
+                    mapping:'patient.surname'
                 },{
                     name:'surname1',
-                    mapping:'surname1'
+                    mapping:'patient.surname1'
                 },{
                     name:'genre',
-                    mapping:'genre'
+                    mapping:'patient.genre'
                 },{
                     name:'city',
-                    mapping:'address.city'
+                    mapping:'patient.address.city'
                 },{
                     name:'address',
-                    mapping:'address.address'
+                    mapping:'patient.address.address'
                 },{
                     name:'cp',
-                    mapping:'address.cp'
+                    mapping:'patient.address.cp'
                 },{
                     name:'country',
-                    mapping:'address.countryAddress'
+                    mapping:'patient.address.countryAddress'
                 },{
                     name:'tlf',
-                    mapping:'tlf'
+                    mapping:'patient.tlf'
                 },{
                     name:'username',
-                    mapping:'user.username'
+                    mapping:'patient.user.username'
                 },{
                     name:'enabled',
-                    mapping:'user.enabled',
+                    mapping:'patient.user.enabled',
                     type: 'boolean'
                 }],
                 url:this.config.url,                
