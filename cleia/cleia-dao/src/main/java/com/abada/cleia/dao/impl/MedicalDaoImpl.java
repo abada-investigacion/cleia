@@ -245,6 +245,7 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
      * @param ids
      * @throws Exception
      */
+    @Transactional(value = "cleia-txm")
     public void putMedicalid(Long idmedical, List<Id> ids) throws Exception {
         Medical medical = entityManager.find(Medical.class, idmedical);
         if (medical != null) {
@@ -283,7 +284,7 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
     public void putMedical(Long idmedical, Medical medical) throws Exception {
         Medical medical1 = entityManager.find(Medical.class, idmedical);
         if (medical1 != null) {
-                                
+
             try {
                 this.persistMedical(medical1, medical);
                 userDao.updateUser(medical1.getPatient().getUser(), medical.getPatient().getUser());
@@ -353,6 +354,22 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
                 }
                 throw new Exception("Error. El medico " + medical.getPatient().getName() + " " + medical.getPatient().getSurname() + " " + medical.getPatient().getSurname1() + " ya esta " + habilitar);
             }
+        } else {
+            throw new Exception("Error. El medico no existe");
+        }
+    }
+
+    /**
+     * enable or disable medical
+     *
+     * @param idmedical
+     * @param enable
+     */
+    @Transactional(value = "cleia-txm")
+    public void addpatientMedical(Medical m) throws Exception {
+        Medical medical = entityManager.find(Medical.class, m.getId());
+        if (medical != null) {
+            medical.addPatients(m.getPatients());
         } else {
             throw new Exception("Error. El medico no existe");
         }

@@ -139,6 +139,50 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
     }
 
     /**
+     * find user given id
+     *
+     * @param asList
+     * @return
+     * @throws Exception
+     */
+    @Transactional(value = "cleia-txm", readOnly = true)
+    public List<User> findUsersrepeatable(List<Id> asList, Boolean repeatable) throws Exception {
+        List<User> u = new ArrayList<User>();
+        if (asList != null && !asList.isEmpty()) {
+            int append = 0;
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT u FROM User u join u.ids idss WHERE idss.id in (select distinct pid.id from Id pid where ");
+            for (Id pid : asList) {
+                if (pid.getValue() != null && !pid.getValue().equals("") && pid.getType() != null && pid.getType().getValue() != null) {
+                    append++;
+                    if (append != 1) {
+                        query.append(" or ");
+                    }
+                    query.append("pid.value='").append(pid.getValue()).append("'");
+                    if (repeatable != null) {
+                        query.append(" and pid.type.repeatable=").append(repeatable);
+                    }
+
+                    query.append(" and pid.type.value='").append(pid.getType().getValue()).append("'");
+                } else {
+                    throw new Exception("Error. Ha ocurrido un error en uno de los identificadores");
+                }
+            }
+            if (append != 0) {
+                query.append(")");
+                u = entityManager.createQuery(query.toString()).getResultList();
+                for (User user : u) {
+                    user.getGroups().size();
+                    user.getRoles().size();
+                    user.getIds().size();
+                }
+
+            }
+        }
+        return u;
+    }
+
+    /**
      * Insert a user
      *
      * @param enabled
@@ -160,25 +204,30 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
             user.addRole(r);
         }
         List<User> luser = entityManager.createQuery("select u from User u where u.username=?").setParameter(1, user.getUsername()).getResultList();
-        if (luser != null && luser.isEmpty() ) {
+        List<User> luserid = findUsersrepeatable(user.getIds(), Boolean.FALSE);
+        if (luserid != null && luserid.isEmpty()) {
+            if (luser != null && luser.isEmpty()) {
 
-            try {
-                org.jbpm.task.User usertask = new org.jbpm.task.User();
-                usertask.setId(user.getUsername());
-                taskService.getTaskSession().addUser(usertask);
+                try {
+                    org.jbpm.task.User usertask = new org.jbpm.task.User();
+                    usertask.setId(user.getUsername());
+                    taskService.getTaskSession().addUser(usertask);
 
-                this.addGroupsAndRoles(user, user.getGroups(), user.getRoles(), true);
-                this.addIds(user, user.getIds(), true);
-                user.setPassword(sha1PasswordEncoder.encodePassword(user.getPassword(), null));
+                    this.addGroupsAndRoles(user, user.getGroups(), user.getRoles(), true);
+                    this.addIds(user, user.getIds(), true);
+                    user.setPassword(sha1PasswordEncoder.encodePassword(user.getPassword(), null));
 
-                entityManager.persist(user);
-            } catch (Exception e) {
+                    entityManager.persist(user);
+                } catch (Exception e) {
 
-                throw new Exception("Error. Ha ocurrido un error al insertar el usuario " + user.getUsername(), e);
+                    throw new Exception("Error. Ha ocurrido un error al insertar el usuario " + user.getUsername(), e);
+                }
+
+            } else {
+                throw new Exception("Error. El usuario " + user.getUsername() + " ya existe.");
             }
-
         } else {
-            throw new Exception("Error. El usuario " + user.getUsername() + " ya existe.");
+            throw new Exception("Error. El usuario " + user.getUsername() + " ya existe con esos identificadores");
         }
     }
 
@@ -196,7 +245,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
      */
     @Transactional(value = "cleia-txm")
     public void putUser(Long iduser, User newuser) throws Exception {
-        if (newuser.getGroups() == null || newuser.getGroups().isEmpty() ) {
+        if (newuser.getGroups() == null || newuser.getGroups().isEmpty()) {
             throw new Exception("Error. El usuario debe pertenecer a un servicio");
         } else if (newuser.getRoles() == null || newuser.getRoles().isEmpty()) {
             Role r = new Role();
@@ -217,7 +266,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
 
                     }
                     this.addGroupsAndRoles(user, newuser.getGroups(), newuser.getRoles(), false);
-                     this.addIds(user, newuser.getIds(), false);
+                    this.addIds(user, newuser.getIds(), false);
                     this.updateUser(user, newuser);
                 } catch (Exception e) {
 
@@ -331,7 +380,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
 
         return (List<Role>) user.getRoles();
     }
-    
+
     /**
      * Returns a list of all roles from a user
      *
@@ -599,50 +648,51 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
 
         return luser;
     }
+
     @Transactional(value = "cleia-txm")
     private void addIds(User user, List<Id> ids, boolean newUser) throws Exception {
-        if(ids != null){
-            
-            if(newUser){
+        if (ids != null) {
+
+            if (newUser) {
                 user.setIds(null);
-                for(Id id : ids){
+                for (Id id : ids) {
                     idDao.postId(id);
                     user.addId(id);
                 }
-            }else{
+            } else {
                 List<Id> oids = user.getIds();
                 user.setIds(null);
                 //check for remove ids
-                for(Id id : oids){
+                for (Id id : oids) {
                     boolean remove = true;
-                    for(Id idn : ids){
-                        if(id.getId() == idn.getId()){
+                    for (Id idn : ids) {
+                        if (id.getId() == idn.getId()) {
                             remove = false;
                             user.addId(id);
                         }
-                        
+
                     }
-                    if(remove){
+                    if (remove) {
                         idDao.deleteId(id.getId());
                     }
-                    
+
                 }
                 // Add new ids
-                for(Id id : ids){
-                    
-                    if(id.getId() == 0){
-                        
+                for (Id id : ids) {
+
+                    if (id.getId() == 0) {
+
                         idDao.postId(id);
                         user.addId(id);
-                        
+
                     }
-            
+
                 }
-                
-                
+
+
             }
-            
+
         }
-        
+
     }
 }

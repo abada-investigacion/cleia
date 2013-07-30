@@ -25,7 +25,6 @@ public interface PatientDao {
 
     public List<Patient> getAllPatients();
 
-    public List<Patient> findPatientsrepeatable(List<Id> asList, Boolean repeatable) throws Exception;
 
     public List<Patient> getAll(GridRequest grequest);
 
@@ -44,6 +43,8 @@ public interface PatientDao {
     public void enableDisablePatient(Long idpatient, boolean enable) throws Exception;
 
     public List<Id> getIdsForPatient(Long idpatient);
+
+   public List<Patient> findPatientsbylisId(List<Id> asList, Boolean repeatable) throws Exception;
 
  
 }
