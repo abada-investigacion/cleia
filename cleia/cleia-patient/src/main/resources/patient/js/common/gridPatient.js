@@ -5,12 +5,14 @@
 
 Ext.define('App.patient.js.common.gridPatient', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'
-    ,'Ext.ux.grid.FiltersFeature', 'Ext.ux.CheckColumn',
+    ,'Ext.ux.grid.FiltersFeature', 'Ext.ux.CheckColumn','Ext.selection.CheckboxModel',
     'Abada.grid.column.CheckBox','Ext.grid.column.Date','Abada.grid.RowExpander'],
     extend:'Ext.grid.Panel',
     config:{
+        checkboxse:undefined,
+        bbar:undefined,
         loadMask: true,
-        page:13
+        page:undefined
     },
     title: 'Pacientes',
     columns:[  
@@ -20,7 +22,7 @@ Ext.define('App.patient.js.common.gridPatient', {
         hidden:true
     },
     {
-        header: 'Nombre paciente', 
+        header: 'Nombre', 
         dataIndex: 'name',
         width:40
     
@@ -168,6 +170,15 @@ Ext.define('App.patient.js.common.gridPatient', {
                     name:'enabled',
                     mapping:'user.enabled',
                     type: 'boolean'
+                },{
+                    name:'roles',
+                    mapping:'user.roles'
+                },{
+                    name:'groups',
+                    mapping:'user.groups' //grupo
+                },{
+                    name:'ids',
+                    mapping:'user.ids'
                 }],
                 url:this.config.url,                
                 root:'data',                                
@@ -176,11 +187,20 @@ Ext.define('App.patient.js.common.gridPatient', {
             }); 
         }
        
-        this.selModel= Ext.create('Ext.selection.RowModel');
-        this.bbar= Ext.create('Ext.toolbar.Paging', {
-            store: this.store,
-            pageSize: this.store.pageSize
-        });
+        if(config.checkboxse){
+            this.selModel=Ext.create('Ext.selection.CheckboxModel',{
+                checkOnly : true
+            });
+        } else{
+            this.selModel= Ext.create('Ext.selection.RowModel');
+        }
+        
+        if(config.bbar || config.bbar==undefined){
+            this.bbar= Ext.create('Ext.toolbar.Paging', {
+                store: this.store,
+                pageSize: this.store.pageSize
+            });
+        }
         this.callParent([config]);
     }
 

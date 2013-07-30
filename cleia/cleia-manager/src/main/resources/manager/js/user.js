@@ -368,7 +368,6 @@ Ext.onReady(function() {
         
         roleGrid.getStore().load();
         groupGrid.getStore().load();
-        idGrid.getStore().load();
       
 
         return formpanel;

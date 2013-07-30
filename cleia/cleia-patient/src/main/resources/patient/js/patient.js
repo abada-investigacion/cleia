@@ -51,7 +51,7 @@ Ext.onReady(function() {
 
     });
 
-    var patientsGrid = Ext.create('App.patient.js.common.gridPatient', {
+    var patientsGrid = Ext.create('App.patient.js.common.gridPatientExpander', {
         url: getRelativeServerURI('rs/patient/search'),
         height: 400,
         page: 13
