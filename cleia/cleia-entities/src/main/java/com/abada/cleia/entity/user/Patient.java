@@ -29,16 +29,16 @@ import javax.persistence.TemporalType;
  */
 @Entity
 public class Patient implements Serializable{  
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class,Views.Case1.class})
     @javax.persistence.Id    
     private Long id;
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class,Views.Case1.class})
     @Column(nullable = false,length = 255)
     private String name;
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class,Views.Case1.class})
     @Column(nullable = false,length = 1024)
     private String surname;
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class,Views.Case1.class})
     @Column(length = 1024)
     private String surname1;
     @JsonView(Views.Public.class)

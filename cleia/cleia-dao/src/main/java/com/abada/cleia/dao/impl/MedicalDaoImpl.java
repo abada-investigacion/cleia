@@ -374,4 +374,24 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
             throw new Exception("Error. El medico no existe");
         }
     }
+
+     /**
+      * Get patients by Medical id
+      * 
+      * @param id
+      * @return
+      * @throws Exception 
+      */
+    @Transactional(value = "cleia-txm")
+    public List<Patient> findPatientsByMedicalId(Long id) throws Exception{
+        Medical medical = entityManager.find(Medical.class, id);
+
+        if (medical == null) {
+            throw new Exception("Error. El medico no existe");
+        }
+        
+        medical.getPatients().size();
+
+        return medical.getPatients();
+    }
 }

@@ -7,6 +7,7 @@ package com.abada.cleia.rest.medical;
 import com.abada.cleia.dao.MedicalDao;
 import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.Medical;
+import com.abada.cleia.entity.user.Patient;
 import com.abada.cleia.entity.user.Views;
 
 import com.abada.extjs.ExtjsStore;
@@ -14,6 +15,7 @@ import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.factory.GridRequestFactory;
 import com.abada.springframework.web.servlet.view.JsonView;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -156,6 +158,35 @@ public class MedicalController {
     }
 
     /**
+     * Get patients by Medical id
+     * 
+     * @param idmedical
+     * @return 
+     */
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/{idmedical}/patients", method = RequestMethod.GET)
+    public void getPatientsByMedicalId(@PathVariable Long idmedical, Model model) {
+
+        List<Patient> lpatient = new ArrayList<Patient>();
+        ExtjsStore aux = new ExtjsStore();
+        try {
+            lpatient = medicalDao.findPatientsByMedicalId(idmedical);
+
+        } catch (Exception e) {
+            logger.error(e);
+        }
+                     
+       
+        aux.setTotal(lpatient.size());
+        aux.setData(lpatient);
+        
+        
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Case1.class);
+
+    }
+
+    /**
      * Insert a medical
      *
      * @param medical Medical structure. Must set in JSON in the Http body.
@@ -177,9 +208,8 @@ public class MedicalController {
 
         return result;
     }
-    
-    
-     /**
+
+    /**
      * add patient a medical
      *
      * @param medical Medical structure. Must set in JSON in the Http body.
@@ -187,7 +217,7 @@ public class MedicalController {
      * @return Return success structure.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-       @RequestMapping(value = "/assignpatient", method = RequestMethod.POST)
+    @RequestMapping(value = "/assignpatient", method = RequestMethod.POST)
     public Success postaddPatient(@RequestBody Medical medical) {
 
         Success result = new Success(Boolean.FALSE);
@@ -201,7 +231,6 @@ public class MedicalController {
 
         return result;
     }
-
 
     /**
      * Modify a medical by id

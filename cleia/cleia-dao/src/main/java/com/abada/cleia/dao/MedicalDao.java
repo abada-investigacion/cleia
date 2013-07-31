@@ -6,6 +6,7 @@ package com.abada.cleia.dao;
 
 import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.Medical;
+import com.abada.cleia.entity.user.Patient;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import java.util.List;
 
@@ -46,4 +47,6 @@ public interface MedicalDao {
     public void putMedicalid(Long id, List<Id> ids) throws Exception;
 
     public void addpatientMedical(Medical m) throws Exception;
+
+    public List<Patient> findPatientsByMedicalId(Long id) throws Exception;
 }
