@@ -30,7 +30,10 @@
             <list>
                 <bean class="com.abada.springframework.web.servlet.view.AbadaModelAndViewResolver" />
             </list>
-        </property>        
+        </property>   
+        <property name="customArgumentResolver" >
+            <bean class="org.springframework.mobile.device.DeviceWebArgumentResolver" />
+        </property>     
     </bean>
 
     <bean id="stringConverter"
@@ -61,14 +64,17 @@
 
     <bean id="handlerMapping1" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
         <property name="order" value="1" />
-        <!--property name="interceptors">
-            <list>
-                <bean class="com.abada.jbpmserver.handler.SessionCheckerHandler">
-                    <property name="session" ref="ksession1"/>                    
-                    <property name="taskService" ref="taskService"/>
-                </bean>
+        <property name="interceptors">
+            <list>                
+                <!-- On pre-handle, resolve the device that originated the web request -->
+                <bean class="org.springframework.mobile.device.DeviceResolverHandlerInterceptor" />
+                <!-- On pre-handle, redirects mobile users to "myapp.com/m" (declare after DeviceResolverHandlerInterceptor) -->
+                <!--bean class="org.springframework.mobile.device.switcher.SiteSwitcherHandlerInterceptor" factory-method="urlPath">
+                    <constructor-arg index="0" type="java.lang.String" value="/m" />
+                    <constructor-arg index="1" type="java.lang.String" value="/${deploy.path.web}" />
+                </bean-->
             </list>
-        </property-->
+        </property>
     </bean>              
         
     <!-- freemarker config -->

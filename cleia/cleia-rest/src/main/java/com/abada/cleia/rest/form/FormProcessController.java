@@ -4,6 +4,7 @@
  */
 package com.abada.cleia.rest.form;
 
+import com.abada.bpm.console.server.plugin.FormAuthorityRef;
 import com.abada.cleia.dao.PatientDao;
 import com.abada.cleia.dao.ProcessInstanceDao;
 import com.abada.cleia.entity.user.Patient;
@@ -15,9 +16,9 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.bpm.console.server.integration.ProcessManagement;
-import org.jboss.bpm.console.server.plugin.FormAuthorityRef;
 import org.jboss.bpm.console.server.plugin.FormDispatcherPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,8 +54,16 @@ public class FormProcessController {
      */
     @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER"})
     @RequestMapping(value = {"/{definitionid}/patient/{patientId}/render"}, method = RequestMethod.GET)
-    public View renderProcess(@PathVariable String definitionid, @PathVariable Long patientId, HttpServletRequest request) throws IOException {
-        return new InputStreamView(formDispatcherPlugin.provideForm(new FormAuthorityRef(definitionid, FormAuthorityRef.Type.PROCESS)).getInputStream(), "text/html", null);
+    public View renderProcess(@PathVariable String definitionid, @PathVariable Long patientId, HttpServletRequest request,Device device) throws IOException {
+        com.abada.springframework.web.servlet.menu.Device deviceAux;
+        if (device.isMobile()) {
+            deviceAux = com.abada.springframework.web.servlet.menu.Device.MOBILE;
+        } else if (device.isNormal()) {
+            deviceAux = com.abada.springframework.web.servlet.menu.Device.DESKTOP;
+        } else {
+            deviceAux = com.abada.springframework.web.servlet.menu.Device.TABLET;
+        }
+        return new InputStreamView(formDispatcherPlugin.provideForm(new FormAuthorityRef(definitionid,deviceAux.name(), FormAuthorityRef.Type.PROCESS)).getInputStream(), "text/html", null);
     }
 
     /**
@@ -79,6 +88,7 @@ public class FormProcessController {
             params.put("patient_birthday", patient.getBirthDay());
             params.put("patient_genre", patient.getGenre().toString());
             params.put("patient_id", patient.getId());
+            params.put("patient_username",patient.getUser().getUsername());
 
             ProcessInstanceRef pir = processManagement.newInstance(definitionid, params);            
             if (pir != null) {                                
@@ -107,8 +117,16 @@ public class FormProcessController {
      */
     @RolesAllowed(value={"ROLE_ADMIN","ROLE_USER"})
     @RequestMapping(value = "/{definitionid}/render", method = RequestMethod.GET)
-    public View renderProcess(@PathVariable String definitionid, HttpServletRequest request) throws IOException {
-        return new InputStreamView(formDispatcherPlugin.provideForm(new FormAuthorityRef(definitionid, FormAuthorityRef.Type.PROCESS)).getInputStream(), "text/html", null);
+    public View renderProcess(@PathVariable String definitionid, HttpServletRequest request,Device device) throws IOException {
+        com.abada.springframework.web.servlet.menu.Device deviceAux;
+        if (device.isMobile()) {
+            deviceAux = com.abada.springframework.web.servlet.menu.Device.MOBILE;
+        } else if (device.isNormal()) {
+            deviceAux = com.abada.springframework.web.servlet.menu.Device.DESKTOP;
+        } else {
+            deviceAux = com.abada.springframework.web.servlet.menu.Device.TABLET;
+        }
+        return new InputStreamView(formDispatcherPlugin.provideForm(new FormAuthorityRef(definitionid,deviceAux.name(), FormAuthorityRef.Type.PROCESS)).getInputStream(), "text/html", null);
     }
 
     /**

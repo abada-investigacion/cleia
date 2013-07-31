@@ -28,7 +28,7 @@ Ext.setup({
         }
 
         function getBasicAuthentication() {
-            return 'Basic ' + Abada.Base64.encode(login.getAt(0).getValue() + ':' + login.getAt(1).getValue());
+            return 'Basic ' + Abada.Base64.encode(login.getAt(0).getAt(0).getValue() + ':' + login.getAt(0).getAt(1).getValue());
         }
 
         function formSubmitPriv() {
