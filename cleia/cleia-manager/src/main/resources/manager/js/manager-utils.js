@@ -3,7 +3,10 @@
  * and open the template in the editor.
  */
 
-
+/**
+ * Devuelve una lista de objetos en formato JSON para una entidad a partir de 
+ * los items seleccionados en un grid
+ */
 function getListForObject(selection,idName){
         
         var idArray=[];
@@ -11,6 +14,24 @@ function getListForObject(selection,idName){
         
         for(var i=0; i<selectedItems.length; i++){
             var str='{'+"\""+idName+"\":"+"\""+selectedItems[i].data[idName]+"\""+'}';
+            var obj = JSON.parse(str);
+            idArray.push(obj);
+        }
+       
+        return idArray;
+    }
+    
+    /**
+     * Devuelve una lista de objetos en formato JSON para una entidad a partir 
+     * del store de un grid
+     */
+    function getListForObjectByGridStore(store,idName){
+        
+        var idArray=[];
+        var items=store.data.items;
+        
+        for(var i=0; i<items.length; i++){
+            var str='{'+"\""+idName+"\":"+"\""+items[i].data[idName]+"\""+'}';
             var obj = JSON.parse(str);
             idArray.push(obj);
         }

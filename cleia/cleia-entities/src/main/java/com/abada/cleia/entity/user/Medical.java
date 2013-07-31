@@ -61,21 +61,5 @@ public class Medical implements Serializable{
         this.patients = patients;
     }
 
-    public void addPatients(List<Patient> ĺpatient) {
-        for (Patient p : ĺpatient) {
-            if (this.getPatients() == null) {
-                this.setPatients(new ArrayList<Patient>());
-            }
-            if (!this.patients.contains(p)) {
-                this.patients.add(p);
-            }
-
-            if (p.getMedicals() == null) {
-                p.setMedicals(new ArrayList<Medical>());
-            }
-            if (!p.getMedicals().contains(this)) {
-                p.getMedicals().add(this);
-            }
-        }
-    }
+    
 }

@@ -169,6 +169,15 @@ Ext.define('App.medical.js.common.gridMedical', {
                     name:'enabled',
                     mapping:'patient.user.enabled',
                     type: 'boolean'
+                },{
+                    name:'roles',
+                    mapping:'patient.user.roles'
+                },{
+                    name:'groups',
+                    mapping:'patient.user.groups' //grupo
+                },{
+                    name:'ids',
+                    mapping:'patient.user.ids'
                 }],
                 url:this.config.url,                
                 root:'data',                                
