@@ -88,7 +88,7 @@ public class FormProcessController {
             params.put("patient_birthday", patient.getBirthDay());
             params.put("patient_genre", patient.getGenre().toString());
             params.put("patient_id", patient.getId());
-            params.put("putoactor",patient.getUser().getUsername());
+            params.put("patient_username",patient.getUser().getUsername());
 
             ProcessInstanceRef pir = processManagement.newInstance(definitionid, params);            
             if (pir != null) {                                
