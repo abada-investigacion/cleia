@@ -17,8 +17,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -30,8 +28,6 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     private static final Log logger = LogFactory.getLog(PatientDaoImpl.class);
     @PersistenceContext(unitName = "cleiaPU")
     private EntityManager entityManager;
-    @Autowired
-    private ShaPasswordEncoder sha1PasswordEncoder;
     @Resource(name = "userDao")
     private UserDao userDao;
 
@@ -168,8 +164,6 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
 
         List<Patient> lpatientid = findPatientsbylisId(patient.getUser().getIds(), Boolean.FALSE);
         if (lpatientid != null && lpatientid.isEmpty()) {
-            patient.getUser().setPassword(sha1PasswordEncoder.encodePassword(patient.getUser().getPassword(), null));
-
             try {
 
                 if (patient.getUser() != null && patient.getUser().getId() <= 0) {

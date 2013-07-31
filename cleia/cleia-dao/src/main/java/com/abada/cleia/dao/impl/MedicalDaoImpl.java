@@ -8,9 +8,11 @@ import com.abada.cleia.dao.IdDao;
 import com.abada.cleia.dao.MedicalDao;
 import com.abada.cleia.dao.PatientDao;
 import com.abada.cleia.dao.UserDao;
+import com.abada.cleia.entity.user.Group;
 import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.Medical;
 import com.abada.cleia.entity.user.Patient;
+import com.abada.cleia.entity.user.Role;
 import com.abada.springframework.orm.jpa.support.JpaDaoUtils;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import java.util.ArrayList;
@@ -367,29 +369,69 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
      */
     @Transactional(value = "cleia-txm")
     public void addpatientMedical(Medical m) throws Exception {
-        Medical medical = entityManager.find(Medical.class, m.getId());
-        if (medical != null) {
-            medical.addPatients(m.getPatients());
+        if (m != null) {
+            Medical medical = entityManager.find(Medical.class, m.getId());
+            if (medical != null) {
+                for (Patient p : medical.getPatients()) {
+                    p.getMedicals().remove(medical);
+                }
+                medical.getPatients().clear();
+                entityManager.flush();
+                addPatients(m.getPatients(), medical);
+            } else {
+                throw new Exception("Error. El medico no existe");
+            }
         } else {
-            throw new Exception("Error. El medico no existe");
+            throw new NullPointerException("Error. El medico no existe");
         }
     }
 
-     /**
-      * Get patients by Medical id
-      * 
-      * @param id
-      * @return
-      * @throws Exception 
-      */
+    /**
+     * add patients to medical
+     *
+     * @param ĺpatient
+     * @param m
+     */
     @Transactional(value = "cleia-txm")
-    public List<Patient> findPatientsByMedicalId(Long id) throws Exception{
+    public void addPatients(List<Patient> ĺpatient, Medical m) throws Exception {
+
+        for (Patient p : ĺpatient) {
+            Patient patient = entityManager.find(Patient.class, p.getId());
+            if (patient != null) {
+                if (m.getPatients() == null) {
+                    m.setPatients(new ArrayList<Patient>());
+                }
+                if (!m.getPatients().contains(patient)) {
+                    m.getPatients().add(patient);
+                }
+
+                if (patient.getMedicals() == null) {
+                    patient.setMedicals(new ArrayList<Medical>());
+                }
+                if (!patient.getMedicals().contains(m)) {
+                    patient.getMedicals().add(m);
+                }
+            } else {
+                throw new Exception("Error. El paciente no encontrado");
+            }
+        }
+    }
+
+    /**
+     * Get patients by Medical id
+     *
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @Transactional(value = "cleia-txm")
+    public List<Patient> findPatientsByMedicalId(Long id) throws Exception {
         Medical medical = entityManager.find(Medical.class, id);
 
         if (medical == null) {
             throw new Exception("Error. El medico no existe");
         }
-        
+
         medical.getPatients().size();
 
         return medical.getPatients();
