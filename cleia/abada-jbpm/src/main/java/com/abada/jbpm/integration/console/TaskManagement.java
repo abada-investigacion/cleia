@@ -418,6 +418,7 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
         List<Long> pids = patientTaskManagement.getProcessInstancesIdsForPatient(patientId);
         List<TaskRef> result = new ArrayList<TaskRef>();
         List<TaskRef> tasks = this.getUnassignedTasks(userId, null);
+        tasks.addAll(this.getAssignedTasks(userId));
         List<ProcessInstanceLog> instanceLogs;
         if (pids != null && !pids.isEmpty()) {
             for (Long id : pids) {
@@ -437,6 +438,7 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
         List<TaskRef> result = new ArrayList<TaskRef>();
         if (instanceLogs != null && !instanceLogs.isEmpty()) {
             List<TaskRef> tasks = this.getUnassignedTasks(userId, null);
+            tasks.addAll(this.getAssignedTasks(userId));
             if (tasks != null && !tasks.isEmpty()) {
                 for (TaskRef tr : tasks) {
                     if (contains(instanceLogs, tr.getProcessInstanceId())) {
