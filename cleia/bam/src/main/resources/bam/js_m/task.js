@@ -59,13 +59,13 @@ Ext.setup({
                 taskId: taskId,
                 url: url
             });
-            panelAux.addListener('success', function(panel, frame, response) {
+            panelAux.addListener('success', function(panel2, frame, response) {
                 Ext.Msg.alert('Info', 'Tarea completada correctamente',
                         function() {
                             principalAction(panel);
                         });
             }, this);
-            panelAux.addListener('failure', function(panel, frame, text) {
+            panelAux.addListener('failure', function(panel2, frame, text) {
                 Ext.Msg.alert('Error', 'No se puede completar la tarea.' + text,
                         function() {
                             principalAction(panel);

@@ -50,7 +50,7 @@ Ext.define('App.bam.js_m.common.FormCustomFrame',{
         this.counter++;
     },
     getResponse:function(){     
-        var jsonResponse=this.container.dom.childNodes[0].childNodes[0].contentDocument.body.textContent;
+        var jsonResponse=this.bodyElement.dom.firstChild.firstChild.contentDocument.body.textContent;
         var obResponse=Ext.JSON.decode(jsonResponse,true);
         if (obResponse && obResponse!=null){            
             return obResponse;
