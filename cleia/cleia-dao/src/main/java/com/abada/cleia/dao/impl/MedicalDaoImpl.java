@@ -412,7 +412,7 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
                     patient.getMedicals().add(m);
                 }
             } else {
-                throw new Exception("Error. El paciente no encontrado");
+                throw new Exception("Error. Paciente no encontrado");
             }
         }
     }
