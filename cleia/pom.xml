@@ -94,4 +94,35 @@
     <module>cleia-patient</module>
     <module>cleia-medical</module>
   </modules>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.5</version>
+                <configuration>
+                    <verbose>true</verbose>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>first</id>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <licenseName>gpl_v3</licenseName>
+                            <organizationName>Abada Servicios Desarrollo (investigacion@abadasoft.com)</organizationName>
+                            <inceptionYear>2013</inceptionYear>                                                        
+                            <projectName>Cleia</projectName>                            
+                            <excludes>
+                                <exclude>**/README</exclude>
+                                <exclude>**/*.ftl</exclude>
+                            </excludes>
+                        </configuration>                        
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
