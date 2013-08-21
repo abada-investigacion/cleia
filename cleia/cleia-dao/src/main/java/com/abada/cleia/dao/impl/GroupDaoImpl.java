@@ -204,25 +204,27 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      * @throws Exception
      */
     @Transactional(value = "cleia-txm", readOnly = true)
-    public List<User> getUsersByIdGroup(String idgroup) throws Exception {
+    public List<User> getUsersByIdGroup(String idgroup,GridRequest filters) throws Exception {
 
-        Group group = new Group();
-        group = entityManager.find(Group.class, idgroup);
+
+        
+        List<User> luser = this.find(entityManager, "select u from User u join u.groups groupss WHERE groupss.value='"+idgroup+"' " + filters.getQL("u", false), filters.getParamsValues(), filters.getStart(), filters.getLimit());
+
 
         /*
          * Si el grupo existe le fuerzo a que traiga su lista de User
          */
-        if (group == null) {
-            throw new Exception("Error. El servicio no existe");
-        } else {
-            for (User user : group.getUsers()) {
-                user.getRoles().size();
-                user.getGroups().size();
+//        if (group == null) {
+//            throw new Exception("Error. El servicio no existe");
+//        } else {
+//            for (User user : group.getUsers()) {
+//                user.getRoles().size();
+//                user.getGroups().size();
+//
+//            }
+//        }
 
-            }
-        }
-
-        return (List<User>) group.getUsers();
+        return luser;
     }
 
     /**

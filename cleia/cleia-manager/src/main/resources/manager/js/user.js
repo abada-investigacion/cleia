@@ -53,8 +53,9 @@ Ext.onReady(function() {
 
     var usersGrid = Ext.create('App.manager.js.common.griduserexpander', {
         url: getRelativeServerURI('rs/user/search'),
-        width: 300,
+        width: 500,
         height: 400,
+        padding: '5 5 5 5',
         page: 14
     });
 
@@ -65,7 +66,7 @@ Ext.onReady(function() {
         }
     });
 
-    var grid = Ext.create('Ext.panel.Panel', {
+    var panel = Ext.create('Ext.panel.Panel', {
         autoWidth: true,
         autoHeight: true,
         title: '',
@@ -73,7 +74,7 @@ Ext.onReady(function() {
 
     });
     toolbar.getComponent("Borrar").setText("Habilitar/Deshabilitar");
-    setCentralPanel(grid);
+    setCentralPanel(panel);
 
     //*Funcion para los frompanel
     function getO(form, selectionGroup, selectionRole,idGridStore) {

@@ -19,6 +19,7 @@ Ext.define('App.patient.js.common.gridPatient', {
     {
         header:'Id',
         dataIndex:'id',
+        width:30,
         hidden:true
     },
     {

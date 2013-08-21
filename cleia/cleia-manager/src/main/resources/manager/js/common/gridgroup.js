@@ -15,7 +15,8 @@ Ext.define('App.manager.js.common.gridgroup', {
     columns:[           
     {
         header: 'Servicios', 
-        dataIndex: 'value'
+        dataIndex: 'value',
+        width:50
     
     }],
     features:[{

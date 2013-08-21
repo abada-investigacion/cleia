@@ -83,13 +83,14 @@ public class GroupController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{idgroup}/users", method = RequestMethod.GET)
-    public void getGroupUsers(@PathVariable String idgroup, Model model) throws Exception {
+    public void getGroupUsers(@PathVariable String idgroup, String filter, String sort, Integer limit, Integer start,Model model) throws Exception {
 
 
         List<User> lusers = new ArrayList<User>();
         ExtjsStore aux = new ExtjsStore();
         try {
-            lusers = this.groupDao.getUsersByIdGroup(idgroup);
+            GridRequest grequest = GridRequestFactory.parse(sort, start, limit, filter);
+            lusers = this.groupDao.getUsersByIdGroup(idgroup,grequest);
         } catch (Exception e) {
             logger.error(e);
         }
@@ -98,7 +99,7 @@ public class GroupController {
         aux.setTotal(lusers.size());
 
         model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
-        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Case1.class);
     }
 
     /**
