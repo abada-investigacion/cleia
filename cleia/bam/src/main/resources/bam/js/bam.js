@@ -362,7 +362,7 @@ Ext.onReady(function() {
      */
     function modePatient() {
         var panelPatient = Ext.create('App.bam.js.common.PatientGrid', {
-            url: getRelativeServerURI('rs/patient/search')
+            url: getRelativeServerURI('rs/patient/assigned/search')
         });
         panelPatient.addListener('patientselected', function(grid, patientId, patientname) {
             modeOncoguideList(patientId, null, patientname);

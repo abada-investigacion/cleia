@@ -25,15 +25,16 @@ package com.abada.cleia.dao.impl;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 import com.abada.cleia.dao.PatientDao;
 import com.abada.cleia.dao.UserDao;
 import com.abada.cleia.entity.user.Id;
+import com.abada.cleia.entity.user.Medical;
 import com.abada.cleia.entity.user.Patient;
 import com.abada.springframework.orm.jpa.support.JpaDaoUtils;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -140,7 +141,20 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
             patient.getProcessInstances().size();
         }
         return lpatient;
+    }
 
+    public List<Patient> getAllbyMedical(GridRequest filters,String usernameMedical) {        
+        Map<String,Object> params=filters.getParamsValues();
+        params.put("usernameMedical", usernameMedical);
+        List<Patient> lpatient = this.find(entityManager, "select p from Patient p inner join p.medicals m where m.patient.user.username = :usernameMedical " + filters.getQL("p", false), params, filters.getStart(), filters.getLimit());
+        return lpatient;
+    }
+
+    public Long loadSizeAllbyMedical(GridRequest filters,String usernameMedical) {        
+        Map<String,Object> params=filters.getParamsValues();
+        params.put("usernameMedical", usernameMedical);
+        List<Long> result = this.find(entityManager, "select count(*) from Patient p inner join p.medicals m where m.patient.user.username = :usernameMedical " + filters.getQL("p", false), params, filters.getStart(), filters.getLimit());
+        return result.get(0);
     }
 
     /**
