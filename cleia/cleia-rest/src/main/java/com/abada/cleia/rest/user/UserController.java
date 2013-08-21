@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping("/rs/user")
 public class UserController {
-
+    
     private static final Log logger = LogFactory.getLog(UserController.class);
     @Autowired
     private GroupDao groupDao;
@@ -56,9 +56,10 @@ public class UserController {
         List<String> listmembers = groupDao.getMemberGroup(groupid);
         return listmembers;
     }
-    
+
     /**
      * Returns all users that belongs to the same group of logged user.
+     *
      * @param userid User id.
      * @param request Do nothing.
      * @return Return a user list.
@@ -68,7 +69,7 @@ public class UserController {
         List<String> listuser = userDao.getUserGroup(userid);
         return listuser;
     }
-    
+
     //
     /**
      * Returns all users
@@ -100,7 +101,7 @@ public class UserController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{iduser}", method = RequestMethod.GET)
-    public void getUserById(@PathVariable Long iduser,Model model) {
+    public void getUserById(@PathVariable Long iduser, Model model) {
         
         User user = new User();
         try {
@@ -112,8 +113,6 @@ public class UserController {
         model.addAttribute(JsonView.JSON_VIEW_RESULT, user);
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
-    
-    
 
     /**
      * Insert a user
@@ -160,8 +159,6 @@ public class UserController {
         return result;
     }
 
-    
-    
     /**
      * Enable a user by id
      *
@@ -196,13 +193,13 @@ public class UserController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public void getSearchUser(String filter, String sort, Integer limit, Integer start,Model model) {
+    public void getSearchUser(String filter, String sort, Integer limit, Integer start, Model model) {
         
         List<User> luser;
         ExtjsStore aux = new ExtjsStore();
         try {
             GridRequest grequest = GridRequestFactory.parse(sort, start, limit, filter);
-            luser = this.userDao.getAll(grequest);           
+            luser = this.userDao.getAll(grequest);            
             
             aux.setData(luser);
             aux.setTotal(this.userDao.loadSizeAll(grequest).intValue());
@@ -213,9 +210,8 @@ public class UserController {
         model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Level1.class);
     }
-    
-    
-     /**
+
+    /**
      * Search a list of users by params
      *
      * @param filter Filter conditions of results. Set in JSON by an array of
@@ -227,16 +223,16 @@ public class UserController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/search/{username}", method = RequestMethod.GET)
-    public void getSearchUser(@PathVariable String username,String filter, String sort, Integer limit, Integer start,Model model) {
+    public void getSearchUser(@PathVariable String username, String filter, String sort, Integer limit, Integer start, Model model) {
         
         List<User> luser = new ArrayList<User>();
         ExtjsStore aux = new ExtjsStore();
         try {
             GridRequest grequest = GridRequestFactory.parse(sort, start, limit, filter);
-            User u= this.userDao.getUserByUsername(grequest,username);
+            User u = this.userDao.getUserByUsername(grequest, username);
             luser.add(u);
-           
-                u.setPassword("");
+            
+            u.setPassword("");
             
             
             aux.setData(luser);
@@ -258,7 +254,7 @@ public class UserController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{iduser}/groups", method = RequestMethod.GET)
-    public void getUserGroups(@PathVariable Long iduser,Model model) throws Exception {
+    public void getUserGroups(@PathVariable Long iduser, Model model) throws Exception {
         
         
         List<Group> groups = new ArrayList<Group>();
@@ -288,7 +284,7 @@ public class UserController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{iduser}/roles", method = RequestMethod.GET)
-    public void getUserRoles(@PathVariable Long iduser,Model model) throws Exception {
+    public void getUserRoles(@PathVariable Long iduser, Model model) throws Exception {
         
         
         List<Role> lrole = new ArrayList<Role>();
@@ -304,6 +300,7 @@ public class UserController {
         model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
+
     /**
      * Returns a list of all ids from a user
      *
@@ -313,7 +310,7 @@ public class UserController {
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/{iduser}/ids", method = RequestMethod.GET)
-    public void getUserIds(@PathVariable Long iduser,Model model) throws Exception {
+    public void getUserIds(@PathVariable Long iduser, Model model) throws Exception {
         
         
         List<Id> lid = new ArrayList<Id>();
@@ -372,8 +369,8 @@ public class UserController {
             logger.error(e);
         }
         return result;
-    }      
-    
+    }
+
     /**
      * Return all Patient Genre in a ExtjsStore structure
      *
@@ -382,7 +379,7 @@ public class UserController {
     @RequestMapping(value = "/withoutAssignedPatient/combo", method = RequestMethod.GET)
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     public ExtjsStore getUserWithoutAssignedPatientCombo() {
-       
+        
         List<ComboBoxResponse> data = new ArrayList<ComboBoxResponse>();
         List<User> luser = new ArrayList<User>();
         try {
@@ -390,16 +387,35 @@ public class UserController {
         } catch (Exception e) {
             logger.error(e);
         }
-         for (User u : luser) {
+        for (User u : luser) {
             ComboBoxResponse aux = new ComboBoxResponse();
-            aux.setId(u.getId()+"");
+            aux.setId(u.getId() + "");
             aux.setValue(u.getUsername());
             data.add(aux);
         }
         
-
+        
         ExtjsStore result = new ExtjsStore();
         result.setData(data);
+        return result;
+    }
+    
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/{iduser}/{operation}/{idgroup}", method = RequestMethod.PUT)
+    public Success assignToGroup(@PathVariable Long iduser, @PathVariable String operation,@PathVariable String idgroup) {
+        
+        Success result = new Success(Boolean.FALSE);
+        try {
+            if (operation.equals("addto")) {
+                this.userDao.putUserGroup(iduser, idgroup);
+            } else {
+                this.userDao.deleteUserGroup(iduser, idgroup);
+            }            
+            result.setSuccess(Boolean.TRUE);
+        } catch (Exception e) {
+            result.setErrors(new com.abada.extjs.Error(e.getMessage()));
+            logger.error(e);
+        }
         return result;
     }
 }

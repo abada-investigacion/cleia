@@ -182,12 +182,12 @@ Ext.onReady(function() {
                 },                            
                 select:function(constructor,record){     
                     
-                    doAjaxAssign('add',record);
+                    doAjaxAssign('addto',record);
                  
                 },
                 deselect:function(constructor, record){  
                                            
-                    doAjaxAssign('remove',record);
+                    doAjaxAssign('removefrom',record);
                   
                 }
             }
@@ -195,7 +195,12 @@ Ext.onReady(function() {
         
         function doAjaxAssign(operation,record){
             
-          getRelativeServerURI('rs/group/assignpatient')
+            var url=getRelativeServerURI('rs/user/{iduser}/{operation}/{idgroup}',{
+                iduser:record.data.id,
+                operation:operation,
+                idgroup:selection.getSelection()[0].get('value')                             
+            });
+            
             Abada.Ajax.requestJson({
                 url: url,
                 scope: this,
@@ -203,9 +208,6 @@ Ext.onReady(function() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                params:
-                Ext.JSON.encode(form)
-                ,
                 failure: function(error) {
                     
                 },
