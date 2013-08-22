@@ -28,6 +28,9 @@ public class Group implements Serializable {
     @JsonView(Views.Level2.class)
     @ManyToMany(mappedBy = "groups")
     private List<User> users;
+     @JsonView(Views.Public.class)
+    @Column(nullable = false)
+    private boolean enabled;
 
     public String getValue() {
         return value;
@@ -44,6 +47,16 @@ public class Group implements Serializable {
     public void setUsers(List<User> users) {
         this.users = users;
     }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+    
+    
     
      public void addUser(User user) {
         if (this.users == null) {

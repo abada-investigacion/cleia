@@ -176,25 +176,25 @@ public class GroupController {
         return result;
     }
 
-    /**
-     * Delete a group by id
+   /**
+     * Enable a group by id
      *
      * @param idgroup Group id.
-     * @return Return a success structure.
+     * @return Return success structure.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/{idgroup}", method = RequestMethod.DELETE)
-    public Success deleteGroup(@PathVariable String idgroup) {
-
+    @RequestMapping(value = "/{idgroup}/{enable}", method = RequestMethod.PUT)
+    public Success enableDisableGroup(@PathVariable String idgroup, @PathVariable boolean enable) {
+        
         Success result = new Success(Boolean.FALSE);
         try {
-            groupDao.deleteGroup(idgroup);
+            groupDao.enableDisableGroup(idgroup, enable);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));
             logger.error(e);
         }
-
+        
         return result;
     }
 }

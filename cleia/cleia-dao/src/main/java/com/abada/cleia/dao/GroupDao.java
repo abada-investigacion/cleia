@@ -55,13 +55,6 @@ public interface GroupDao {
      * @return 
      */
     public void putGroup(String idgroup, Group newgroup) throws Exception;
-
-    /**
-     * Delete a group by id
-     * @param idgroup
-     * @return 
-     */
-    public void deleteGroup(String idgroup) throws Exception;
     
     /**
      * Search a list of groups by params
@@ -77,4 +70,12 @@ public interface GroupDao {
      * @throws Exception 
      */
     public List<User> getUsersByIdGroup(String idgroup,GridRequest filters) throws Exception;
+
+    /**
+     * Enable a group by id
+     *
+     * @param idgroup
+     * @return
+     */
+    public void enableDisableGroup(String idgroup, boolean enable) throws Exception;
 }

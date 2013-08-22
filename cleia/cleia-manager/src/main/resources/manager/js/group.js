@@ -9,14 +9,12 @@ Ext.require([
 Ext.onReady(function() {
 
 
-    var usersToAssignGrid;
-
     var toolbar=Ext.create('Abada.toolbar.ToolbarInsertUpdateDelete', {
         listeners: {
             submitInsert: function() {
                 handleFormulario('Inserta', groupGrid, 'Servicio', getRelativeServerURI('rs/group'), groupGrid.selModel);
             },
-            submitUpdate: function() {
+           /* submitUpdate: function() {
                 if (groupGrid.selModel.hasSelection()) {
                     if (groupGrid.selModel.getCount() == 1) {
                         handleFormulario('Modifica', groupGrid, 'Servicio', getRelativeServerURI('rs/group/{idgroup}', {
@@ -27,17 +25,24 @@ Ext.onReady(function() {
                     }
                 } else
                     Ext.Msg.alert('', 'Seleccione un servicio');
-            },
+            },*/
             submitDelete: function() {
                 if (groupGrid.selModel.hasSelection()) {
                     var form = {
-                        value: groupGrid.selModel.getLastSelected().get('value')
+                        value: groupGrid.selModel.getLastSelected().get('value'),
+                        enabled: !groupGrid.selModel.getLastSelected().get('enabled')
                     }
-                    var opt = 'borra';
+                   
+                    var status = 'habilita';
+                 
+                    if (groupGrid.selModel.getLastSelected().get('enabled')) {
+                        status = 'deshabilita'
+                    } 
                                  
-                    doAjaxrequestJson(getRelativeServerURI('rs/group/{idGroup}', {
-                        idGroup:form.value
-                    }), form, 'DELETE', groupGrid, null, 'Servicio '+opt+'do', 'Error. No se ha podido ' + opt + 'r');
+                    doAjaxrequestJson(getRelativeServerURI('rs/group/{idgroup}/{enable}', {
+                        idgroup:form.value,
+                        enable:form.enabled
+                    }), form, 'PUT', groupGrid, null, 'Servicio '+status+'do', 'Error. No se ha podido ' + status + 'r');
               
                 } else
                     Ext.Msg.alert('', 'Seleccione un servicio');
@@ -45,6 +50,10 @@ Ext.onReady(function() {
         }
 
     });
+    
+    toolbar.getComponent("Borrar").setText("Habilitar/Deshabilitar");    
+    
+    toolbar.remove('modificar');
     
     toolbar.add({
         xtype: 'button',
@@ -97,7 +106,8 @@ Ext.onReady(function() {
         }
         
         var o = {
-            value: value
+            value: value,
+            enabled:true
         };
         
         return o;
@@ -201,6 +211,7 @@ Ext.onReady(function() {
                 idgroup:selection.getSelection()[0].get('value')                             
             });
             
+            
             Abada.Ajax.requestJson({
                 url: url,
                 scope: this,
@@ -209,7 +220,10 @@ Ext.onReady(function() {
                     'Content-Type': 'application/json'
                 },
                 failure: function(error) {
-                    
+                    if (error && error.reason) {
+                        Ext.Msg.alert('Error', error.reason);
+                    } else
+                        Ext.Msg.alert('', 'Error');
                 },
                 success: function() {
                     

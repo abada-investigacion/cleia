@@ -11,14 +11,13 @@ Ext.require([
 
 Ext.onReady(function() {
     
-    var usersToAssignGrid;
     
     var toolbar=Ext.create('Abada.toolbar.ToolbarInsertUpdateDelete', {
         listeners: {
             submitInsert: function() {
                 handleFormulario('Inserta', roleGrid, 'Rol', getRelativeServerURI('rs/role'), roleGrid.selModel);
             },
-            submitUpdate: function() {
+            /* submitUpdate: function() {
                 if (roleGrid.selModel.hasSelection()) {
                     if (roleGrid.selModel.getCount() == 1) {
                         handleFormulario('Modifica', roleGrid, 'Usuario', getRelativeServerURI('rs/role/{idrole}', {
@@ -29,26 +28,43 @@ Ext.onReady(function() {
                     }
                 } else
                     Ext.Msg.alert('', 'Seleccione un rol');
-            },
+            },*/
             submitDelete: function() {
                 if (roleGrid.selModel.hasSelection()) {
                     var form = {
                         authority: roleGrid.selModel.getLastSelected().get('authority')
                     }
                     var opt = 'borra';
-                                 
-                    doAjaxrequestJson(getRelativeServerURI('rs/role/{idrole}', {
-                        idrole:form.authority
-                    }), form, 'DELETE', roleGrid, null, 'Rol '+opt+'do', 'Error. No se ha podido ' + opt + 'r');
-              
+                    
+                    Ext.Msg.show({
+                        title:'Atenci&oacute;n',
+                        msg: '\u00BFEsta seguro que desear borrar el rol '+ form.authority+'?.',
+                        buttons: Ext.Msg.YESNO,
+                        fn:function (buttonid){
+                            
+                            if(buttonid=='yes'){
+                                
+                                doAjaxrequestJson(getRelativeServerURI('rs/role/{idrole}', {
+                                    idrole:form.authority
+                                }), form, 'DELETE', roleGrid, null, 'Rol '+opt+'do', 'Error. No se ha podido ' + opt + 'r');
+                                                     
+                            }
+                            
+                        },
+                        icon: Ext.Msg.QUESTION
+                    });
+                  
+                  
                 } else
                     Ext.Msg.alert('', 'Seleccione un rol');
             }
         }
 
-    })
+    });
     
-    var roleGrid = Ext.create('App.manager.js.common.gridroleexpander', {
+    toolbar.remove('modificar');
+    
+    var roleGrid = Ext.create('App.manager.js.common.gridrole', {
         url: getRelativeServerURI('rs/role/search'),
         width: 300,
         height: 400,
@@ -65,7 +81,7 @@ Ext.onReady(function() {
     });
 
     var panel = Ext.create('Ext.panel.Panel', {
-        frame: true,
+        frame: false,
         autoWidth: true,
         autoHeight: true,
         title: '',
@@ -75,14 +91,13 @@ Ext.onReady(function() {
     setCentralPanel(panel);
 
 
-    function getO(form, selection) {
+    function getO(form) {
         var authority = form.getComponent("authority").getValue();
         if (authority == "") {
             authority = null;
         }
         var o = {
-            authority: authority,
-            users: getListForObject(selection, 'id')
+            authority: authority
 
         };
         return o;
@@ -97,71 +112,7 @@ Ext.onReady(function() {
             authority = selection.getLastSelected().get('authority');           
             tooltip = 'Modificar rol';
         }
-        var usersGrid = Ext.create('App.manager.js.common.griduser', {
-            title:'Listado de usuarios',
-            url: getRelativeServerURI('rs/user/search'),
-            width: 400,
-            height:400,
-            checkboxse: true,
-            padding: '10 5 5 5',
-            listeners: {
-               
-                select:function(constructor,record){     
-                    
-                    usersToAssignGrid.getStore().insert(0,record);
-                 
-                },
-                deselect:function(constructor, record){  
-                                           
-                    usersToAssignGrid.getStore().remove(record);
-                  
-                }
-            }
-        });
         
-        if(opt != 'Inserta' && selection.hasSelection()){
-            var assignGridUrl=getRelativeServerURI('rs/role/{idrole}/users',{
-                idrole:selection.selected.items[0].data.authority
-            });
-        }
-        
-        usersToAssignGrid=Ext.create('App.manager.js.common.griduser', {
-            title:'Usuarios asignados',
-            url: assignGridUrl,
-            checkboxse:false,
-            width: 400,
-            height:400,
-            padding: '10 5 5 5'
-        });
-        
-        usersGrid.getStore().on('load',function(){
-            
-            var records= usersToAssignGrid.getStore().data.items;  
-            
-            usersGrid.selModel.select(records, true, true);
-            
-        });
-
-        
-        usersToAssignGrid.getStore().on('load',function(constructor,records){
-            
-            usersGrid.getStore().load({
-                params: {
-                    start: 0
-                }
-            });
-            
-            usersGrid.selModel.select(records, true, true);
-            
-        });
-
-        usersToAssignGrid.getStore().load({
-            params: {
-                start: 0,
-                limit: 25
-            }
-        });
-
 
         //form panel de insertar
         var formpanel = Ext.create('Ext.form.Panel', {           
@@ -184,9 +135,7 @@ Ext.onReady(function() {
                 allowBlank: false,
                 padding: '10 5 5 5',
                 columnWidth: 1
-            },
-            usersGrid,usersToAssignGrid
-
+            }
 
             ],
             buttons: [{
@@ -195,10 +144,7 @@ Ext.onReady(function() {
                 formBind: true,
                 handler: function() {
                     if (formpanel.getForm().isValid()) {
-                        doAjaxrequestJson(url, {
-                            authority: formpanel.getComponent("authority").getValue() , 
-                            users:getListForObjectByGridStore(usersToAssignGrid.getStore(), 'id')
-                        }, method, roleGrid, wind, 'Rol '+ opt + 'do', 'Error no se ha podido ' + opt + 'r');
+                        doAjaxrequestJson(url, getO(formpanel), method, roleGrid, wind, 'Rol '+ opt + 'do', 'Error no se ha podido ' + opt + 'r');
                     }
 
                 },
@@ -206,16 +152,6 @@ Ext.onReady(function() {
             }]
         });
         
-      
-        usersGrid.getStore().load();
-            
-        if (opt != 'Inserta') {
-            usersGrid.getStore().on('load', function() {
-                entityListPreSelected(usersGrid, authority, 'authority', "id", getRelativeServerURI('rs/role/{idrole}/users', {
-                    idrole: authority
-                }));
-            });
-        }
         
         var wind = Ext.create('Ext.window.Window', {
             title: opt + 'r',

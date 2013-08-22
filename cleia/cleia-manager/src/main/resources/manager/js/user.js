@@ -34,7 +34,7 @@ Ext.onReady(function() {
                         enabled: !usersGrid.selModel.getLastSelected().get('enabled'),
                         id: usersGrid.selModel.getLastSelected().get('id')
                     }
-                    var opt = 'modifica', status = 'habilita';
+                    var status = 'habilita';
                  
                     if (usersGrid.selModel.getLastSelected().get('enabled')) {
                         status = 'deshabilita'

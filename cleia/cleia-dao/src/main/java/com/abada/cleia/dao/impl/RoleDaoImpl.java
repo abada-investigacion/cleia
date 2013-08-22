@@ -21,17 +21,16 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author katsu
  */
-public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
+public class RoleDaoImpl extends JpaDaoUtils implements RoleDao {
 
     private static final Log logger = LogFactory.getLog(RoleDaoImpl.class);
     @PersistenceContext(unitName = "cleiaPU")
     private EntityManager entityManager;
-    
-
 
     /**
      * Returns all roles
-     * @return 
+     *
+     * @return
      */
     @Transactional(value = "cleia-txm", readOnly = true)
     public List<Role> getAllRoles() {
@@ -42,8 +41,9 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
 
     /**
      * Returns one role by id
+     *
      * @param idrole
-     * @return 
+     * @return
      */
     @Transactional(value = "cleia-txm", readOnly = true)
     public Role getRoleById(Integer idrole) {
@@ -57,16 +57,23 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
     }
 
     /**
-     * Insert a role 
+     * Insert a role
+     *
      * @param rolename
-     * @return 
+     * @return
      */
-    @Transactional(value="cleia-txm",rollbackFor={Exception.class})
+    @Transactional(value = "cleia-txm", rollbackFor = {Exception.class})
     public void postRole(Role role) throws Exception {
-        List<Role> lrole = entityManager.createQuery("select r from Role r where r.authority=?").setParameter(1, role.getAuthority()).getResultList();
-        if (lrole.isEmpty()) {
+
+        Role r = entityManager.find(Role.class, role.getAuthority());
+
+        if (r == null) {
             try {
-                this.addUsers(role, role.getUsers(), true);
+
+                if (role.getUsers() != null && !role.getUsers().isEmpty()) {
+                    this.addUsers(role, role.getUsers(), true);
+                }
+
                 entityManager.persist(role);
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al insertar el rol " + role.getAuthority());
@@ -78,19 +85,28 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
 
     /**
      * Modify a role by id
-     * @param idrolepriv
-     * @param rolename
-     * @return 
+     *
+     * @param idrole
+     * @param newrole
+     * @return
      */
-    @Transactional(value="cleia-txm",rollbackFor={Exception.class})
+    @Transactional(value = "cleia-txm", rollbackFor = {Exception.class})
     public void putRole(String idrole, Role newrole) throws Exception {
+
         Role role = entityManager.find(Role.class, idrole);
+
         if (role != null) {
-            List<Role> lrole = entityManager.createQuery("select r from Role r where r.authority=?").setParameter(1, newrole.getAuthority()).getResultList();
-            if ((lrole.isEmpty() && lrole!=null) || newrole.getAuthority().equals(role.getAuthority())) {
+
+            Role r = entityManager.find(Role.class, newrole.getAuthority());
+
+            if (r == null && !newrole.getAuthority().equals(role.getAuthority())) {
                 try {
-                    this.addUsers(role, newrole.getUsers(), false);
+
+                    if (newrole.getUsers() != null && !newrole.getUsers().isEmpty()) {
+                        this.addUsers(role, newrole.getUsers(), false);
+                    }
                     role.setAuthority(newrole.getAuthority());
+
                 } catch (Exception e) {
                     throw new Exception("Error. Ha ocurrido un error al modificar el rol " + newrole.getAuthority());
                 }
@@ -104,10 +120,11 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
 
     /**
      * Delete a role by id
+     *
      * @param idrolepriv
-     * @return 
+     * @return
      */
-    @Transactional(value="cleia-txm",rollbackFor={Exception.class})
+    @Transactional(value = "cleia-txm", rollbackFor = {Exception.class})
     public void deleteRole(String idrole) throws Exception {
 
         Role role = (Role) entityManager.find(Role.class, idrole);
@@ -128,20 +145,22 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
 
     /**
      * Search a list of roles by params
+     *
      * @param filters
-     * @return 
+     * @return
      */
     @Transactional(value = "cleia-txm", readOnly = true)
     public List<Role> getAll(GridRequest filters) {
-        List<Role> lrole = this.find(entityManager,"select r from Role r" + filters.getQL("r", true), filters.getParamsValues(), filters.getStart(), filters.getLimit());
+        List<Role> lrole = this.find(entityManager, "select r from Role r" + filters.getQL("r", true), filters.getParamsValues(), filters.getStart(), filters.getLimit());
         return lrole;
     }
 
     /**
      * Returns a list of all users from a role
+     *
      * @param idrolepriv
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @Transactional(value = "cleia-txm", readOnly = true)
     public List<User> getUsersByIdRole(String authority) throws Exception {
@@ -150,14 +169,16 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
 
         role = entityManager.find(Role.class, authority);
 
-        /*Si el role existe le fuerzo a que traiga su lista de User*/
+        /*
+         * Si el role existe le fuerzo a que traiga su lista de User
+         */
         if (role == null) {
             throw new Exception("Error. El rol no existe");
         } else {
             for (User user : role.getUsers()) {
                 user.getRoles().size();
                 user.getGroups().size();
-                
+
             }
         }
 
@@ -165,20 +186,21 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
     }
 
     /**
-     *Obtiene el tamaño de {@link Role}
-     * @param filters 
+     * Obtiene el tamaño de {@link Role}
+     *
+     * @param filters
      * @return Long
      */
     @Transactional(value = "cleia-txm", readOnly = true)
     public Long loadSizeAll(GridRequest filters) {
-        List<Long> result = this.find(entityManager,"select count(*) from Role r" + filters.getQL("r", true), filters.getParamsValues());
+        List<Long> result = this.find(entityManager, "select count(*) from Role r" + filters.getQL("r", true), filters.getParamsValues());
         return result.get(0);
     }
 
-    @Transactional(value="cleia-txm",rollbackFor={Exception.class})
+    @Transactional(value = "cleia-txm", rollbackFor = {Exception.class})
     public void addUsers(Role role, List<User> luser, boolean newrole) throws Exception {
         if (luser != null) {
-            List<User> listuseraux=new ArrayList<User>(luser);
+            List<User> listuseraux = new ArrayList<User>(luser);
             if (!newrole) {
                 for (User u : role.getUsers()) {
                     u.getRoles().remove(role);
@@ -187,7 +209,7 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao{
 
                 entityManager.flush();
             }
-            
+
             role.getUsers().clear();
             for (User u : listuseraux) {
                 User user = entityManager.find(User.class, u.getId());
