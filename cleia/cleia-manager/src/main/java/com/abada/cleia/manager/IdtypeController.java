@@ -25,7 +25,7 @@ public class IdtypeController {
      * @return
      */
     @RequestMapping(value = "/patient/idtype.htm")
-    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @MenuEntry(icon = "manager/image/identificacion.png", menuGroup = "Manager", order = 0, text = "Identificación Usuarios")
     public String gridIdtype(Model model) {
         model.addAttribute("js", Arrays.asList("manager/js/common/gridIdtype.js", "manager/js/Idtype.js","manager/js/manager-utils.js"));
