@@ -48,7 +48,7 @@ public class MedicalController {
      *
      */
     @RequestMapping(value = "/medical/medical.htm")
-    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
     @MenuEntry(icon = "medical/image/paciente.png", menuGroup = "Medicos", order = 0, text = "Gestión Medicos")
     public String gridPatient(Model model) {
         model.addAttribute("js", Arrays.asList("medical/js/common/gridMedical.js","medical/js/common/gridMedicalExpander.js", "medical/js/medical.js",

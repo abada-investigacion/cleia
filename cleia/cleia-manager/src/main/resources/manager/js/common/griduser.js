@@ -33,8 +33,9 @@ Ext.define('App.manager.js.common.griduser', {
     extend:'Ext.grid.Panel',
     config:{
         checkboxse:undefined,
+        bbar:undefined,
         loadMask: true,
-        page:14
+        page:undefined
     },
     title: 'Usuarios',
  
@@ -42,8 +43,7 @@ Ext.define('App.manager.js.common.griduser', {
     {
         header: 'id', 
         dataIndex: 'id',
-        hidden:true,
-        width:50
+        width:25
     
     },{
         header: 'Usuario', 
@@ -56,7 +56,7 @@ Ext.define('App.manager.js.common.griduser', {
         dataIndex: 'enabled',
         align:'center',
         xtype: 'checkboxcolumn',
-        width:35
+        width:50
 
     }
 
@@ -78,7 +78,7 @@ Ext.define('App.manager.js.common.griduser', {
     
     constructor:function(config){
         this.initConfig(config);  
-        if (config.url){
+        if (config.url || config.url==undefined){
             this.store=Ext.create('Abada.data.JsonStore',{
                 storeId:'griduserStore',
                 sorters: {
@@ -114,17 +114,22 @@ Ext.define('App.manager.js.common.griduser', {
                 pageSize:config.page
             }); 
         }
-        if(config.checkboxse){
+        
+         if(config.checkboxse){
             this.selModel=Ext.create('Ext.selection.CheckboxModel',{
                 checkOnly : true
             });
         } else{
             this.selModel= Ext.create('Ext.selection.RowModel');
         }
-        this.bbar= Ext.create('Ext.toolbar.Paging', {
-            store: this.store,
-            pageSize: this.store.pageSize
-        });
+        
+        if(config.bbar || config.bbar==undefined){
+            this.bbar= Ext.create('Ext.toolbar.Paging', {
+                store: this.store,
+                pageSize: this.store.pageSize
+            });
+        }
+        
         this.callParent([config]);
     }
 

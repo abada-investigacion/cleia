@@ -114,15 +114,20 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      */
     @Transactional(value = "cleia-txm")
     public void postGroup(Group group) throws Exception {
-        List<Group> lgroup = entityManager.createQuery("select g from Group g where g.value=?").setParameter(1, group.getValue()).getResultList();
-        if (lgroup.isEmpty() && lgroup != null) {
+        
+        Group g = entityManager.find(Group.class, group.getValue());
+        if (g == null) {
             List<User> luser = entityManager.createQuery("select u from User u where u.username=?").setParameter(1, group.getValue()).getResultList();
-            if (luser.isEmpty() && luser != null) {
+            if (luser != null && luser.isEmpty()) {
                 try {
                     org.jbpm.task.Group grouptask = new org.jbpm.task.Group();
                     grouptask.setId(group.getValue());
                     taskService.getTaskSession().addGroup(grouptask);
-                    this.addUsers(group, group.getUsers(), true);
+
+                    if (group.getUsers() != null && !group.getUsers().isEmpty()) {
+                        this.addUsers(group, group.getUsers(), true);
+                    }
+
                     entityManager.persist(group);
                 } catch (Exception e) {
                     throw new Exception("Error. Ha ocurrido un error al insertar el servicio " + group.getValue(), e);
@@ -159,7 +164,10 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
                             grouptask.setId(newgroup.getValue());
                             taskService.getTaskSession().addGroup(grouptask);
                         }
-                        this.addUsers(group, newgroup.getUsers(), false);
+
+                        if (newgroup.getUsers() != null && !newgroup.getUsers().isEmpty()) {
+                            this.addUsers(group, newgroup.getUsers(), false);
+                        }
                         group.setValue(newgroup.getValue());
                     } catch (Exception e) {
 
@@ -226,25 +234,13 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      * @throws Exception
      */
     @Transactional(value = "cleia-txm", readOnly = true)
-    public List<User> getUsersByIdGroup(String idgroup) throws Exception {
+    public List<User> getUsersByIdGroup(String idgroup, GridRequest filters) throws Exception {
 
-        Group group = new Group();
-        group = entityManager.find(Group.class, idgroup);
 
-        /*
-         * Si el grupo existe le fuerzo a que traiga su lista de User
-         */
-        if (group == null) {
-            throw new Exception("Error. El servicio no existe");
-        } else {
-            for (User user : group.getUsers()) {
-                user.getRoles().size();
-                user.getGroups().size();
 
-            }
-        }
+        List<User> luser = this.find(entityManager, "select u from User u join u.groups groupss WHERE groupss.value='" + idgroup + "' " + filters.getQL("u", false), filters.getParamsValues(), filters.getStart(), filters.getLimit());
 
-        return (List<User>) group.getUsers();
+        return luser;
     }
 
     /**
@@ -271,7 +267,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
     public void addUsers(Group group, List<User> luser, boolean newgroup) throws Exception {
 
         if (luser != null) {
-            List<User> luseraux=new ArrayList<User>(luser);
+            List<User> luseraux = new ArrayList<User>(luser);
             if (!newgroup) {
                 for (User u : group.getUsers()) {
                     u.getGroups().remove(group);
@@ -280,7 +276,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
 
                 entityManager.flush();
             }
-            
+
             group.getUsers().clear();
             for (User u : luseraux) {
                 User user = entityManager.find(User.class, u.getId());
@@ -293,5 +289,41 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
         } else {
             throw new NullPointerException("Error. Lista de usuarios inexistente");
         }
+    }
+
+    /**
+     * Enable a group by id
+     *
+     * @param idgroup
+     * @return
+     */
+    @Transactional(value = "cleia-txm")
+    public void enableDisableGroup(String idgroup, boolean enable) throws Exception {
+        
+        Group group = entityManager.find(Group.class, idgroup);
+        String habilitar = "";
+        if (group != null) {
+            if ((!group.isEnabled() && enable) || (group.isEnabled() && !enable)) {
+                try {
+                    group.setEnabled(enable);
+                } catch (Exception e) {
+                    if (enable) {
+                        habilitar = "habilitar";
+                    } else {
+                        habilitar = "deshabilitar";
+                    }
+                    throw new Exception("Error. Ha ocurrido un error al " + habilitar + " el servicio " + group.getValue());
+                }
+            } else {
+                if (!enable) {
+                    throw new Exception("Error. El servicio " + group.getValue() + " ya esta deshabilitado");
+                } else {
+                    throw new Exception("Error. El servicio " + group.getValue() + " ya esta habilitado");
+                }
+            }
+        } else {
+            throw new Exception("Error. El servicio no existe");
+        }
+        
     }
 }

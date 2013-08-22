@@ -50,11 +50,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "user1")
 public class User implements UserDetails {
 
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class,Views.Case1.class})
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class,Views.Case1.class})
     @Column(nullable = false, unique = true, length = 1024)
     private String username;    
     @JsonView(Views.Hide.class)
@@ -69,7 +69,7 @@ public class User implements UserDetails {
     @JsonView(Views.Public.class)
     @Column(nullable = false)
     private boolean credentialsNonExpired;
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class,Views.Case1.class})
     @Column(nullable = false)
     private boolean enabled;
     @JsonView(Views.Level1.class)
@@ -100,6 +100,7 @@ public class User implements UserDetails {
         this.ids = ids;
     }
 
+    @JsonView(Views.Level1.class)
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
     }

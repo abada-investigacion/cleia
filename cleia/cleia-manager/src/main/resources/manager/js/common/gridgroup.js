@@ -36,8 +36,17 @@ Ext.define('App.manager.js.common.gridgroup', {
     columns:[           
     {
         header: 'Servicios', 
-        dataIndex: 'value'
+        dataIndex: 'value',
+        width:50
     
+    },
+    {
+        header: 'Habilitado', 
+        dataIndex: 'enabled',
+        align:'center',
+        xtype: 'checkboxcolumn',
+        width:50
+
     }],
     features:[{
         ftype: 'filters',
@@ -47,6 +56,9 @@ Ext.define('App.manager.js.common.gridgroup', {
         filters: [ {
             type: 'string',
             dataIndex: 'value'
+        },{
+            type: 'boolean',
+            dataIndex: 'enabled'
         }]
     }],
     forceFit:true,
@@ -63,6 +75,10 @@ Ext.define('App.manager.js.common.gridgroup', {
                 fields:[{
                     name:'value',
                     mapping:'value'
+                },{
+                    name:'enabled',
+                    mapping:'enabled',
+                    type: 'boolean'
                 }],
                 url:this.config.url,                
                 root:'data',                                

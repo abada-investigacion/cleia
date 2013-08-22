@@ -26,13 +26,77 @@
 
 Ext.require([
     'Ext.form.Panel', 'Ext.form.field.Checkbox', 'Abada.Ajax', 'Ext.JSON', 'Ext.Ajax',
-    'Abada.toolbar.ToolbarInsertUpdateDelete', 'App.manager.js.common.gridgroupexpander'])
+    'Abada.toolbar.ToolbarInsertUpdateDelete', 'App.manager.js.common.gridgroupexpander','App.patient.js.common.gridPatient'])
 Ext.onReady(function() {
 
-    var groupGrid = Ext.create('App.manager.js.common.gridgroupexpander', {
+
+    var toolbar=Ext.create('Abada.toolbar.ToolbarInsertUpdateDelete', {
+        listeners: {
+            submitInsert: function() {
+                handleFormulario('Inserta', groupGrid, 'Servicio', getRelativeServerURI('rs/group'), groupGrid.selModel);
+            },
+           /* submitUpdate: function() {
+                if (groupGrid.selModel.hasSelection()) {
+                    if (groupGrid.selModel.getCount() == 1) {
+                        handleFormulario('Modifica', groupGrid, 'Servicio', getRelativeServerURI('rs/group/{idgroup}', {
+                            idgroup:groupGrid.selModel.getLastSelected().get('value')
+                        }), groupGrid.selModel);
+                    } else {
+                        Ext.Msg.alert('', 'Seleccione un servicio');
+                    }
+                } else
+                    Ext.Msg.alert('', 'Seleccione un servicio');
+            },*/
+            submitDelete: function() {
+                if (groupGrid.selModel.hasSelection()) {
+                    var form = {
+                        value: groupGrid.selModel.getLastSelected().get('value'),
+                        enabled: !groupGrid.selModel.getLastSelected().get('enabled')
+                    }
+                   
+                    var status = 'habilita';
+                 
+                    if (groupGrid.selModel.getLastSelected().get('enabled')) {
+                        status = 'deshabilita'
+                    } 
+                                 
+                    doAjaxrequestJson(getRelativeServerURI('rs/group/{idgroup}/{enable}', {
+                        idgroup:form.value,
+                        enable:form.enabled
+                    }), form, 'PUT', groupGrid, null, 'Servicio '+status+'do', 'Error. No se ha podido ' + status + 'r');
+              
+                } else
+                    Ext.Msg.alert('', 'Seleccione un servicio');
+            }
+        }
+
+    });
+    
+    toolbar.getComponent("Borrar").setText("Habilitar/Deshabilitar");    
+    
+    toolbar.remove('modificar');
+    
+    toolbar.add({
+        xtype: 'button',
+        id: 'assginPatients',
+        text: 'Asignar Pacientes',
+        handler: function() {
+            if (groupGrid.selModel.hasSelection()) {
+                if (groupGrid.selModel.getCount() == 1) {
+                    assignPatient(groupGrid.selModel);
+                } else {
+                    Ext.Msg.alert('', 'Seleccione un Servicio');
+                }
+            } else
+                Ext.Msg.alert('', 'Seleccione un Servicio');
+        }
+    });
+    
+    var groupGrid = Ext.create('App.manager.js.common.gridgroup', {
         url: getRelativeServerURI('rs/group/search'),
-        width: 300,
+        width: 350,
         height: 400,
+        padding: '5 5 5 5',        
         page: 14
     });
 
@@ -43,96 +107,60 @@ Ext.onReady(function() {
         }
     });
 
-    var grid = Ext.create('Ext.panel.Panel', {
-        frame: true,
+    var panel = Ext.create('Ext.panel.Panel', {
         autoWidth: true,
         autoHeight: true,
         title: '',
-        items: [
-        Ext.create('Abada.toolbar.ToolbarInsertUpdateDelete', {
-            listeners: {
-                submitInsert: function() {
-                    handleFormulario('Inserta', groupGrid, 'Servicio', getRelativeServerURI('rs/group'), groupGrid.selModel);
-                },
-                submitUpdate: function() {
-                    if (groupGrid.selModel.hasSelection()) {
-                        if (groupGrid.selModel.getCount() == 1) {
-                            handleFormulario('Modifica', groupGrid, 'Servicio', getRelativeServerURI('rs/group/{idgroup}', {
-                                idgroup:groupGrid.selModel.getLastSelected().get('value')
-                                }), groupGrid.selModel);
-                        } else {
-                            Ext.Msg.alert('', 'Seleccione un servicio');
-                        }
-                    } else
-                        Ext.Msg.alert('', 'Seleccione un servicio');
-                },
-                submitDelete: function() {
-                    if (groupGrid.selModel.hasSelection()) {
-                        var form = {
-                            value: groupGrid.selModel.getLastSelected().get('value')
-                        }
-                        var opt = 'borra';
-                                 
-                        doAjaxrequestJson(getRelativeServerURI('rs/group/{idGroup}', {
-                            idGroup:form.value
-                            }), form, 'DELETE', groupGrid, null, 'Servicio '+opt+'do', 'Error. No se ha podido ' + opt + 'r');
-              
-                    } else
-                        Ext.Msg.alert('', 'Seleccione un servicio');
-                }
-            }
-
-        }), groupGrid]//ponemos el grid
+        items: [toolbar, groupGrid]//ponemos el grid
 
     });
-    setCentralPanel(grid);
+    setCentralPanel(panel);
 
 
-    //*Funcion para los frompanel
+    //Funcion para los frompanel
     function getO(form, selection) {
+        
         var value = form.getComponent("value").getValue();
+        
         if (value == "") {
             value = null;
         }
+        
         var o = {
             value: value,
-            users: getListForObject(selection, 'id')
+            enabled:true
         };
+        
         return o;
     }
 
-    function handleFormulario(opt, grid, title, url, selecion) {
+    function handleFormulario(opt, grid, title, url, selection) {
+        
         var value, method = 'POST', tooltip = 'Insertar usuario'
-        var usersGrid = Ext.create('App.manager.js.common.griduser', {
-            url: getRelativeServerURI('rs/user/search'),
-            width: 300,
-            height: 250,
-            checkboxse: true,
-            page: 500
-        });
-        if (opt != 'Inserta' && selecion.hasSelection()) {
+        
+        
+        if (opt != 'Inserta' && selection.hasSelection()) {
+         
             method = 'PUT';
-            value = selecion.getLastSelected().get('value');
+            value = selection.getLastSelected().get('value');
             tooltip = 'Modificar Servicio';
+            
         }
-
-
+        
         //form panel de insertar
         var formpanel = Ext.create('Ext.form.Panel', {
-            title: opt + 'r',
             url: url,
             defaultType: 'textfield',
             monitorValid: true,
-            items: [
-                
+            items: [                
             {
                 fieldLabel: 'Servicio',
                 name: 'value',
                 id: 'value',
                 value: value,
+                padding: '10 5 5 5',
                 allowBlank: false
-            },
-            usersGrid
+            }
             ],
             buttons: [{
                 text: opt + 'r',
@@ -140,28 +168,20 @@ Ext.onReady(function() {
                 formBind: true,
                 handler: function() {
                     if (formpanel.getForm().isValid()) {
-                        var form = getO(formpanel, usersGrid.selModel);
-                        doAjaxrequestJson(url, form, method, groupGrid, wind,'Servicio '+ opt + 'do', 'Error no se ha podido ' + opt + 'r');
+                       
+                        doAjaxrequestJson(url, getO(formpanel), method, groupGrid, wind,'Servicio '+ opt + 'do', 'Error no se ha podido ' + opt + 'r');
+                        
                     }
 
                 },
                 tooltip: tooltip
             }]
         });
-        usersGrid.getStore().load();
 
-        /*
-         *en caso de modificar carga grid de usuarios de un grupo
-         */
-        if (opt != 'Inserta') {
-            usersGrid.getStore().on('load', function() {
-                entityListPreSelected(usersGrid, value, 'value', "id", getRelativeServerURI('rs/group/{value}/users', {
-                    value:value
-                }));
-            });
-        }
+        
         var wind = Ext.create('Ext.window.Window', {
-            id: 'group',
+            title: opt + 'r',
+            id: 'groupwind',
             autoScroll: false,
             closable: true,
             modal: true,
@@ -173,9 +193,123 @@ Ext.onReady(function() {
         return formpanel;
     }
 
+    function assignPatient(selection) {
+        
+        var patientsGrid = Ext.create('App.patient.js.common.gridPatient', {
+            title:'',
+            url: getRelativeServerURI('rs/patient/search'),
+            height:400,
+            width:800,
+            checkboxse: true,
+            padding: '10 5 5 5',
+            page:25,
+            listeners: { 
+                afterrender: function() {                  
+                  
+                    patientsGrid.columns[0].setVisible(true);
+                    patientsGrid.columns[4].hide();
+                     
+                    
+                },                            
+                select:function(constructor,record){     
+                    
+                    doAjaxAssign('addto',record);
+                 
+                },
+                deselect:function(constructor, record){  
+                                           
+                    doAjaxAssign('removefrom',record);
+                  
+                }
+            }
+        });      
+        
+        function doAjaxAssign(operation,record){
+            
+            var url=getRelativeServerURI('rs/user/{iduser}/{operation}/{idgroup}',{
+                iduser:record.data.id,
+                operation:operation,
+                idgroup:selection.getSelection()[0].get('value')                             
+            });
+            
+            
+            Abada.Ajax.requestJson({
+                url: url,
+                scope: this,
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                failure: function(error) {
+                    if (error && error.reason) {
+                        Ext.Msg.alert('Error', error.reason);
+                    } else
+                        Ext.Msg.alert('', 'Error');
+                },
+                success: function() {
+                    
+                }
+            });
+                                   
+        }       
+        
+         
+        patientsGrid.getStore().on('load',function(constructor, records){
+            
+            var groups;
+            var exit;
+            
+            for(var i=0;i<records.length; i++){
+                
+                exit=false;
+                groups=records[i].data.groups;
+                
+                for(var z=0;z<groups.length && !exit;z++){
+                  
+                    if(groups[z].value==selection.getSelection()[0].get('value')){
+                       
+                        patientsGrid.selModel.select(records[i], true, true);
+                       
+                        exit=true;
+                    }
+                    
+                }
+                
+                
+            }
+            
+            
+            
+        });
 
+        patientsGrid.getStore().load({
+            params: {
+                start: 0,
+                limit: 25
+            }
+        });
+
+       
+       
+        var assignForm = Ext.create('Ext.form.Panel', {
+            monitorValid: true,
+            frame: false,
+            autoScroll: true,
+            items: [patientsGrid]            
+        });
+       
+        
+        var wind = Ext.create('Ext.window.Window', {
+            title: 'Asignar Pacientes',
+            id: 'assignPatientWindow',
+            closable: true,
+            modal: true,
+            items: [assignForm]
+        });
+
+        wind.show();
+
+        return assignForm;
+        
+    }
 });
-
-
-
-

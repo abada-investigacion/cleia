@@ -107,7 +107,7 @@ public class IdTypeDaoImpl extends JpaDaoUtils implements IdTypeDao {
      *
      * @return
      */
-    @Transactional(value = "cleia-txm")
+    @Transactional(value = "cleia-txm",readOnly=true)
     public List<IdType> getAll() {
         List<IdType> lidtype = entityManager.createQuery("SELECT u FROM IdType u").getResultList();
         return lidtype;
