@@ -25,7 +25,6 @@ public interface PatientDao {
 
     public List<Patient> getAllPatients();
 
-
     public List<Patient> getAll(GridRequest grequest);
 
     public Long loadSizeAll(GridRequest grequest);
@@ -44,7 +43,9 @@ public interface PatientDao {
 
     public List<Id> getIdsForPatient(Long idpatient);
 
-   public List<Patient> findPatientsbylisId(List<Id> asList, Boolean repeatable) throws Exception;
+    public List<Patient> findPatientsbylisId(List<Id> asList, Boolean repeatable) throws Exception;
 
- 
+    public List<Patient> getPatientnotmedical(GridRequest filters);
+
+    public Long getPatientnotmedicalsize(GridRequest filters);
 }

@@ -8,6 +8,7 @@ import com.abada.cleia.dao.GroupDao;
 import com.abada.cleia.dao.UserDao;
 import com.abada.cleia.entity.user.Group;
 import com.abada.cleia.entity.user.Id;
+import com.abada.cleia.entity.user.Patient;
 import com.abada.cleia.entity.user.Role;
 import com.abada.cleia.entity.user.User;
 import com.abada.cleia.entity.user.Views;
@@ -417,5 +418,34 @@ public class UserController {
             logger.error(e);
         }
         return result;
+    }
+    
+    
+    /**
+     * Search a list of patient
+     *
+     * @param filter Filter conditions of results. Set in JSON by an array of
+     * FilterRequestPriv
+     * @param sort Order of results. Set in JSON by an array of OrderByRequest
+     * @param limit Set the limit of the results. Use it for pagination
+     * @param start Set the start of the results. Use it for pagination
+     * @return Return a list of results.
+     */
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/search/usernotpatient", method = RequestMethod.GET)
+    public void getSearchusertnotpatient(String filter, String sort, Integer limit, Integer start, Model model) {
+
+        List<User> luser;
+        ExtjsStore aux = new ExtjsStore();
+        try {
+            GridRequest grequest = GridRequestFactory.parse(sort, start, limit, filter);
+            aux.setData(this.userDao.getUsernotPatient(grequest));
+            aux.setTotal(this.userDao.getUsernotPatientsize(grequest).intValue());
+        } catch (Exception e) {
+            logger.error(e);
+        }
+
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 }

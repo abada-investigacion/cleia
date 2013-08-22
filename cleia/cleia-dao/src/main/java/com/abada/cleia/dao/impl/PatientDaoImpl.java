@@ -311,4 +311,33 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
         }
         return p;
     }
+    
+     /**
+     * Returns a list of patient not medical
+     *
+     * @return
+     */
+    @Transactional(value = "cleia-txm", readOnly = true)
+    public List<Patient> getPatientnotmedical(GridRequest filters) {
+        List<Patient> lpatient = this.find(entityManager, "SELECT p FROM Patient p WHERE p.id not in (select distinct m.id from Medical m)" + filters.getQL("p", false), filters.getParamsValues(), filters.getStart(), filters.getLimit());
+        for (Patient patient : lpatient) {
+            patient.getUser().getGroups().size();
+            patient.getUser().getRoles().size();
+            patient.getUser().getIds().size();
+            patient.getProcessInstances().size();
+        }
+        return lpatient;
+    }
+    
+     /**
+     * Obtiene el tamaño de {@link User}
+     *
+     * @param filters
+     * @return Long
+     */
+    @Transactional(value = "cleia-txm", readOnly = true)
+    public Long getPatientnotmedicalsize(GridRequest filters) {
+        List<Long> result = this.find(entityManager, "SELECT count(*) FROM Patient p WHERE p.id not in (select distinct m.id from Medical m)" + filters.getQL("p", false), filters.getParamsValues());
+        return result.get(0);
+    }
 }
