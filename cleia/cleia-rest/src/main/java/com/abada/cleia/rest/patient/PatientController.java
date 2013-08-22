@@ -334,7 +334,6 @@ public class PatientController {
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
-
     /**
      * Return all Patient Genre in a ExtjsStore structure
      *
@@ -354,6 +353,35 @@ public class PatientController {
         result.setData(data);
 
         model.addAttribute(JsonView.JSON_VIEW_RESULT, result);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
+    }
+
+    /**
+     * Search a list of patient
+     *
+     * @param filter Filter conditions of results. Set in JSON by an array of
+     * FilterRequestPriv
+     * @param sort Order of results. Set in JSON by an array of OrderByRequest
+     * @param limit Set the limit of the results. Use it for pagination
+     * @param start Set the start of the results. Use it for pagination
+     * @return Return a list of results.
+     */
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/search/patientnotmedical", method = RequestMethod.GET)
+    public void getSearchPatientnotmedical(String filter, String sort, Integer limit, Integer start, Model model) {
+
+        List<Patient> lpatient;
+        ExtjsStore aux = new ExtjsStore();
+        try {
+            GridRequest grequest = GridRequestFactory.parse(sort, start, limit, filter);
+            lpatient = this.patientDao.getPatientnotmedical(grequest);
+            aux.setData(lpatient);
+            aux.setTotal(this.patientDao.getPatientnotmedicalsize(grequest).intValue());
+        } catch (Exception e) {
+            logger.error(e);
+        }
+
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 }
