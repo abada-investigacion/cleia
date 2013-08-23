@@ -33,7 +33,6 @@ import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.Patient;
 import com.abada.cleia.entity.user.Role;
 import com.abada.cleia.entity.user.User;
-import com.abada.jbpm.task.spring.TaskService;
 import com.abada.springframework.orm.jpa.support.JpaDaoUtils;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;

@@ -28,7 +28,6 @@ package com.abada.cleia.dao.impl;
 import com.abada.cleia.dao.GroupDao;
 import com.abada.cleia.entity.user.Group;
 import com.abada.cleia.entity.user.User;
-import com.abada.jbpm.task.spring.TaskService;
 import com.abada.springframework.orm.jpa.support.JpaDaoUtils;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import java.util.ArrayList;
@@ -37,7 +36,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
