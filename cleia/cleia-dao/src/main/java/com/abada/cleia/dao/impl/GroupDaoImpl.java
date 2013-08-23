@@ -25,7 +25,6 @@ package com.abada.cleia.dao.impl;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 import com.abada.cleia.dao.GroupDao;
 import com.abada.cleia.entity.user.Group;
 import com.abada.cleia.entity.user.User;
@@ -48,8 +47,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
 
     private static final Log logger = LogFactory.getLog(GroupDaoImpl.class);
-    @Autowired
-    private TaskService taskService;
     @PersistenceContext(unitName = "cleiaPU")
     private EntityManager entityManager;
 
@@ -114,20 +111,15 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      */
     @Transactional(value = "cleia-txm")
     public void postGroup(Group group) throws Exception {
-        
+
         Group g = entityManager.find(Group.class, group.getValue());
         if (g == null) {
             List<User> luser = entityManager.createQuery("select u from User u where u.username=?").setParameter(1, group.getValue()).getResultList();
             if (luser != null && luser.isEmpty()) {
                 try {
-                    org.jbpm.task.Group grouptask = new org.jbpm.task.Group();
-                    grouptask.setId(group.getValue());
-                    taskService.getTaskSession().addGroup(grouptask);
-
                     if (group.getUsers() != null && !group.getUsers().isEmpty()) {
                         this.addUsers(group, group.getUsers(), true);
                     }
-
                     entityManager.persist(group);
                 } catch (Exception e) {
                     throw new Exception("Error. Ha ocurrido un error al insertar el servicio " + group.getValue(), e);
@@ -152,19 +144,10 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
         Group group = entityManager.find(Group.class, idgroup);
         if (group != null) {
             List<Group> lgroup = entityManager.createQuery("select g from Group g where g.value=?").setParameter(1, newgroup.getValue()).getResultList();
-
-            if ((lgroup.isEmpty() && lgroup != null) || newgroup.getValue().equals(group.getValue())) {
-
+            if ((lgroup != null && lgroup.isEmpty()) || newgroup.getValue().equals(group.getValue())) {
                 List<User> luser = entityManager.createQuery("select u from User u where u.username=?").setParameter(1, newgroup.getValue()).getResultList();
-
-                if (luser.isEmpty() && luser != null) {
+                if (luser != null&&luser.isEmpty()) {
                     try {
-                        if (!group.getValue().equals(newgroup.getValue())) {
-                            org.jbpm.task.Group grouptask = new org.jbpm.task.Group();
-                            grouptask.setId(newgroup.getValue());
-                            taskService.getTaskSession().addGroup(grouptask);
-                        }
-
                         if (newgroup.getUsers() != null && !newgroup.getUsers().isEmpty()) {
                             this.addUsers(group, newgroup.getUsers(), false);
                         }
@@ -299,7 +282,7 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
      */
     @Transactional(value = "cleia-txm")
     public void enableDisableGroup(String idgroup, boolean enable) throws Exception {
-        
+
         Group group = entityManager.find(Group.class, idgroup);
         String habilitar = "";
         if (group != null) {
@@ -324,6 +307,6 @@ public class GroupDaoImpl extends JpaDaoUtils implements GroupDao {
         } else {
             throw new Exception("Error. El servicio no existe");
         }
-        
+
     }
 }
