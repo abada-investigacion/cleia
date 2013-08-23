@@ -126,6 +126,7 @@ public class TaskController {
     public ExtjsStore<TaskRef> getTasksForIdRefPaticipation(HttpServletRequest request) {
         AbstractAuthenticationToken principal=(AbstractAuthenticationToken)request.getUserPrincipal();
         List<TaskRef> aux=processTaskListResponse(taskManagement.getUnassignedTasks(principal.getName(), null));
+        aux.addAll(processTaskListResponse(taskManagement.getAssignedTasks(principal.getName())));
         ExtjsStore<TaskRef> result=new ExtjsStore<TaskRef>();
         result.setData(aux);
         return result;

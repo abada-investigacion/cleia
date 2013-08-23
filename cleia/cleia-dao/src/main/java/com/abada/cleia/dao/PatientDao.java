@@ -50,6 +50,10 @@ public interface PatientDao {
     public List<Patient> getAll(GridRequest grequest);
 
     public Long loadSizeAll(GridRequest grequest);
+    
+    public List<Patient> getAllbyMedical(GridRequest grequest,String usernameMedical);
+
+    public Long loadSizeAllbyMedical(GridRequest grequest,String usernameMedical);
 
     public List<Patient> getAllbyMedical(GridRequest grequest,String usernameMedical);
 
