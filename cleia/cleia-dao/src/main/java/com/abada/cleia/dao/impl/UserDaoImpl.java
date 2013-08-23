@@ -58,8 +58,6 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
     @PersistenceContext(unitName = "cleiaPU")
     private EntityManager entityManager;
     @Autowired
-    private TaskService taskService;
-    @Autowired
     private ShaPasswordEncoder sha1PasswordEncoder;
     @Resource(name = "idDao")
     private IdDao idDao;
@@ -231,10 +229,6 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
             if (luser != null && luser.isEmpty()) {
 
                 try {
-                    org.jbpm.task.User usertask = new org.jbpm.task.User();
-                    usertask.setId(user.getUsername());
-                    taskService.getTaskSession().addUser(usertask);
-
                     this.addGroupsAndRoles(user, user.getGroups(), user.getRoles(), true);
                     this.addIds(user, user.getIds(), true);
                     user.setPassword(sha1PasswordEncoder.encodePassword(user.getPassword(), null));
@@ -278,15 +272,9 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
 
         if (user != null) {
             List<User> luser = entityManager.createQuery("select u from User u where u.username=?").setParameter(1, newuser.getUsername()).getResultList();
-            if (luser.isEmpty() || newuser.getUsername().equals(user.getUsername())) {
+            if (luser!=null&&luser.isEmpty() || newuser.getUsername().equals(user.getUsername())) {
 
                 try {
-                    if (!newuser.getUsername().equals(user.getUsername())) {
-                        org.jbpm.task.User usertask = new org.jbpm.task.User();
-                        usertask.setId(newuser.getUsername());
-                        taskService.getTaskSession().addUser(usertask);
-
-                    }
                     this.addGroupsAndRoles(user, newuser.getGroups(), newuser.getRoles(), false);
                     this.addIds(user, newuser.getIds(), false);
                     this.updateUser(user, newuser);
@@ -316,7 +304,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         /*
          * Fuerzo a que cada usuario traiga sus lista de Role y Group
          */
-        if (!luser.isEmpty()) {
+        if (luser!=null&&!luser.isEmpty()) {
             for (User u : luser) {
                 u.getGroups().size();
                 u.getRoles().size();
