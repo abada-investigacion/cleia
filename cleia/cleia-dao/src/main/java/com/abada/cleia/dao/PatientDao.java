@@ -55,10 +55,6 @@ public interface PatientDao {
 
     public Long loadSizeAllbyMedical(GridRequest grequest,String usernameMedical);
 
-    public List<Patient> getAllbyMedical(GridRequest grequest,String usernameMedical);
-
-    public Long loadSizeAllbyMedical(GridRequest grequest,String usernameMedical);
-
     public List<Patient> getPatientUser(GridRequest grequest, String username);
 
     public void updatePatient(Patient patient, Patient p);

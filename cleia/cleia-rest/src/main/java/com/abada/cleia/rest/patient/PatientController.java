@@ -195,35 +195,6 @@ public class PatientController {
      * @return Return a list of results.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/assigned/search", method = RequestMethod.GET)
-    public void getSearchPatient(String filter, String sort, Integer limit, Integer start, Model model,HttpServletRequest request) {
-
-        List<Patient> lpatient;
-        ExtjsStore aux = new ExtjsStore();
-        try {
-            Principal principal=request.getUserPrincipal();
-            GridRequest grequest = GridRequestFactory.parse(sort, start, limit, filter);
-            lpatient = this.patientDao.getAllbyMedical(grequest,principal.getName());
-            aux.setData(lpatient);
-            aux.setTotal(this.patientDao.loadSizeAllbyMedical(grequest,principal.getName()).intValue());
-        } catch (Exception e) {
-            logger.error(e);
-        }
-        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
-        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
-    }
-
-    /**
-     * Search a list of users by params
-     *
-     * @param filter Filter conditions of results. Set in JSON by an array of
-     * FilterRequestPriv
-     * @param sort Order of results. Set in JSON by an array of OrderByRequest
-     * @param limit Set the limit of the results. Use it for pagination
-     * @param start Set the start of the results. Use it for pagination
-     * @return Return a list of results.
-     */
-    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/search/byUser/{username}", method = RequestMethod.GET)
     public void getSearchPatientuser(@PathVariable String username, String filter, String sort, Integer limit, Integer start, Model model) {
 
