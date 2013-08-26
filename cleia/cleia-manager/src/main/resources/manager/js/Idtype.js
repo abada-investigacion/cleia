@@ -116,9 +116,11 @@ Ext.onReady(function() {
 
         var repeat = Ext.create('Ext.form.field.Checkbox', {
             checked: repeatable,
-            fieldLabel: '¿Se puede repetir?',
+            fieldLabel: '\u00BFSe puede repetir?',
+            labelWidth:150,
             id: 'repeatable',
-            name: 'repeatable'
+            name: 'repeatable',
+            padding:'5 5 5 5'
         });
 
 
@@ -132,14 +134,16 @@ Ext.onReady(function() {
                 fieldLabel:'Nombre',
                 name: 'value',
                 id: 'value',
-                value: value
+                value: value,
+                padding:'5 5 5 5'
             },
             {
                 fieldLabel: 'Descripci&oacute;n',
                 name: 'description',
                 id: 'description',
                 value: description,
-                allowBlank: false
+                allowBlank: false,
+                padding:'5 5 5 5'
             }, repeat
             ],
             buttons: [{
@@ -160,6 +164,8 @@ Ext.onReady(function() {
             title: opt + 'r',
             id: 'winidtype',
             autoScroll: false,
+            autoWidth:true,
+            autoHeight:true,
             closable: true,
             modal: true,
             items: [formpanel]
