@@ -27,7 +27,7 @@
 Ext.require([
     'Ext.form.Panel', 'Ext.form.field.Checkbox', 'Abada.Ajax', 'Ext.JSON', 'Ext.Ajax',
     'Ext.layout.container.Table', 'Abada.toolbar.ToolbarInsertUpdateDelete', 'Abada.form.field.ComboBoxDeSelect',
-    , 'Ext.form.field.Date', 'Abada.form.field.ComboBox', 'App.manager.js.common.gridids','App.patient.js.common.gridPatient',
+    , 'Ext.form.field.Date', 'Abada.form.field.ComboBox', 'App.manager.js.common.gridids', 'App.patient.js.common.gridPatient',
     'App.patient.js.common.gridPatientExpander'
 
 ])
@@ -74,7 +74,7 @@ Ext.onReady(function() {
         }
 
     });
-    
+
     toolbar.add({
         xtype: 'button',
         id: 'assginPatient',
@@ -82,7 +82,7 @@ Ext.onReady(function() {
         handler: function() {
             if (medicalGrid.selModel.hasSelection()) {
                 if (medicalGrid.selModel.getCount() == 1) {
-                    assignPatient(getRelativeServerURI('rs/medical/assignpatient'),medicalGrid.selModel);
+                    assignPatient(getRelativeServerURI('rs/medical/assignpatient'), medicalGrid.selModel);
                 } else {
                     Ext.Msg.alert('', 'Seleccione un Medico');
                 }
@@ -115,27 +115,26 @@ Ext.onReady(function() {
     setCentralPanel(grid);
 
     //*Funcion para los frompanel
-    function getO(selectionGroup,idGridStore) {
+    function getO(selectionGroup, idGridStore) {
         var id = Ext.getCmp('id').getValue();
         if (id == '') {
             id = null;
         }
-        
-        var nid=  idGridStore.getCount();
+
+        var nid = idGridStore.getCount();
         var ids = new Array();
-        for(var i=0 ; i<nid ; i++){
+        for (var i = 0; i < nid; i++) {
             oid = idGridStore.getAt(i).getData();
-            
+
             ids[i] = {
-                value: oid.value ,
-            
-                type:{
+                value: oid.value,
+                type: {
                     value: oid.idtype
                 }
             };
-            
+
         }
-        
+
         var o = {
             patient: {
                 user: {
@@ -172,14 +171,14 @@ Ext.onReady(function() {
     function handleFormulario(opt, grid, title, url, selection) {
         var method = 'POST', tooltip = 'Insertar Medico';
         var id,
-        username,
-        password,
-        name,
-        surname,
-        surname1,
-        genre,
-        birthDay = new Date(),
-        tlf, address, city, cp, country;
+                username,
+                password,
+                name,
+                surname,
+                surname1,
+                genre,
+                birthDay = new Date(),
+                tlf, address, city, cp, country;
 
         if (opt != 'Inserta' && selection.hasSelection()) {
             method = 'PUT';
@@ -218,31 +217,14 @@ Ext.onReady(function() {
         });
 
         combogenre.loadStore();
-
-        var combouser = Ext.create('Abada.form.field.ComboBox', {
-            id: 'cbuser',
-            url: getRelativeServerURI('rs/user/withoutAssignedPatient/combo'),
-            emptyText: 'Cargar datos del usuario...',
-            width: 260,
-            editable: false,
-            allowBlank: true,
-            noSelection: 'Cargar datos del usuario...',
-            selectedValue: '',
-            padding: '0 5 0 15',
-            listeners: {
-                select: function() {
-
-                    Ext.getCmp('id').setValue(combouser.getValue());
-                    Ext.getCmp('username').setReadOnly(true);
-                    Ext.getCmp('username').setValue(combouser.getRawValue());
-                    groupGrid.selModel.deselectAll();
-
-                    selectGroupGrid(combouser.getValue(), groupGrid);
-                    loadIdGrid(combouser.getValue(), idGrid);
-
-                }
-            }
+        var button = Ext.create('Ext.Button', {
+            text: 'Cargar Paciente',
+            id: 'button'
         });
+        /*rs/user/withoutAssignedPatient/combo*/
+
+
+
 
 
         var datebirthday = Ext.create('Ext.form.field.Date', {
@@ -360,7 +342,7 @@ Ext.onReady(function() {
                                 {
                                     xtype: 'container',
                                     layout: 'hbox',
-                                    items: [combouser, {
+                                    items: [button, {
                                             xtype: 'button',
                                             id: 'clearbutton',
                                             text: 'limpiar',
@@ -369,7 +351,6 @@ Ext.onReady(function() {
                                                 Ext.getCmp('id').setValue('');
                                                 Ext.getCmp('username').setReadOnly(false);
                                                 Ext.getCmp('username').setValue('');
-                                                Ext.getCmp('cbuser').setValue('');
                                                 groupGrid.selModel.deselectAll();
                                                 idGrid.getStore().removeAll();
                                             }
@@ -512,7 +493,7 @@ Ext.onReady(function() {
                         if (Ext.getCmp('password2').getValue() == Ext.getCmp('password').getValue()) {
                             if (formpanel.getForm().isValid()) {
 
-                                doAjaxrequestJson(url, getO(groupGrid.selModel,idGrid.getStore()), method, medicalGrid, wind, 'Medico ' + opt + 'do', 'Error. No se ha podido ' + opt + 'r');
+                                doAjaxrequestJson(url, getO(groupGrid.selModel, idGrid.getStore()), method, medicalGrid, wind, 'Medico ' + opt + 'do', 'Error. No se ha podido ' + opt + 'r');
 
                             }
                         } else {
@@ -527,18 +508,13 @@ Ext.onReady(function() {
 
         if (opt != 'Inserta' && selection.hasSelection()) {
 
-            Ext.getCmp('cbuser').disable();
             Ext.getCmp('clearbutton').disable();
-
+            Ext.getCmp('button').setDisabled(true);
             groupGrid.getStore().on('load', function() {
                 selectGroupGrid(id, groupGrid);
             });
-            
-            if(combouser.getValue()!=null && combouser.getValue()!=undefined){
-                loadIdGrid(combouser.getValue(),idGrid);
-            }else{
-                loadIdGrid(Ext.getCmp('id').getValue(),idGrid);
-            }
+            loadIdGrid(id, idGrid);
+
         }
 
 
@@ -553,86 +529,139 @@ Ext.onReady(function() {
         });
 
         wind.show();
-
+        Ext.get('button').on('click', function() {
+            if (Ext.getCmp('button').disabled !== true) {
+                gridpatient(groupGrid, idGrid, combogenre);
+            }
+        });
         return formpanel;
     }
-    
-    function assignPatient(url, selection) {
-        
-        var patientsGrid = Ext.create('App.patient.js.common.gridPatientExpander', {
-            title:'',
-            url: getRelativeServerURI('rs/patient/search'),
-            checkboxse:true,
-            height: 420,
-            width:420,
-            page: 25,
-            listeners: {
-                afterrender: function() {                  
-                                    
-                    for(var i=1;i<patientsGrid.columns.length;i++){
-                        if(i>3){
-                            patientsGrid.columns[i].hide();
-                        }
-                        
-                    }
-                    
-                },
-                select:function(constructor,record){     
-                    
-                    patientsToAssignGrid.getStore().insert(0,record);
-                 
-                },
-                deselect:function(constructor, record){  
-                                           
-                    patientsToAssignGrid.getStore().remove(record);
-                  
-                }
+
+
+    function gridpatient(groupGrid, idGrid, combogenre) {
+        var patientGrid = Ext.create('App.medical.js.common.gridPatient', {
+            url: getRelativeServerURI('rs/patient/search/patientnotmedical'),
+            width: 800,
+            height: 400,
+            padding: '5 5 5 5',
+            page: 14
+        });
+        patientGrid.addListener('patientselected', function(grid, patient) {
+            Ext.getCmp('id').setValue(patient.id);
+            Ext.getCmp('username').setReadOnly(true);
+            Ext.getCmp('username').setValue(patient.username);
+            groupGrid.selModel.deselectAll();
+            selectGroupGrid(patient.id, groupGrid);
+            loadIdGrid(patient.id, idGrid);
+            Ext.getCmp('tlf').setValue(patient.tlf);
+            Ext.getCmp('surname1').setValue(patient.surname1);
+            Ext.getCmp('surname').setValue(patient.surname);
+            Ext.getCmp('name').setValue(patient.name);
+            Ext.getCmp('address').setValue(patient.address);
+            Ext.getCmp('city').setValue(patient.city);
+            Ext.getCmp('cp').setValue(patient.cp);
+            Ext.getCmp('country').setValue(patient.country);
+            combogenre.setValue(patient.genre);
+            winds.close();
+
+        });
+        patientGrid.getStore().load({
+            params: {
+                start: 0,
+                limit: 14
             }
         });
-        
-        
-        patientsToAssignGrid=Ext.create('App.patient.js.common.gridPatient', {
-            title:'',
-            url: getRelativeServerURI('rs/medical/{idmedical}/patients',{
-                idmedical:selection.selected.items[0].data.id
-            }),
-            checkboxse:false,
-            height: 420,
-            width:420,
-            bbar:false,
-            listeners: {
-                afterrender: function() {                  
-                                            
-                    for(var i=1;i<patientsToAssignGrid.columns.length;i++){
-                        if(i>3){
-                            patientsToAssignGrid.columns[i].hide();
-                        }
-                                
-                    }
-                            
-                }
-            }
-        });
-        
-        patientsGrid.getStore().on('load',function(){
-            
-            var records= patientsToAssignGrid.getStore().data.items;  
-            
-            patientsGrid.selModel.select(records, true, true);
-            
+        var winds = Ext.create('Ext.window.Window', {
+            title: 'Pacientes',
+            id: 'patinetgridWindow',
+            closable: true,
+            modal: true,
+            width: 800,
+            autoHeight: true,
+            items: [patientGrid]
         });
 
-        
-        patientsToAssignGrid.getStore().on('load',function(constructor,records){
-            
+        winds.show();
+
+    }
+
+
+    function assignPatient(url, selection) {
+
+        var patientsGrid = Ext.create('App.patient.js.common.gridPatientExpander', {
+            title: '',
+            url: getRelativeServerURI('rs/patient/search'),
+            checkboxse: true,
+            height: 420,
+            width: 420,
+            page: 25,
+            listeners: {
+                afterrender: function() {
+
+                    for (var i = 1; i < patientsGrid.columns.length; i++) {
+                        if (i > 3) {
+                            patientsGrid.columns[i].hide();
+                        }
+
+                    }
+
+                },
+                select: function(constructor, record) {
+
+                    patientsToAssignGrid.getStore().insert(0, record);
+
+                },
+                deselect: function(constructor, record) {
+
+                    patientsToAssignGrid.getStore().remove(record);
+
+                }
+            }
+        });
+
+
+        patientsToAssignGrid = Ext.create('App.patient.js.common.gridPatient', {
+            title: '',
+            url: getRelativeServerURI('rs/medical/{idmedical}/patients', {
+                idmedical: selection.selected.items[0].data.id
+            }),
+            checkboxse: false,
+            height: 420,
+            width: 420,
+            bbar: false,
+            listeners: {
+                afterrender: function() {
+
+                    for (var i = 1; i < patientsToAssignGrid.columns.length; i++) {
+                        if (i > 3) {
+                            patientsToAssignGrid.columns[i].hide();
+                        }
+
+                    }
+
+                }
+            }
+        });
+
+        patientsGrid.getStore().on('load', function() {
+
+            var records = patientsToAssignGrid.getStore().data.items;
+
+            patientsGrid.selModel.select(records, true, true);
+
+        });
+
+
+        patientsToAssignGrid.getStore().on('load', function(constructor, records) {
+
             patientsGrid.getStore().load({
                 params: {
                     start: 0
                 }
             });
-            
+
             patientsGrid.selModel.select(records, true, true);
-            
+
         });
 
         patientsToAssignGrid.getStore().load({
@@ -641,7 +670,7 @@ Ext.onReady(function() {
             }
         });
 
-       
+
         var assignForm = Ext.create('Ext.form.Panel', {
             url: url,
             monitorValid: true,
@@ -652,24 +681,24 @@ Ext.onReady(function() {
                 type: 'hbox',
                 columns: 2
             },
-            items: [patientsGrid,patientsToAssignGrid],
+            items: [patientsGrid, patientsToAssignGrid],
             buttons: [{
                     text: 'Asignar',
                     id: 'assignForm',
                     formBind: true,
                     handler: function() {
 
-                        doAjaxrequestJson(url,{
-                            id: selection.selected.items[0].data.id , 
-                            patients:getListForObjectByGridStore(patientsToAssignGrid.getStore(), 'id')
-                        } , 'POST', patientsToAssignGrid, wind, 'Pacientes asignados', 'Error. No se han podido asignar los pacientes');
+                        doAjaxrequestJson(url, {
+                            id: selection.selected.items[0].data.id,
+                            patients: getListForObjectByGridStore(patientsToAssignGrid.getStore(), 'id')
+                        }, 'POST', patientsToAssignGrid, wind, 'Pacientes asignados', 'Error. No se han podido asignar los pacientes');
 
 
                     }
                 }]
         });
-       
-        
+
+
         var wind = Ext.create('Ext.window.Window', {
             title: 'Asignar Pacientes',
             id: 'assignPatientWindow',
@@ -683,7 +712,7 @@ Ext.onReady(function() {
         wind.show();
 
         return assignForm;
-        
+
     }
 
 
@@ -706,7 +735,7 @@ Ext.onReady(function() {
                 for (var i = 0; i < groupGrid.getStore().getCount(); i++) {
                     var record = groupGrid.getStore().getAt(i);
                     for (var j = 0; j < groups.length; j++) {
-                        if (record.get("value") == groups[j].value) {
+                        if (record.get("value") === groups[j].value) {
                             groupGrid.selModel.select(record, true, true);
                         }
                     }

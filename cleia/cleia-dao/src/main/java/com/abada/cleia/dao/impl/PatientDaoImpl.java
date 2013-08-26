@@ -25,7 +25,6 @@ package com.abada.cleia.dao.impl;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 import com.abada.cleia.dao.PatientDao;
 import com.abada.cleia.dao.UserDao;
 import com.abada.cleia.entity.user.Id;
@@ -34,6 +33,7 @@ import com.abada.springframework.orm.jpa.support.JpaDaoUtils;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -140,7 +140,22 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
             patient.getProcessInstances().size();
         }
         return lpatient;
+    }
 
+    @Transactional(value = "cleia-txm", readOnly = true)
+    public List<Patient> getAllbyMedical(GridRequest filters,String usernameMedical) {        
+        Map<String,Object> params=filters.getParamsValues();
+        params.put("usernameMedical", usernameMedical);
+        List<Patient> lpatient = this.find(entityManager, "select p from Patient p inner join p.medicals m where m.patient.user.username = :usernameMedical " + filters.getQL("p", false), params, filters.getStart(), filters.getLimit());
+        return lpatient;
+    }
+
+    @Transactional(value = "cleia-txm", readOnly = true)
+    public Long loadSizeAllbyMedical(GridRequest filters,String usernameMedical) {        
+        Map<String,Object> params=filters.getParamsValues();
+        params.put("usernameMedical", usernameMedical);
+        List<Long> result = this.find(entityManager, "select count(*) from Patient p inner join p.medicals m where m.patient.user.username = :usernameMedical " + filters.getQL("p", false), params, filters.getStart(), filters.getLimit());
+        return result.get(0);
     }
 
     /**
@@ -332,5 +347,34 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
             }
         }
         return p;
+    }
+    
+     /**
+     * Returns a list of patient not medical
+     *
+     * @return
+     */
+    @Transactional(value = "cleia-txm", readOnly = true)
+    public List<Patient> getPatientnotmedical(GridRequest filters) {
+        List<Patient> lpatient = this.find(entityManager, "SELECT p FROM Patient p WHERE p.id not in (select distinct m.id from Medical m)" + filters.getQL("p", false), filters.getParamsValues(), filters.getStart(), filters.getLimit());
+        for (Patient patient : lpatient) {
+            patient.getUser().getGroups().size();
+            patient.getUser().getRoles().size();
+            patient.getUser().getIds().size();
+            patient.getProcessInstances().size();
+        }
+        return lpatient;
+    }
+    
+     /**
+     * Obtiene el tamaño de {@link User}
+     *
+     * @param filters
+     * @return Long
+     */
+    @Transactional(value = "cleia-txm", readOnly = true)
+    public Long getPatientnotmedicalsize(GridRequest filters) {
+        List<Long> result = this.find(entityManager, "SELECT count(*) FROM Patient p WHERE p.id not in (select distinct m.id from Medical m)" + filters.getQL("p", false), filters.getParamsValues());
+        return result.get(0);
     }
 }

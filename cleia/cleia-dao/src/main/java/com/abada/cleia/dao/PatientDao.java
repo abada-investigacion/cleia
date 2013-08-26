@@ -47,10 +47,13 @@ public interface PatientDao {
 
     public List<Patient> getAllPatients();
 
-
     public List<Patient> getAll(GridRequest grequest);
 
     public Long loadSizeAll(GridRequest grequest);
+    
+    public List<Patient> getAllbyMedical(GridRequest grequest,String usernameMedical);
+
+    public Long loadSizeAllbyMedical(GridRequest grequest,String usernameMedical);
 
     public List<Patient> getPatientUser(GridRequest grequest, String username);
 
@@ -66,7 +69,9 @@ public interface PatientDao {
 
     public List<Id> getIdsForPatient(Long idpatient);
 
-   public List<Patient> findPatientsbylisId(List<Id> asList, Boolean repeatable) throws Exception;
+    public List<Patient> findPatientsbylisId(List<Id> asList, Boolean repeatable) throws Exception;
 
- 
+    public List<Patient> getPatientnotmedical(GridRequest filters);
+
+    public Long getPatientnotmedicalsize(GridRequest filters);
 }

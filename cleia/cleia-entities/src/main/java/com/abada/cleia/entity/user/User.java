@@ -55,7 +55,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @JsonView({Views.Public.class,Views.Case1.class})
-    @Column(nullable = false, unique = true, length = 1024)
+    @Column(nullable = false, unique = true, length = 512)
     private String username;    
     @JsonView(Views.Hide.class)
     @Column(nullable = false, length = 1024)
