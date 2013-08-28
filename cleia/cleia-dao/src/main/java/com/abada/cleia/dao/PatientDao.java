@@ -44,6 +44,8 @@ public interface PatientDao {
      * @return
      */
     public Patient getPatientById(long patientId);
+    
+    public Patient getPatientByUsername(String username);
 
     public List<Patient> getAllPatients();
 

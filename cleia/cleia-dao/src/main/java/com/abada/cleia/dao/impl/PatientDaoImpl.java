@@ -377,4 +377,10 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
         List<Long> result = this.find(entityManager, "SELECT count(*) FROM Patient p WHERE p.id not in (select distinct m.id from Medical m)" + filters.getQL("p", false), filters.getParamsValues());
         return result.get(0);
     }
+
+    @Transactional(value = "cleia-txm", readOnly = true)
+    public Patient getPatientByUsername(String username) {
+        Patient result=(Patient)this.entityManager.createQuery("select  p from Patient p where p.user.username = :username").setParameter("username", username).getSingleResult();
+        return result;
+    }
 }

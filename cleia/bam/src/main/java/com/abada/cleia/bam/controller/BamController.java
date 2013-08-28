@@ -49,7 +49,7 @@ public class BamController{
         return "dynamic/main";
     }           
     
-    @RequestMapping(value = "/bam/task/task_m.htm")
+    @RequestMapping(value = "/bam/bam_m.htm")
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
     @MenuEntry(icon = "bam/image/monitoriza.png", menuGroup = "Monitorizaci&oacute;n Paciente", order = 0, text = "Monitorizar",devices = {Device.MOBILE, Device.TABLET})
     public String getBamkMobile(Model model) {
