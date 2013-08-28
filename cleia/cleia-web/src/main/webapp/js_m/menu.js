@@ -31,7 +31,6 @@ Ext.setup({
         fullscreen: true
     },
     onReady: function() {
-
         var menu = Ext.create('Abada.menu.MainMenu', {
             url: getRelativeURI('mainmenu.do'),
             title:'Men&uacute;'

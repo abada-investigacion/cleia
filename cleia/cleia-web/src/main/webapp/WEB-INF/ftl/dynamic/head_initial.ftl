@@ -8,14 +8,13 @@
 <link rel="stylesheet" type="text/css" href="<@spring.url relativeUrl="/css/backend.css"/>" />
 <!--Ext4 base -->
 <script src="<@spring.url relativeUrl="/ext4/bootstrap.js"/>" type="text/javascript"></script>
-<!--script src="<@spring.url relativeUrl="/ext4/builds/ext-core-debug.js" />" type="text/javascript"></script-->
 <script src="<@spring.url relativeUrl="/abada/ext-abada-utils.js"/>" type="text/javascript"></script>
 <#else>
 <!--CSS Touch -->
-<link rel="stylesheet" type="text/css" href="<@spring.url relativeUrl="/touch/resources/css/sencha-touch.css"/>" />
-<!--Tocuch base -->
-<script src="<@spring.url relativeUrl="/touch/sencha-touch-all.js"/>" type="text/javascript"></script>
+<script src="<@spring.url relativeUrl="/touch/sencha-touch.js"/>" type="text/javascript"></script>
 <script src="<@spring.url relativeUrl="/abada-touch/ext-abada-utils.js"/>" type="text/javascript"></script>
+
+<link rel="stylesheet" type="text/css" href="<@spring.url relativeUrl="/touch/resources/css/sencha-touch.css"/>" />
 </#if>
 
 <script type="text/javascript">

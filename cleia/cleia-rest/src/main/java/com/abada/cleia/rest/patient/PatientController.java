@@ -324,22 +324,41 @@ public class PatientController {
         model.addAttribute(JsonView.JSON_VIEW_RESULT, result);
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
-
+    
     /**
      * Return a list of every process instance that have a patient.
      *
      * @param patientId Patient id.
-     * @param pInstance Instance base to search all the subprocess from it.
      * @return Return a list of every process instance that have a patient,
      * oncoguide or not.
      */
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-    @RequestMapping(value = "/{patientId}/pinstance/{pInstance}", method = RequestMethod.GET)
-    public void getPInstancePatients(@PathVariable Long patientId, @PathVariable Long pInstance, Model model) {
-        PatientHasProcessInstanceInfo result = this.pInstancePatientDao.getProcessInstanceFromProcessIntance(patientId, pInstance);
+    @RequestMapping(value = "/pinstance/list", method = RequestMethod.GET)
+    public void getPInstancePatient(Model model, HttpServletRequest request) {
+        ExtjsStore result = new ExtjsStore();
+        List<PatientHasProcessInstanceInfo> aux = this.pInstancePatientDao.getProcessInstance(request.getUserPrincipal().getName());
+        if (aux != null) {
+            result.setData(aux);
+        }
         model.addAttribute(JsonView.JSON_VIEW_RESULT, result);
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
+
+//    /**
+//     * Return a list of every process instance that have a patient.
+//     *
+//     * @param patientId Patient id.
+//     * @param pInstance Instance base to search all the subprocess from it.
+//     * @return Return a list of every process instance that have a patient,
+//     * oncoguide or not.
+//     */
+//    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
+//    @RequestMapping(value = "/{patientId}/pinstance/{pInstance}", method = RequestMethod.GET)
+//    public void getPInstancePatients(@PathVariable Long patientId, @PathVariable Long pInstance, Model model) {
+//        PatientHasProcessInstanceInfo result = this.pInstancePatientDao.getProcessInstanceFromProcessIntance(patientId, pInstance);
+//        model.addAttribute(JsonView.JSON_VIEW_RESULT, result);
+//        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
+//    }
 
     /**
      * Return all identifiers of a patient.

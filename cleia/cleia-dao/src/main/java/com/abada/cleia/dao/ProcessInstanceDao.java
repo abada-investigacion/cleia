@@ -39,4 +39,6 @@ public interface ProcessInstanceDao {
     public PatientHasProcessInstanceInfo getProcessInstanceFromProcessIntance(Long patientId, Long pInstance);
 
     public List<PatientHasProcessInstanceInfo> getProcessInstance(Long patientId);
+
+    public List<PatientHasProcessInstanceInfo> getProcessInstance(String username);
 }

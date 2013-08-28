@@ -26,6 +26,7 @@ package com.abada.cleia.bam.controller;
  * #L%
  */
 
+import com.abada.springframework.web.servlet.menu.Device;
 import com.abada.springframework.web.servlet.menu.MenuEntry;
 import java.util.Arrays;
 import javax.annotation.security.RolesAllowed;
@@ -47,4 +48,13 @@ public class BamController{
         model.addAttribute("js", Arrays.asList("bam/js/bam.js"));
         return "dynamic/main";
     }           
+    
+    @RequestMapping(value = "/bam/bam_m.htm")
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
+    @MenuEntry(icon = "bam/image/monitoriza.png", menuGroup = "Monitorizaci&oacute;n Paciente", order = 0, text = "Monitorizar",devices = {Device.MOBILE, Device.TABLET})
+    public String getBamkMobile(Model model) {
+        model.addAttribute("js", Arrays.asList("bam/js_m/bam.js"));
+        model.addAttribute("isDesktop", false);
+        return "dynamic/main";
+    }
 }
