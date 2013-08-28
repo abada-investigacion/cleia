@@ -36,7 +36,7 @@ Ext.setup({
         function principalAction(removePanel) {
 
             var panel2 = Ext.create('App.bam.js_m.common.ProcessList', {
-                url: getRelativeServerURI('rs/tasks/participation/loggeduser'),//FIXME
+                url: getRelativeServerURI('rs/patient/pinstance/list'),//FIXME
                 title: 'Procesos:',
                 listeners: {
                     processselected: function(list, taskId, url) {

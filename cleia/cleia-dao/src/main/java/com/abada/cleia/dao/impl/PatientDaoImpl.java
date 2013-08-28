@@ -381,6 +381,12 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
     @Transactional(value = "cleia-txm", readOnly = true)
     public Patient getPatientByUsername(String username) {
         Patient result=(Patient)this.entityManager.createQuery("select  p from Patient p where p.user.username = :username").setParameter("username", username).getSingleResult();
+        if (result != null) {
+            result.getUser().getGroups().size();
+            result.getUser().getRoles().size();
+            result.getUser().getIds().size();
+            result.getProcessInstances().size();
+        }
         return result;
     }
 }
