@@ -51,10 +51,24 @@ Ext.onReady(function() {
                  
                     var status='borra';
                     
-                    doAjaxrequestJson(getRelativeServerURI('rs/idtype/{ididtype}', {
-                        ididtype:idtypeGrid.selModel.getLastSelected().get('value')
-                    }), null, 'DELETE', idtypeGrid, null, 'Identificador de usuario '+status+'do', 'Error. No se ha podido ' + status + 'r');
-              
+                    Ext.Msg.show({
+                        title:'Atenci&oacute;n',
+                        msg: '\u00BFEsta seguro que desear borrar el identificador '+ idtypeGrid.selModel.getLastSelected().get('value')+'?.',
+                        buttons: Ext.Msg.YESNO,
+                        fn:function (buttonid){
+                            
+                            if(buttonid=='yes'){                                
+                                doAjaxrequestJson(getRelativeServerURI('rs/idtype/{ididtype}', {
+                                    ididtype:idtypeGrid.selModel.getLastSelected().get('value')
+                                }), null, 'DELETE', idtypeGrid, null, 'Identificador de usuario '+status+'do', 'Error. No se ha podido ' + status + 'r');
+                                                                   
+                            }
+                            
+                        },
+                        icon: Ext.Msg.QUESTION
+                    });
+                    
+                    
                 } else
                     Ext.Msg.alert('', 'Seleccione un Tipo de Identificador');
             }
@@ -103,7 +117,7 @@ Ext.onReady(function() {
     }
 
     function handleFormulario(opt, grid, title, url, selection) {
-        var value, description, method = 'POST', tooltip = 'Insertar Tipo de Identificador', repeatable = false
+        var value, description, method = 'POST', tooltip = 'Insertar Tipo de Identificador', repeatable = false, readOnly=false;
 
         if (opt != 'Inserta' && selection.hasSelection()) {
             method = 'PUT';
@@ -111,6 +125,7 @@ Ext.onReady(function() {
             description=selection.getLastSelected().get('description');
             repeatable = selection.getLastSelected().get('repeatable');
             tooltip = 'Modificar Tipo de Identificador';
+            readOnly=true;
         }
 
 
@@ -135,6 +150,7 @@ Ext.onReady(function() {
                 name: 'value',
                 id: 'value',
                 value: value,
+                readOnly:readOnly,
                 padding:'5 5 5 5'
             },
             {

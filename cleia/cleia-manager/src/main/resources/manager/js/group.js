@@ -35,7 +35,7 @@ Ext.onReady(function() {
             submitInsert: function() {
                 handleFormulario('Inserta', groupGrid, 'Servicio', getRelativeServerURI('rs/group'), groupGrid.selModel);
             },
-           /* submitUpdate: function() {
+            /* submitUpdate: function() {
                 if (groupGrid.selModel.hasSelection()) {
                     if (groupGrid.selModel.getCount() == 1) {
                         handleFormulario('Modifica', groupGrid, 'Servicio', getRelativeServerURI('rs/group/{idgroup}', {
@@ -197,7 +197,7 @@ Ext.onReady(function() {
         
         var patientsGrid = Ext.create('App.patient.js.common.gridPatient', {
             title:'',
-            url: getRelativeServerURI('rs/patient/search'),
+            url: getRelativeServerURI('rs/patient/searchforassignment'),
             height:400,
             width:800,
             checkboxse: true,
@@ -208,17 +208,18 @@ Ext.onReady(function() {
                   
                     patientsGrid.columns[0].setVisible(true);
                     patientsGrid.columns[4].hide();
-                     
+                    patientsGrid.columns[6].hide();
+                    patientsGrid.columns[7].hide();
                     
                 },                            
                 select:function(constructor,record){     
                     
-                    doAjaxAssign('addto',record);
+                    doAjaxAssign('add',record);
                  
                 },
                 deselect:function(constructor, record){  
                                            
-                    doAjaxAssign('removefrom',record);
+                    doAjaxAssign('remove',record);
                   
                 }
             }
@@ -226,10 +227,10 @@ Ext.onReady(function() {
         
         function doAjaxAssign(operation,record){
             
-            var url=getRelativeServerURI('rs/user/{iduser}/{operation}/{idgroup}',{
-                iduser:record.data.id,
+            var url=getRelativeServerURI('rs/group/{idgroup}/{operation}/{iduser}',{
+                idgroup:selection.getSelection()[0].get('value'),
                 operation:operation,
-                idgroup:selection.getSelection()[0].get('value')                             
+                iduser:record.data.id                                            
             });
             
             

@@ -43,7 +43,7 @@ import javax.persistence.OneToOne;
  */
 @Entity
 public class Medical implements Serializable{
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class,Views.MedicalData.class})
     @javax.persistence.Id    
     private Long id;
     @JsonView(Views.Level4.class)

@@ -88,7 +88,7 @@ public class User implements UserDetails {
             inverseJoinColumns = {
         @JoinColumn(nullable = false, name = "group_id", referencedColumnName = "value1")})
     private List<Group> groups;
-    @JsonView(Views.Level1.class)
+    @JsonView({Views.Level1.class,Views.MedicalData.class})
     @OneToMany(mappedBy = "user")
     private List<Id> ids;
 

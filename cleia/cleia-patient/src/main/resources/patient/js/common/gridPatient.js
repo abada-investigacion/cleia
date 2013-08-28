@@ -201,6 +201,9 @@ Ext.define('App.patient.js.common.gridPatient', {
                 },{
                     name:'ids',
                     mapping:'user.ids'
+                },{
+                    name:'medicals',
+                    mapping:'medicals'
                 }],
                 url:this.config.url,                
                 root:'data',                                

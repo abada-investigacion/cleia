@@ -369,4 +369,23 @@ public class MedicalController {
 
         return result;
     }
+    
+     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/{idmedical}/{operation}/{idpatient}", method = RequestMethod.PUT)
+    public Success assignPatients(@PathVariable Long idmedical, @PathVariable String operation,@PathVariable Long idpatient) {
+        
+        Success result = new Success(Boolean.FALSE);
+        try {
+            if (operation.equals("add")) {
+                this.medicalDao.putPatientMedical(idpatient, idmedical);
+            } else {
+                this.medicalDao.deletePatientMedical(idpatient, idmedical);
+            }            
+            result.setSuccess(Boolean.TRUE);
+        } catch (Exception e) {
+            result.setErrors(new com.abada.extjs.Error(e.getMessage()));
+            logger.error(e);
+        }
+        return result;
+    }
 }

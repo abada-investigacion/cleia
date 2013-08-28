@@ -32,10 +32,11 @@ package com.abada.cleia.entity.user;
  */
 public class Views {
     public static class Public {}
-    public static class Case1 {} //FIXME porque serializa en Patient todo el User que tiene dentro.
+    public static class Case1 {} //FIXME porque serializa en Patient todo el User que tiene dentro.    
     public static class Level1 extends Public{}
     public static class Level2 extends Level1{}
     public static class Level3 extends Level2{}
     public static class Level4 extends Level3{}
     public static class Hide extends Public{}
+    public static class MedicalData {}
 }

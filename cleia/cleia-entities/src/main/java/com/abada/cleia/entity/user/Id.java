@@ -48,10 +48,10 @@ public class Id implements Serializable {
     @JsonView(Views.Public.class)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class,Views.MedicalData.class})
     @Column(nullable = false,length = 1024,name = "value1")
     private String value;
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class,Views.MedicalData.class})
     @ManyToOne(fetch = FetchType.EAGER,optional = false)
     private IdType type;
     @JsonView(Views.Level2.class)

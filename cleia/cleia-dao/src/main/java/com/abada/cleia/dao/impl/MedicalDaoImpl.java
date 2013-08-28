@@ -8,7 +8,8 @@ package com.abada.cleia.dao.impl;
  * #%L
  * Cleia
  * %%
- * Copyright (C) 2013 Abada Servicios Desarrollo (investigacion@abadasoft.com)
+ * Copyright (C) 2013 Abada Servicios Desarrollo
+ * (investigacion@abadasoft.com)
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -25,7 +26,6 @@ package com.abada.cleia.dao.impl;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 import com.abada.cleia.dao.IdDao;
 import com.abada.cleia.dao.MedicalDao;
 import com.abada.cleia.dao.PatientDao;
@@ -457,5 +457,70 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
         medical.getPatients().size();
 
         return medical.getPatients();
+    }
+
+    /**
+     * Modifies the relationship between a patient and a medical
+     *
+     * @param idpatient
+     * @param idmedical
+     * @return
+     */
+    @Transactional(value = "cleia-txm")
+    public void putPatientMedical(Long idpatient, Long idmedical) throws Exception {
+        Patient patient = (Patient) entityManager.find(Patient.class, idpatient);
+
+        if (patient != null) {
+            Medical medical = (Medical) entityManager.find(Medical.class, idmedical);
+            if (medical != null) {
+                List<Medical> lmedical = patient.getMedicals();
+                List<Patient> lpatient = medical.getPatients();
+                if (lmedical.contains(medical) || lpatient.contains(patient)) {
+                    throw new Exception("Error. El paciente " + patient.getName() + " "
+                            + patient.getSurname() + " " + patient.getSurname1() + " ya esta asignado al medico "
+                            + medical.getPatient().getName() + " " + medical.getPatient().getSurname() + " " + medical.getPatient().getSurname1());
+                } else {
+                    lmedical.add(medical);
+                    lpatient.add(patient);
+                }
+            } else {
+                throw new Exception("Error. El medico no existe");
+            }
+        } else {
+            throw new Exception("Error. El paciente no existe");
+        }
+    }
+
+    /**
+     * Removes the relationship between a patient and a medical
+     *
+     * @param idpatient
+     * @param idmedical
+     * @return
+     */
+    @Transactional(value = "cleia-txm")
+    public void deletePatientMedical(Long idpatient, Long idmedical) throws Exception {
+        Patient patient = (Patient) entityManager.find(Patient.class, idpatient);
+
+        if (patient != null) {
+            Medical medical = (Medical) entityManager.find(Medical.class, idmedical);
+            if (medical != null) {
+                List<Medical> lmedical = patient.getMedicals();
+                List<Patient> lpatient = medical.getPatients();
+                if (!lmedical.contains(medical) || !lpatient.contains(patient)) {
+                    throw new Exception("Error. El paciente " + patient.getName() + " "
+                            + patient.getSurname() + " " + patient.getSurname1() + " no esta asignado al medico "
+                            + medical.getPatient().getName() + " " + medical.getPatient().getSurname() + " "
+                            + medical.getPatient().getSurname1());
+                } else {
+                    lmedical.remove(medical);
+                    lpatient.remove(patient);
+                }
+            } else {
+                throw new Exception("Error. El medico no existe");
+            }
+        } else {
+            throw new Exception("Error. El paciente no existe.");
+        }
     }
 }

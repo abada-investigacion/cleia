@@ -72,7 +72,7 @@ Ext.onReady(function() {
 
     });
 
-    var patientsGrid = Ext.create('App.patient.js.common.gridPatientExpander', {
+    var patientsGrid = Ext.create('App.patient.js.common.gridPatient', {
         url: getRelativeServerURI('rs/patient/search'),
         height: 400,
         page: 13
@@ -197,9 +197,10 @@ Ext.onReady(function() {
 
         combogenre.loadStore();
 
-        var button = Ext.create('Ext.Button', {
+        var loadbutton = Ext.create('Ext.Button', {
             text: 'Cargar Usuario',
-            id: 'button'
+            id: 'loadbutton',
+            margin: '10 15 0 15'
         });
 
 
@@ -318,10 +319,11 @@ Ext.onReady(function() {
                                 {
                                     xtype: 'container',
                                     layout: 'hbox',
-                                    items: [button, {
+                                    items: [loadbutton, {
                                             xtype: 'button',
                                             id: 'clearbutton',
-                                            text: 'limpiar',
+                                            text: 'Limpiar',
+                                            margin: '10 15 0 0',
                                             handler: function() {
 
                                                 Ext.getCmp('id').setValue('');
@@ -485,10 +487,13 @@ Ext.onReady(function() {
         if (opt != 'Inserta' && selection.hasSelection()) {
 
             Ext.getCmp('clearbutton').disable();
-            Ext.getCmp('button').disable();
+            
+            loadbutton.disable();
+            
             groupGrid.getStore().on('load', function() {
                 selectGroupGrid(id, groupGrid);
             });
+            
             loadIdGrid(id, idGrid);
 
         }
@@ -505,8 +510,9 @@ Ext.onReady(function() {
         });
 
         wind.show();
-        Ext.get('button').on('click', function() {
-            if (Ext.getCmp('button').disabled !== true) {
+        
+        loadbutton.on('click', function() {
+            if (loadbutton.disabled !== true) {
                 griduser(groupGrid, idGrid);
             }
         });
@@ -546,20 +552,23 @@ Ext.onReady(function() {
     ;
 
     function griduser(groupGrid, idGrid) {
-        var usersGrid = Ext.create('App.patient.js.common.griduser', {
+        
+        var usersGrid = Ext.create('App.manager.js.common.griduser', {
+            title:'',
             url: getRelativeServerURI('rs/user/search/usernotpatient'),
             width: 340,
             height: 400,
             padding: '5 5 5 5',
             page: 14
         });
-        usersGrid.addListener('userselected', function(grid, userId, username) {
-            Ext.getCmp('id').setValue(userId);
+        
+        usersGrid.on('beforeitemdblclick', function(grid, record) {
+            Ext.getCmp('id').setValue(record.data.id);
             Ext.getCmp('username').setReadOnly(true);
-            Ext.getCmp('username').setValue(username);
+            Ext.getCmp('username').setValue(record.data.username);
             groupGrid.selModel.deselectAll();
-            selectGroupGrid(userId, groupGrid);
-            loadIdGrid(userId, idGrid);
+            selectGroupGrid(record.data.id, groupGrid);
+            loadIdGrid(record.data.id, idGrid);
             winds.close();
 
         });

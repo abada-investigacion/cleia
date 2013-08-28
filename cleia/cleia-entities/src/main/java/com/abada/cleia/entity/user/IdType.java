@@ -39,7 +39,7 @@ import javax.persistence.Id;
 @Entity
 public class IdType implements Serializable {
     @Id    
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class,Views.MedicalData.class})
     @Column(name = "value1")
     private String value;
     @JsonView(Views.Public.class)

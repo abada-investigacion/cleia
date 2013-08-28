@@ -51,19 +51,19 @@ import javax.persistence.TemporalType;
  */
 @Entity
 public class Patient implements Serializable{  
-    @JsonView({Views.Public.class,Views.Case1.class})
+    @JsonView({Views.Public.class,Views.Case1.class,Views.MedicalData.class})
     @javax.persistence.Id    
     private Long id;
-    @JsonView({Views.Public.class,Views.Case1.class})
+    @JsonView({Views.Public.class,Views.Case1.class,Views.MedicalData.class})
     @Column(nullable = false,length = 255)
     private String name;
-    @JsonView({Views.Public.class,Views.Case1.class})
+    @JsonView({Views.Public.class,Views.Case1.class,Views.MedicalData.class})
     @Column(nullable = false,length = 1024)
     private String surname;
-    @JsonView({Views.Public.class,Views.Case1.class})
+    @JsonView({Views.Public.class,Views.Case1.class,Views.MedicalData.class})
     @Column(length = 1024)
     private String surname1;
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class,Views.MedicalData.class})
     @Temporal(TemporalType.DATE)
     private Date birthDay;
     @JsonView(Views.Public.class)
@@ -76,13 +76,13 @@ public class Patient implements Serializable{
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Genre genre;
-    @JsonView(Views.Level3.class)
+    @JsonView({Views.Level3.class,Views.MedicalData.class})
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "patients")
     private List<Medical> medicals;
     @JsonView(Views.Level3.class)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "patientId")
     private List<PatientHasProcessInstance> processInstances;
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class,Views.MedicalData.class})
     @OneToOne(optional = false)
     @JoinColumn(name = "id",nullable = false)
     private User user;

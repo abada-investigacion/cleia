@@ -423,27 +423,7 @@ public class UserController {
         return result;
     }
     
-    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/{iduser}/{operation}/{idgroup}", method = RequestMethod.PUT)
-    public Success assignToGroup(@PathVariable Long iduser, @PathVariable String operation,@PathVariable String idgroup) {
-        
-        Success result = new Success(Boolean.FALSE);
-        try {
-            if (operation.equals("addto")) {
-                this.userDao.putUserGroup(iduser, idgroup);
-            } else {
-                this.userDao.deleteUserGroup(iduser, idgroup);
-            }            
-            result.setSuccess(Boolean.TRUE);
-        } catch (Exception e) {
-            result.setErrors(new com.abada.extjs.Error(e.getMessage()));
-            logger.error(e);
-        }
-        return result;
-    }
-    
-    
-    /**
+   /**
      * Search a list of patient
      *
      * @param filter Filter conditions of results. Set in JSON by an array of

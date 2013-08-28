@@ -71,4 +71,22 @@ public interface MedicalDao {
     public void addpatientMedical(Medical m) throws Exception;
 
     public List<Patient> findPatientsByMedicalId(Long id) throws Exception;
+    
+    /**
+     * Modifies the relationship between a patient and a medical
+     *
+     * @param idpatient
+     * @param idmedical
+     * @return
+     */
+    public void putPatientMedical(Long idpatient, Long idmedical) throws Exception;
+
+    /**
+     * Removes the relationship between a patient and a medical
+     *
+     * @param idpatient
+     * @param idmedical
+     * @return
+     */
+    public void deletePatientMedical(Long idpatient, Long idmedical) throws Exception;
 }
