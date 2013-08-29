@@ -53,7 +53,7 @@ public class BamController{
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
     @MenuEntry(icon = "bam/image/monitoriza.png", menuGroup = "Monitorizaci&oacute;n Paciente", order = 0, text = "Monitorizar",devices = {Device.MOBILE, Device.TABLET})
     public String getBamkMobile(Model model) {
-        model.addAttribute("js", Arrays.asList("bam/js_m/bam.js"));
+        model.addAttribute("js", Arrays.asList("bam/js_m/bam.js","bam/js_m/common/ProcessInstanceTabPanel.js","bam/js_m/common/ProcessInstancePanel.js"));
         model.addAttribute("isDesktop", false);
         return "dynamic/main";
     }
