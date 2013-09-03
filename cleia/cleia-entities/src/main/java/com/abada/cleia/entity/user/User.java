@@ -80,7 +80,7 @@ public class User implements UserDetails {
             inverseJoinColumns = {
         @JoinColumn(nullable = false, name = "role_id", referencedColumnName = "authority")})
     private List<Role> roles;
-    @JsonView(Views.Level1.class)
+    @JsonView({Views.Level1.class,Views.MedicalData.class})
     @ManyToMany
     @JoinTable(name = "user_has_group",
             joinColumns = {

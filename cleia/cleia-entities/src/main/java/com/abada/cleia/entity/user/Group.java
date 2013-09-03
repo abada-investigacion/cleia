@@ -44,7 +44,7 @@ import javax.persistence.Table;
 @Table(name = "groups1")
 public class Group implements Serializable {
     @Id
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class,Views.MedicalData.class})
     @Column(name = "value1")
     private String value;
     @JsonView(Views.Level2.class)

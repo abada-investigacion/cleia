@@ -64,6 +64,8 @@ Ext.onReady(function() {
                         idgroup:form.value,
                         enable:form.enabled
                     }), form, 'PUT', groupGrid, null, 'Servicio '+status+'do', 'Error. No se ha podido ' + status + 'r');
+                    
+                    groupGrid.selModel.deselectAll();
               
                 } else
                     Ext.Msg.alert('', 'Seleccione un servicio');
@@ -204,12 +206,24 @@ Ext.onReady(function() {
             padding: '10 5 5 5',
             page:25,
             listeners: { 
-                afterrender: function() {                  
-                  
-                    patientsGrid.columns[0].setVisible(true);
+                afterrender: function() {   
+                    
                     patientsGrid.columns[4].hide();
                     patientsGrid.columns[6].hide();
                     patientsGrid.columns[7].hide();
+                    patientsGrid.columns[8].hide();
+                    patientsGrid.headerCt.insert(patientsGrid.columns.length, Ext.create('Ext.grid.column.Column',{
+                        header:'Identificador',
+                        text:'identificador',
+                        renderer:renderIdentifier(new Ext.Template('{ids}')) ,
+                        width:40,
+                        hidden:false
+                    })
+                    );
+                    
+                    patientsGrid.getView().refresh();
+                    
+                
                     
                 },                            
                 select:function(constructor,record){     
@@ -224,6 +238,30 @@ Ext.onReady(function() {
                 }
             }
         });      
+        
+         function renderIdentifier(template) {
+            return function(value, meta, record, rowIndex, colIndex, store) {
+                
+                var ids=record.data.ids;
+                
+                if(ids.length>0){
+                    
+                    for(var i=0;i<ids.length;i++){
+                    
+                        if(ids[i].type.value.toUpperCase()=='DNI'){
+                         
+                            return ids[i].type.value.toUpperCase() +': '+ids[i].value;
+                         
+                        }
+                    
+                    }               
+                              
+                    return ids[0].type.value.toUpperCase() +': '+ids[0].value;
+                }else{
+                    return '';
+                }
+            };
+        }
         
         function doAjaxAssign(operation,record){
             

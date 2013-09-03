@@ -29,7 +29,7 @@ Ext.require([
     'Ext.layout.container.Table', 'Abada.toolbar.ToolbarInsertUpdateDelete', 'Abada.form.field.ComboBoxDeSelect',
     , 'Ext.form.field.Date', 'Abada.form.field.ComboBox', 'App.manager.js.common.gridids'
 
-])
+    ])
 
 Ext.onReady(function() {
 
@@ -65,6 +65,9 @@ Ext.onReady(function() {
                         idpatient: form.id,
                         enable: form.enabled
                     }), form, 'PUT', patientsGrid, null, 'Paciente ' + status + 'do', 'Error. No se ha podido ' + opt + 'r');
+                    
+                    patientsGrid.selModel.deselectAll();
+                    
                 } else
                     Ext.Msg.alert('', 'Seleccione un Paciente');
             }
@@ -75,7 +78,9 @@ Ext.onReady(function() {
     var patientsGrid = Ext.create('App.patient.js.common.gridPatient', {
         url: getRelativeServerURI('rs/patient/search'),
         height: 400,
-        page: 13
+        page: 13,
+        checkboxse:true,
+        details:true
     });
 
     patientsGrid.getStore().load({
@@ -92,6 +97,7 @@ Ext.onReady(function() {
         items: [toolbar, patientsGrid]//ponemos el grid
 
     });
+    
     toolbar.getComponent("Borrar").setText("Habilitar/Deshabilitar");
     setCentralPanel(grid);
 
@@ -150,14 +156,14 @@ Ext.onReady(function() {
     function handleFormulario(opt, grid, title, url, selection) {
         var method = 'POST', tooltip = 'Insertar Paciente';
         var id,
-                username,
-                password,
-                name,
-                surname,
-                surname1,
-                genre,
-                birthDay = new Date(),
-                tlf, address, city, cp, country;
+        username,
+        password,
+        name,
+        surname,
+        surname1,
+        genre,
+        birthDay = new Date(),
+        tlf, address, city, cp, country;
 
         if (opt != 'Inserta' && selection.hasSelection()) {
             method = 'PUT';
@@ -264,223 +270,223 @@ Ext.onReady(function() {
                 columns: 2
             },
             items: [{
-                    xtype: 'fieldset',
-                    title: '<b>Datos de Usuario</b>',
-                    width: '100%',
-                    collapsible: false,
+                xtype: 'fieldset',
+                title: '<b>Datos de Usuario</b>',
+                width: '100%',
+                collapsible: false,
+                defaultType: 'textfield',
+                layout: {
+                    type: 'table',
+                    column: 2
+                },
+                padding: '10 15 10 15',
+                items: [{
+                    xtype: 'container',
                     defaultType: 'textfield',
-                    layout: {
-                        type: 'table',
-                        column: 2
-                    },
-                    padding: '10 15 10 15',
+                    layout: 'vbox',
                     items: [{
-                            xtype: 'container',
-                            defaultType: 'textfield',
-                            layout: 'vbox',
-                            items: [{
-                                    fieldLabel: 'Id',
-                                    name: 'id',
-                                    id: 'id',
-                                    value: id,
-                                    readOnly: true,
-                                    width: 270
-                                }, {
-                                    fieldLabel: 'Usuario',
-                                    name: 'username',
-                                    id: 'username',
-                                    value: username,
-                                    allowBlank: false,
-                                    width: 270
-                                }, {
-                                    fieldLabel: 'Contrase&ntilde;a',
-                                    name: 'password',
-                                    id: 'password',
-                                    allowBlank: false,
-                                    inputType: 'password',
-                                    value: password,
-                                    width: 270
-                                },
-                                {
-                                    fieldLabel: 'Repita Contrase&ntilde;a',
-                                    name: 'password2',
-                                    id: 'password2',
-                                    allowBlank: false,
-                                    inputType: 'password',
-                                    value: password,
-                                    width: 270
-
-                                }]
-
-                        }, {
-                            xtype: 'container',
-                            layout: 'vbox',
-                            items: [
-                                {
-                                    xtype: 'container',
-                                    layout: 'hbox',
-                                    items: [loadbutton, {
-                                            xtype: 'button',
-                                            id: 'clearbutton',
-                                            text: 'Limpiar',
-                                            margin: '10 15 0 0',
-                                            handler: function() {
-
-                                                Ext.getCmp('id').setValue('');
-                                                Ext.getCmp('username').setReadOnly(false);
-                                                Ext.getCmp('username').setValue('');
-                                                groupGrid.selModel.deselectAll();
-                                                idGrid.getStore().removeAll();
-                                            }
-                                        }]
-                                }
-                                , groupGrid]
-                        }
-                    ]
-                }, {
-                    xtype: 'fieldset',
-                    title: '<b>Identificadores</b>',
-                    width: '100%',
-                    collapsible: false,
-                    padding: '10 15 10 15',
-                    items: [
-                        {
-                            xtype: 'container',
-                            layout: 'hbox',
-                            items: [{
-                                    xtype: 'textfield',
-                                    fieldLabel: 'N&uacute;mero',
-                                    name: 'idnumber',
-                                    id: 'idnumber',
-                                    padding: '0 15 10 0',
-                                    labelWidth: 50,
-                                    labelAlign: 'top',
-                                    width: 150
-
-                                }, comboidtype, {
-                                    xtype: 'button',
-                                    id: 'addbutton',
-                                    icon: getRelativeURI('images/custom/add.png'),
-                                    handler: function() {
-
-                                        idGrid.getStore().insert(0, {
-                                            value: Ext.getCmp("idnumber").getValue(),
-                                            idtype: Ext.getCmp("cbidtype").getRawValue()
-                                        });
-
-                                        Ext.getCmp("idnumber").setValue('');
-                                        Ext.getCmp("cbidtype").setValue('');
-                                    }
-                                }, {
-                                    xtype: 'button',
-                                    id: 'deletebutton',
-                                    icon: getRelativeURI('images/custom/delete.gif'),
-                                    handler: function() {
-
-                                        if (idGrid.getSelectionModel().getCount() > 0) {
-                                            idGrid.getStore().remove(idGrid.getSelectionModel().getSelection());
-                                        }
-
-                                    }
-                                }]
-                        }, idGrid
-                    ]
-                }, {
-                    xtype: 'fieldset',
-                    title: '<b>Datos personales</b>',
-                    width: '100%',
-                    collapsible: false,
-                    defaultType: 'textfield',
-                    padding: '10 15 10 15',
-                    items: [
-                        {
-                            fieldLabel: 'Nombre',
-                            name: 'name',
-                            id: 'name',
-                            value: name,
-                            width: 270,
-                            allowBlank: false
-                        }, {
-                            fieldLabel: 'Primer Apellido',
-                            name: 'surname',
-                            id: 'surname',
-                            value: surname,
-                            width: 270,
-                            allowBlank: false
-
-                        }, {
-                            fieldLabel: 'Segundo Apellido',
-                            name: 'surname1',
-                            id: 'surname1',
-                            value: surname1,
-                            width: 270,
-                            allowBlank: false
-                        }, datebirthday, {
-                            fieldLabel: 'Telefono',
-                            name: 'tlf',
-                            id: 'tlf',
-                            value: tlf,
-                            width: 270,
-                            allowBlank: false
-                        }, combogenre]
-                }, {
-                    xtype: 'fieldset',
-                    title: '<b>Direcci&oacute;n</b>',
-                    width: '100%',
-                    collapsible: false,
-                    defaultType: 'textfield',
-                    padding: '10 15 10 15',
-                    items: [
-                        {
-                            fieldLabel: 'Direcci&oacute;n',
-                            name: 'address',
-                            id: 'address',
-                            value: address,
-                            width: 270,
-                            allowBlank: false
-                        }, {
-                            fieldLabel: 'Ciudad',
-                            name: 'city',
-                            id: 'city',
-                            value: city,
-                            width: 270,
-                            allowBlank: false
-
-                        }, {
-                            fieldLabel: 'C. Postal',
-                            name: 'cp',
-                            id: 'cp',
-                            value: cp,
-                            width: 270,
-                            allowBlank: false
-                        }, {
-                            fieldLabel: 'Pais',
-                            name: 'country',
-                            id: 'country',
-                            value: country,
-                            width: 270,
-                            allowBlank: false
-                        }]
-                }],
-            buttons: [{
-                    text: opt + 'r',
-                    id: 'formPatient',
-                    formBind: true,
-                    handler: function() {
-
-                        if (Ext.getCmp('password2').getValue() == Ext.getCmp('password').getValue()) {
-                            if (formpanel.getForm().isValid()) {
-
-                                doAjaxrequestJson(url, getO(groupGrid.selModel, idGrid.getStore()), method, patientsGrid, wind, 'Paciente ' + opt + 'do', 'Error. No se ha podido ' + opt + 'r');
-
-                            }
-                        } else {
-                            Ext.Msg.alert('Error', 'Las contrase&ntilde;as no son iguales');
-                        }
-
+                        fieldLabel: 'Id',
+                        name: 'id',
+                        id: 'id',
+                        value: id,
+                        readOnly: true,
+                        width: 270
+                    }, {
+                        fieldLabel: 'Usuario',
+                        name: 'username',
+                        id: 'username',
+                        value: username,
+                        allowBlank: false,
+                        width: 270
+                    }, {
+                        fieldLabel: 'Contrase&ntilde;a',
+                        name: 'password',
+                        id: 'password',
+                        allowBlank: false,
+                        inputType: 'password',
+                        value: password,
+                        width: 270
                     },
-                    tooltip: tooltip
+                    {
+                        fieldLabel: 'Repita Contrase&ntilde;a',
+                        name: 'password2',
+                        id: 'password2',
+                        allowBlank: false,
+                        inputType: 'password',
+                        value: password,
+                        width: 270
+
+                    }]
+
+                }, {
+                    xtype: 'container',
+                    layout: 'vbox',
+                    items: [
+                    {
+                        xtype: 'container',
+                        layout: 'hbox',
+                        items: [loadbutton, {
+                            xtype: 'button',
+                            id: 'clearbutton',
+                            text: 'Limpiar',
+                            margin: '10 15 0 0',
+                            handler: function() {
+
+                                Ext.getCmp('id').setValue('');
+                                Ext.getCmp('username').setReadOnly(false);
+                                Ext.getCmp('username').setValue('');
+                                groupGrid.selModel.deselectAll();
+                                idGrid.getStore().removeAll();
+                            }
+                        }]
+                    }
+                    , groupGrid]
+                }
+                ]
+            }, {
+                xtype: 'fieldset',
+                title: '<b>Identificadores</b>',
+                width: '100%',
+                collapsible: false,
+                padding: '10 15 10 15',
+                items: [
+                {
+                    xtype: 'container',
+                    layout: 'hbox',
+                    items: [{
+                        xtype: 'textfield',
+                        fieldLabel: 'N&uacute;mero',
+                        name: 'idnumber',
+                        id: 'idnumber',
+                        padding: '0 15 10 0',
+                        labelWidth: 50,
+                        labelAlign: 'top',
+                        width: 150
+
+                    }, comboidtype, {
+                        xtype: 'button',
+                        id: 'addbutton',
+                        icon: getRelativeURI('images/custom/add.png'),
+                        handler: function() {
+
+                            idGrid.getStore().insert(0, {
+                                value: Ext.getCmp("idnumber").getValue(),
+                                idtype: Ext.getCmp("cbidtype").getRawValue()
+                            });
+
+                            Ext.getCmp("idnumber").setValue('');
+                            Ext.getCmp("cbidtype").setValue('');
+                        }
+                    }, {
+                        xtype: 'button',
+                        id: 'deletebutton',
+                        icon: getRelativeURI('images/custom/delete.gif'),
+                        handler: function() {
+
+                            if (idGrid.getSelectionModel().getCount() > 0) {
+                                idGrid.getStore().remove(idGrid.getSelectionModel().getSelection());
+                            }
+
+                        }
+                    }]
+                }, idGrid
+                ]
+            }, {
+                xtype: 'fieldset',
+                title: '<b>Datos personales</b>',
+                width: '100%',
+                collapsible: false,
+                defaultType: 'textfield',
+                padding: '10 15 10 15',
+                items: [
+                {
+                    fieldLabel: 'Nombre',
+                    name: 'name',
+                    id: 'name',
+                    value: name,
+                    width: 270,
+                    allowBlank: false
+                }, {
+                    fieldLabel: 'Primer Apellido',
+                    name: 'surname',
+                    id: 'surname',
+                    value: surname,
+                    width: 270,
+                    allowBlank: false
+
+                }, {
+                    fieldLabel: 'Segundo Apellido',
+                    name: 'surname1',
+                    id: 'surname1',
+                    value: surname1,
+                    width: 270,
+                    allowBlank: false
+                }, datebirthday, {
+                    fieldLabel: 'Telefono',
+                    name: 'tlf',
+                    id: 'tlf',
+                    value: tlf,
+                    width: 270,
+                    allowBlank: false
+                }, combogenre]
+            }, {
+                xtype: 'fieldset',
+                title: '<b>Direcci&oacute;n</b>',
+                width: '100%',
+                collapsible: false,
+                defaultType: 'textfield',
+                padding: '10 15 10 15',
+                items: [
+                {
+                    fieldLabel: 'Direcci&oacute;n',
+                    name: 'address',
+                    id: 'address',
+                    value: address,
+                    width: 270,
+                    allowBlank: false
+                }, {
+                    fieldLabel: 'Ciudad',
+                    name: 'city',
+                    id: 'city',
+                    value: city,
+                    width: 270,
+                    allowBlank: false
+
+                }, {
+                    fieldLabel: 'C. Postal',
+                    name: 'cp',
+                    id: 'cp',
+                    value: cp,
+                    width: 270,
+                    allowBlank: false
+                }, {
+                    fieldLabel: 'Pais',
+                    name: 'country',
+                    id: 'country',
+                    value: country,
+                    width: 270,
+                    allowBlank: false
                 }]
+            }],
+            buttons: [{
+                text: opt + 'r',
+                id: 'formPatient',
+                formBind: true,
+                handler: function() {
+
+                    if (Ext.getCmp('password2').getValue() == Ext.getCmp('password').getValue()) {
+                        if (formpanel.getForm().isValid()) {
+
+                            doAjaxrequestJson(url, getO(groupGrid.selModel, idGrid.getStore()), method, patientsGrid, wind, 'Paciente ' + opt + 'do', 'Error. No se ha podido ' + opt + 'r');
+
+                        }
+                    } else {
+                        Ext.Msg.alert('Error', 'Las contrase&ntilde;as no son iguales');
+                    }
+
+                },
+                tooltip: tooltip
+            }]
         });
 
 
@@ -549,7 +555,7 @@ Ext.onReady(function() {
         });
 
     }
-    ;
+    
 
     function griduser(groupGrid, idGrid) {
         
@@ -578,6 +584,7 @@ Ext.onReady(function() {
                 limit: 14
             }
         });
+        
         var winds = Ext.create('Ext.window.Window', {
             title: 'Usuarios',
             id: 'usergridWindow',
@@ -605,5 +612,31 @@ Ext.onReady(function() {
 
         }
     }
+        
 
 });
+
+function getDetails(record){
+       
+    var detailsPanel = Ext.create('App.patient.js.common.detailsPanel', {
+        record:record,
+        width:410,
+        height: 450,
+        autoScroll: true        
+    });
+    
+ 
+    
+    var detailsWind = Ext.create('Ext.window.Window', {
+        title: 'Detalles de paciente',
+        id: 'detailsWind',
+        closable: true,
+        modal: true,
+        width: 450,
+        autoHeight: true,
+        items: [detailsPanel]
+    });
+
+    detailsWind.show();
+    
+}

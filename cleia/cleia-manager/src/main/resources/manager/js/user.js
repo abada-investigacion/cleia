@@ -64,6 +64,8 @@ Ext.onReady(function() {
                         iduser:form.id,
                         enable:form.enabled
                     }), form, 'PUT', usersGrid, null, 'Usuario '+status+'do', 'Error. No se ha podido ' + status + 'r');
+                    
+                    usersGrid.selModel.deselectAll();
               
                 } else
                     Ext.Msg.alert('', 'Seleccione un usuario');

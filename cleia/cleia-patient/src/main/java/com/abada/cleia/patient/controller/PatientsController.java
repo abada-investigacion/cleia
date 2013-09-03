@@ -52,7 +52,8 @@ public class PatientsController {
     @MenuEntry(icon = "patient/image/paciente.png", menuGroup = "Pacientes", order = 0, text = "Gestión Pacientes")
     public String gridPatient(Model model) {
         model.addAttribute("js", Arrays.asList("patient/js/common/gridPatient.js","patient/js/common/gridPatientExpander.js",
-                "patient/js/patient.js","manager/js/common/gridrole.js", "manager/js/common/gridgroup.js","manager/js/griduser.js","manager/js/manager-utils.js"));
+                "patient/js/patient.js","manager/js/common/gridrole.js", "manager/js/common/gridgroup.js","manager/js/common/griduser.js",
+                "manager/js/manager-utils.js","patient/js/common/detailsPanel.js"));
         return "dynamic/main";
 
     }
