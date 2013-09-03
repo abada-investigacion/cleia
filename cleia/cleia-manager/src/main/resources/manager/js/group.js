@@ -35,7 +35,7 @@ Ext.onReady(function() {
             submitInsert: function() {
                 handleFormulario('Inserta', groupGrid, 'Servicio', getRelativeServerURI('rs/group'), groupGrid.selModel);
             },
-           /* submitUpdate: function() {
+            /* submitUpdate: function() {
                 if (groupGrid.selModel.hasSelection()) {
                     if (groupGrid.selModel.getCount() == 1) {
                         handleFormulario('Modifica', groupGrid, 'Servicio', getRelativeServerURI('rs/group/{idgroup}', {
@@ -64,6 +64,8 @@ Ext.onReady(function() {
                         idgroup:form.value,
                         enable:form.enabled
                     }), form, 'PUT', groupGrid, null, 'Servicio '+status+'do', 'Error. No se ha podido ' + status + 'r');
+                    
+                    groupGrid.selModel.deselectAll();
               
                 } else
                     Ext.Msg.alert('', 'Seleccione un servicio');
@@ -197,39 +199,76 @@ Ext.onReady(function() {
         
         var patientsGrid = Ext.create('App.patient.js.common.gridPatient', {
             title:'',
-            url: getRelativeServerURI('rs/patient/search'),
+            url: getRelativeServerURI('rs/patient/searchforassignment'),
             height:400,
             width:800,
             checkboxse: true,
             padding: '10 5 5 5',
             page:25,
             listeners: { 
-                afterrender: function() {                  
-                  
-                    patientsGrid.columns[0].setVisible(true);
+                afterrender: function() {   
+                    
                     patientsGrid.columns[4].hide();
-                     
+                    patientsGrid.columns[6].hide();
+                    patientsGrid.columns[7].hide();
+                    patientsGrid.columns[8].hide();
+                    patientsGrid.headerCt.insert(patientsGrid.columns.length, Ext.create('Ext.grid.column.Column',{
+                        header:'Identificador',
+                        text:'identificador',
+                        renderer:renderIdentifier(new Ext.Template('{ids}')) ,
+                        width:40,
+                        hidden:false
+                    })
+                    );
+                    
+                    patientsGrid.getView().refresh();
+                    
+                
                     
                 },                            
                 select:function(constructor,record){     
                     
-                    doAjaxAssign('addto',record);
+                    doAjaxAssign('add',record);
                  
                 },
                 deselect:function(constructor, record){  
                                            
-                    doAjaxAssign('removefrom',record);
+                    doAjaxAssign('remove',record);
                   
                 }
             }
         });      
         
+         function renderIdentifier(template) {
+            return function(value, meta, record, rowIndex, colIndex, store) {
+                
+                var ids=record.data.ids;
+                
+                if(ids.length>0){
+                    
+                    for(var i=0;i<ids.length;i++){
+                    
+                        if(ids[i].type.value.toUpperCase()=='DNI'){
+                         
+                            return ids[i].type.value.toUpperCase() +': '+ids[i].value;
+                         
+                        }
+                    
+                    }               
+                              
+                    return ids[0].type.value.toUpperCase() +': '+ids[0].value;
+                }else{
+                    return '';
+                }
+            };
+        }
+        
         function doAjaxAssign(operation,record){
             
-            var url=getRelativeServerURI('rs/user/{iduser}/{operation}/{idgroup}',{
-                iduser:record.data.id,
+            var url=getRelativeServerURI('rs/group/{idgroup}/{operation}/{iduser}',{
+                idgroup:selection.getSelection()[0].get('value'),
                 operation:operation,
-                idgroup:selection.getSelection()[0].get('value')                             
+                iduser:record.data.id                                            
             });
             
             

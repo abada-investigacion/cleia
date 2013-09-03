@@ -137,6 +137,7 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
             patient.getUser().getGroups().size();
             patient.getUser().getRoles().size();
             patient.getUser().getIds().size();
+            patient.getMedicals().size();
             patient.getProcessInstances().size();
         }
         return lpatient;

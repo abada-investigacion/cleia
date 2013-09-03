@@ -219,4 +219,23 @@ public class GroupController {
         
         return result;
     }
+    
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/{idgroup}/{operation}/{iduser}", method = RequestMethod.PUT)
+    public Success assignUsers(@PathVariable String idgroup, @PathVariable String operation,@PathVariable Long iduser) {
+        
+        Success result = new Success(Boolean.FALSE);
+        try {
+            if (operation.equals("add")) {
+                this.groupDao.putUserGroup(iduser, idgroup);
+            } else {
+                this.groupDao.deleteUserGroup(iduser, idgroup);
+            }            
+            result.setSuccess(Boolean.TRUE);
+        } catch (Exception e) {
+            result.setErrors(new com.abada.extjs.Error(e.getMessage()));
+            logger.error(e);
+        }
+        return result;
+    }
 }

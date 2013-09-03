@@ -53,7 +53,7 @@ public class MedicalController {
     public String gridPatient(Model model) {
         model.addAttribute("js", Arrays.asList("medical/js/common/gridMedical.js","medical/js/common/gridMedicalExpander.js", "medical/js/medical.js",
                 "manager/js/common/gridrole.js", "manager/js/common/gridgroup.js","patient/js/common/gridPatient.js",
-                "patient/js/common/gridPatientExpander.js","manager/js/manager-utils.js"));
+                "manager/js/manager-utils.js"));
         return "dynamic/main";
 
     }

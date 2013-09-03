@@ -151,23 +151,6 @@ public interface UserDao {
      */
     public List<Id> getIdsByIdUser(Long iduser) throws Exception;
 
-    /**
-     * Modifies the relationship between a user and a group
-     *
-     * @param iduser
-     * @param idgroup
-     * @return
-     */
-    public void putUserGroup(Long iduser, String idgroup) throws Exception;
-
-    /**
-     * Removes the relationship between a user and a group
-     *
-     * @param iduser
-     * @param idgroup
-     * @return
-     */
-    public void deleteUserGroup(Long iduser, String idgroup) throws Exception;
 
     /**
      * Modifies the relationship between a user and a role

@@ -414,65 +414,6 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         return (List<Id>) user.getIds();
     }
 
-    /**
-     * Modifies the relationship between a user and a group
-     *
-     * @param iduser
-     * @param idgroup
-     * @return
-     */
-    @Transactional(value = "cleia-txm")
-    public void putUserGroup(Long iduser, String idgroup) throws Exception {
-        User user = (User) entityManager.find(User.class, iduser);
-
-        if (user != null) {
-            Group group = (Group) entityManager.find(Group.class, idgroup);
-            if (group != null) {
-                List<Group> lgroup = user.getGroups();
-                List<User> luser = group.getUsers();
-                if (lgroup.contains(group) || luser.contains(user)) {
-                    throw new Exception("Error. El usuario " + user.getUsername() + " ya esta en el grupo " + group.getValue());
-                } else {
-                    lgroup.add(group);
-                    luser.add(user);
-                }
-            } else {
-                throw new Exception("Error. El grupo no existe");
-            }
-        } else {
-            throw new Exception("Error. El usuario no existe");
-        }
-    }
-
-    /**
-     * Removes the relationship between a user and a group
-     *
-     * @param iduser
-     * @param idgroup
-     * @return
-     */
-    @Transactional(value = "cleia-txm")
-    public void deleteUserGroup(Long iduser, String idgroup) throws Exception {
-        User user = (User) entityManager.find(User.class, iduser);
-
-        if (user != null) {
-            Group group = (Group) entityManager.find(Group.class, idgroup);
-            if (group != null) {
-                List<Group> lgroup = user.getGroups();
-                List<User> luser = group.getUsers();
-                if (!lgroup.contains(group) || !luser.contains(user)) {
-                    throw new Exception("Error. El usuario " + user.getUsername() + " no esta en el grupo " + group.getValue());
-                } else {
-                    lgroup.remove(group);
-                    luser.remove(user);
-                }
-            } else {
-                throw new Exception("Error. El grupo no existe");
-            }
-        } else {
-            throw new Exception("Error. El usuario no existe.");
-        }
-    }
 
     /**
      * Modifies the relationship between a user and a role

@@ -33,7 +33,8 @@ Ext.define('App.patient.js.common.gridPatient', {
         checkboxse:undefined,
         bbar:undefined,
         loadMask: true,
-        page:undefined
+        page:undefined,
+        details:undefined
     },
     title: 'Pacientes',
     columns:[  
@@ -64,7 +65,8 @@ Ext.define('App.patient.js.common.gridPatient', {
     {
         header: 'Genero', 
         dataIndex: 'genre',
-        width:30
+        width:30,
+        hidden:true
     
     },
     {
@@ -83,7 +85,8 @@ Ext.define('App.patient.js.common.gridPatient', {
     {
         header: 'Direccion', 
         renderer:templateRenderer(new Ext.Template('{address}, {city}, {cp}, {country}')) ,
-        width:50    
+        width:50,
+        hidden:true
     },
     {
         header: 'Habilitado', 
@@ -201,12 +204,34 @@ Ext.define('App.patient.js.common.gridPatient', {
                 },{
                     name:'ids',
                     mapping:'user.ids'
+                },{
+                    name:'medicals',
+                    mapping:'medicals'
                 }],
                 url:this.config.url,                
                 root:'data',                                
                 scope:this,
                 pageSize:config.page
             }); 
+        }
+        
+        if(config.details){
+            
+            this.columns.push({
+                xtype:'actioncolumn',
+                width:30,
+                header:'Detalles',
+                align:'center',
+                items: [{
+                    icon: getRelativeURI('patient/image/group-expand.png'),  
+                    tooltip: 'Detalles',
+                    handler: function(grid, rowIndex, colIndex) {
+                        var record = grid.getStore().getAt(rowIndex);
+                        getDetails(record);
+                    }
+                }]
+            }) 
+            
         }
        
         if(config.checkboxse){

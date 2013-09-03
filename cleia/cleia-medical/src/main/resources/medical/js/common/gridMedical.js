@@ -41,7 +41,7 @@ Ext.define('App.medical.js.common.gridMedical', {
         hidden:true
     },
     {
-        header: 'Nombre medico', 
+        header: 'Nombre', 
         dataIndex: 'name',
         width:40
     
