@@ -38,46 +38,49 @@ Ext.onReady(function() {
     Abada.i18n.Bundle.bundle.on('loaded', function() {
         principal();
     });
+    Abada.i18n.Bundle.bundle.on('error', function() {
+        Abada.i18n.Bundle.bundle.language = Abada.i18n.Bundle.bundle.defaultLanguage;
+        Abada.i18n.Bundle.bundle.load();
+    });
     Abada.i18n.Bundle.bundle.load();
 
-
-    function formSubmit() {
-        authHeader = getBasicAuthentication();
-        Abada.Ajax.request({
-            url: App.urlServer + App.urlServerRoles,
-            headers: {
-                Authorization: authHeader
-            },
-            method: 'GET',
-            success: function(result, request) {
-                formSubmitPriv();
-            },
-            failure: function() {
-            }
-        });
-        //formSubmitPriv();
-    }
-
-    function getBasicAuthentication() {
-        return 'Basic ' + Abada.Base64.encode(login.getForm().findField('j_username').getValue() + ':' + login.getForm().findField('j_password').getValue());
-    }
-
-    function formSubmitPriv() {
-        if (login.getForm().isValid()) {
-            login.getForm().submit({
-                method: 'POST',
-                waitTitle: Abada.i18n.Bundle.bundle.getMsg('login.connecting'),
-                waitMsg: Abada.i18n.Bundle.bundle.getMsg('login.connectionMessage'),
-                failure: function(form, action) {
+    function principal() {
+        function formSubmit() {
+            authHeader = getBasicAuthentication();
+            Abada.Ajax.request({
+                url: App.urlServer + App.urlServerRoles,
+                headers: {
+                    Authorization: authHeader
                 },
-                success: function() {
-                    //window.location='main.htm';
+                method: 'GET',
+                success: function(result, request) {
+                    formSubmitPriv();
+                },
+                failure: function() {
                 }
             });
+            //formSubmitPriv();
         }
-    }
 
-    function principal() {
+        function getBasicAuthentication() {
+            return 'Basic ' + Abada.Base64.encode(login.getForm().findField('j_username').getValue() + ':' + login.getForm().findField('j_password').getValue());
+        }
+
+        function formSubmitPriv() {
+            if (login.getForm().isValid()) {
+                login.getForm().submit({
+                    method: 'POST',
+                    waitTitle: Abada.i18n.Bundle.bundle.getMsg('login.connecting'),
+                    waitMsg: Abada.i18n.Bundle.bundle.getMsg('login.connectionMessage'),
+                    failure: function(form, action) {
+                    },
+                    success: function() {
+                        //window.location='main.htm';
+                    }
+                });
+            }
+        }
+
         var login = Ext.create('Ext.form.Panel', {
             region: 'center',
             url: 'j_spring_security_check',

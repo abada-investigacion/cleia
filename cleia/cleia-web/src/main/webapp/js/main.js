@@ -35,6 +35,10 @@ Ext.onReady(function() {
     Abada.i18n.Bundle.bundle.on('loaded', function() {
         principal();
     });
+    Abada.i18n.Bundle.bundle.on('error', function() {
+        Abada.i18n.Bundle.bundle.language = Abada.i18n.Bundle.bundle.defaultLanguage;
+        Abada.i18n.Bundle.bundle.load();
+    });
     Abada.i18n.Bundle.bundle.load();
 
     function principal() {
