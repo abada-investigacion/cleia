@@ -32,11 +32,15 @@ Ext.require([
 
 Ext.onReady(function() {
     var i18n = Ext.create('Abada.i18n.Bundle', {
-        path: getRelativeURI('/manager/locale'),        
-        bundle: 'messages'
+        path: getRelativeURI('/manager/locale'),
+        bundle: 'messages',
+        insertLocale: false
     });
-    
-    i18n.load();
+
+    i18n.on('error', function() {
+        i18n.language = i18n.defaultLanguage;
+        i18n.load();
+    });
 
     i18n.on('loaded', function() {
         var toolbar = Ext.create('Abada.toolbar.ToolbarInsertUpdateDelete', {
@@ -351,7 +355,7 @@ Ext.onReady(function() {
 
 
             var wind = Ext.create('Ext.window.Window', {
-                title: i18n.getMsg('name'),//opt + 'r',
+                title: i18n.getMsg('name'), //opt + 'r',
                 id: 'usuario',
                 autoScroll: false,
                 closable: true,
@@ -401,4 +405,7 @@ Ext.onReady(function() {
             return formpanel;
         }
     });
+
+    i18n.load();
+
 });
