@@ -1,0 +1,12 @@
+{
+    "login.username": "Usuario",
+    "login.password": "Contrase&ntilde;a",
+    "login.connecting":"Conectando...",
+    "login.connectionMessage":"Comprobando usuario y contrase&ntilde;a...",
+    "login.button":"Acceso",
+    "login.tooltip":"Acceso a la aplicaci&oacute;n",
+    "login.title":"Acceder",
+    "error.title":"Error Inesperado",
+    "error.msg":"Ha ocurrido un error inesperado. Contacte con el servicio tecnico",
+    "menu.title":"Men&uacute;"
+}

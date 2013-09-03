@@ -30,77 +30,87 @@ Ext.require([
 
 Ext.setup({
     onReady: function() {
-
-        function formSubmit() {
-            authHeader = getBasicAuthentication();
-            Abada.Ajax.request({
-                url: App.urlServer + App.urlServerRoles,
-                headers: {
-                    Authorization: authHeader
-                },
-                method: 'GET',
-                success: function(result, request) {
-                    formSubmitPriv();
-                },
-                failure: function() {
-                }
-            });
-            //formSubmitPriv();
-        }
-
-        function getBasicAuthentication() {
-            return 'Basic ' + Abada.Base64.encode(login.getAt(0).getAt(0).getValue() + ':' + login.getAt(0).getAt(1).getValue());
-        }
-
-        function formSubmitPriv() {
-            login.submit({
-                method: 'POST',
-                waitTitle: 'Conectando',
-                waitMsg: 'Comprobando usuario y contrase&ntilde;a...',
-                failure: function(form, action) {
-                },
-                success: function() {
-                    //window.location='main.htm';
-                }
-            });
-        }
-
-        var login = Ext.create('Ext.form.Panel', {
-            url: 'j_spring_security_check',
-            fullscreen: true,
-            standardSubmit: true,
-            items: [
-                {
-                    xtype: 'fieldset',
-                    title: 'Acceder',
-                    defaults: {
-                        required: true
-                    },
-                    items: [{
-                            xtype: 'textfield',
-                            label: 'Usuario',
-                            name: 'j_username',
-                            id: 'j_username'
-                        }, {
-                            xtype: 'passwordfield',
-                            label: 'Contrase&ntilde;a',
-                            name: 'j_password',
-                            id: 'j_password'
-                        }]
-                },
-                {
-                    xtype: 'toolbar',
-                    docked: 'top',
-                    height:30,
-                    items: [{
-                            text: 'Acceso',
-                            ui: 'round',
-                            id: 'blogin',
-                            scope: this,
-                            handler: formSubmit
-                        }]
-                }]
+        Abada.i18n.Bundle.bundle.on('loaded', function() {
+            principal();
         });
+        Abada.i18n.Bundle.bundle.on('error', function() {
+            Abada.i18n.Bundle.bundle.language = Abada.i18n.Bundle.bundle.defaultLanguage;
+            Abada.i18n.Bundle.bundle.load();
+        });
+        Abada.i18n.Bundle.bundle.load();
 
-        Ext.Viewport.add(login);
+        function principal() {
+            function formSubmit() {
+                authHeader = getBasicAuthentication();
+                Abada.Ajax.request({
+                    url: App.urlServer + App.urlServerRoles,
+                    headers: {
+                        Authorization: authHeader
+                    },
+                    method: 'GET',
+                    success: function(result, request) {
+                        formSubmitPriv();
+                    },
+                    failure: function() {
+                    }
+                });
+                //formSubmitPriv();
+            }
+
+            function getBasicAuthentication() {
+                return 'Basic ' + Abada.Base64.encode(login.getAt(0).getAt(0).getValue() + ':' + login.getAt(0).getAt(1).getValue());
+            }
+
+            function formSubmitPriv() {
+                login.submit({
+                    method: 'POST',
+                    waitTitle: Abada.i18n.Bundle.bundle.getMsg('login.connecting'),
+                    waitMsg: Abada.i18n.Bundle.bundle.getMsg('login.connectionMessage'),
+                    failure: function(form, action) {
+                    },
+                    success: function() {
+                        //window.location='main.htm';
+                    }
+                });
+            }
+
+            var login = Ext.create('Ext.form.Panel', {
+                url: 'j_spring_security_check',
+                fullscreen: true,
+                standardSubmit: true,
+                items: [
+                    {
+                        xtype: 'fieldset',
+                        title: Abada.i18n.Bundle.bundle.getMsg('login.title'),
+                        defaults: {
+                            required: true
+                        },
+                        items: [{
+                                xtype: 'textfield',
+                                label: Abada.i18n.Bundle.bundle.getMsg('login.username'),
+                                name: 'j_username',
+                                id: 'j_username'
+                            }, {
+                                xtype: 'passwordfield',
+                                label: Abada.i18n.Bundle.bundle.getMsg('login.password'),
+                                name: 'j_password',
+                                id: 'j_password'
+                            }]
+                    },
+                    {
+                        xtype: 'toolbar',
+                        docked: 'top',
+                        height: 30,
+                        items: [{
+                                text: Abada.i18n.Bundle.bundle.getMsg('login.button'),
+                                ui: 'round',
+                                id: 'blogin',
+                                scope: this,
+                                handler: formSubmit
+                            }]
+                    }]
+            });
+
+            Ext.Viewport.add(login);
+        }
     }});

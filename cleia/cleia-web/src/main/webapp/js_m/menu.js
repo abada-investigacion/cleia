@@ -31,12 +31,22 @@ Ext.setup({
         fullscreen: true
     },
     onReady: function() {
-        var menu = Ext.create('Abada.menu.MainMenu', {
-            url: getRelativeURI('mainmenu.do'),
-            title:'Men&uacute;'
+        Abada.i18n.Bundle.bundle.on('loaded', function() {
+            principal();
         });
-        
-        Ext.Viewport.add(menu);
+        Abada.i18n.Bundle.bundle.on('error', function() {
+            Abada.i18n.Bundle.bundle.language=Abada.i18n.Bundle.bundle.defaultLanguage;
+            Abada.i18n.Bundle.bundle.load();
+        });
+        Abada.i18n.Bundle.bundle.load();
 
+        function principal() {
+            var menu = Ext.create('Abada.menu.MainMenu', {
+                url: getRelativeURI('mainmenu.do'),
+                title: Abada.i18n.Bundle.bundle.getMsg('menu.title')
+            });
+
+            Ext.Viewport.add(menu);
+        }
     }});
 

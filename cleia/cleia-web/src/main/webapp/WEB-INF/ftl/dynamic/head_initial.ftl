@@ -35,7 +35,7 @@
     });
 
     Ext.require([
-        'Ext.Ajax','Abada.Ajax'
+        'Ext.Ajax','Abada.Ajax','Abada.i18n.Bundle'
     ]);
 
     Ext.onReady(function() {
@@ -43,7 +43,13 @@
         Abada.Ajax.withCredentials = true;
 
         Ext.Ajax.useDefaultXhrHeader = false;
-        Abada.Ajax.useDefaultXhrHeader = false;
+        Abada.Ajax.useDefaultXhrHeader = false;        
+
+        Abada.i18n.Bundle.bundle=Ext.create('Abada.i18n.Bundle',{
+            path: '<@spring.url relativeUrl="/locale" />',
+            localePath: '<@spring.url relativeUrl="/ext4/locale" />',
+            bundle:'messages'
+        });
     });
 
     App={};    
@@ -52,5 +58,3 @@
     App.urlServer='<@spring.message code="secureUrlServer" />';
 
 </script>
-<!--locales-->
-<!--script src="<@spring.url relativeUrl="/ext4/locale/ext-lang-es.js"/>" type="text/javascript"></script-->

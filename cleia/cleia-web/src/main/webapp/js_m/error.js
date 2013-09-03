@@ -30,12 +30,22 @@ Ext.require([
 
 Ext.onReady(function() {
 
- Ext.MessageBox.show({
-     title:'Error Inesperado',
-     msg: 'Ha ocurrido un error inesperado. Contacte con el servicio tecnico',
-   //  buttons: Ext.Msg.YESNOCANCEL,
-     icon: Ext.MessageBox.ERROR,
-     closable:false
-});
+    function principal() {
+        Ext.MessageBox.show({
+            title: Abada.i18n.Bundle.bundle.getMsg('error.title'),
+            msg: Abada.i18n.Bundle.bundle.getMsg('error.msg'),
+            //  buttons: Ext.Msg.YESNOCANCEL,
+            icon: Ext.MessageBox.ERROR,
+            closable: false
+        });
+    }
 
+    Abada.i18n.Bundle.bundle.on('loaded', function() {
+        principal();
+    });
+    Abada.i18n.Bundle.bundle.on('error', function() {
+        Abada.i18n.Bundle.bundle.language = Abada.i18n.Bundle.bundle.defaultLanguage;
+        Abada.i18n.Bundle.bundle.load();
+    });
+    Abada.i18n.Bundle.bundle.load();
 });

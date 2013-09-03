@@ -48,6 +48,43 @@
             </properties>
         </profile>
         <profile>
+            <id>local katsu</id>                    
+            <properties>
+                <db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>
+                <db.autogenerate>update</db.autogenerate>
+                <db.configuration>
+                    <![CDATA[
+                        <bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="ds1">
+                            <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+                            <property name="url" value="jdbc:mysql://imasd.abadasoft.com:3306/cleia" />
+                            <property name="username" value="mysql" />
+                            <property name="password" value="4b4D4." />
+                            <property name="testOnBorrow" value="true" />
+                            <property name="validationQuery" value="SELECT 1" />
+                        </bean>
+                    ]]>
+                </db.configuration>
+                <jbpm.console.guvnor.changeset>
+                    <![CDATA[
+                    <resource source='http://imasd.abadasoft.com:8080/guvnor-5.5.0/org.drools.guvnor.Guvnor/package/com.abada/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />
+                    ]]>
+                </jbpm.console.guvnor.changeset>
+                <deploy.path.rest>/cleia-rest</deploy.path.rest>
+                <deploy.path.web>/cleia-web</deploy.path.web>
+                <jbpm.task.hornetq.host>localhost</jbpm.task.hornetq.host>
+                <jbpm.task.hornetq.port>1234</jbpm.task.hornetq.port>
+                <jbpm.task.mina.port>1234</jbpm.task.mina.port>
+                <jbpm.task.mina.host>localhost</jbpm.task.mina.host>
+                <cleia.server.url>http://192.168.1.21:8080/cleia-rest/</cleia.server.url>
+                <cleia.server.secure.url>https://192.168.1.21:8443/cleia-rest/</cleia.server.secure.url>
+                <cleia.server.url.roles>/rs/identity/user/roles/list</cleia.server.url.roles>              
+                <cleia.server.url.dni.roles>/rs/identity/user/dni/roles/list</cleia.server.url.dni.roles>
+                <jbpm.console.guvnor.url>http://imasd.abadasoft.com:8080/guvnor-5.5.0</jbpm.console.guvnor.url>
+                <jbpm.console.guvnor.user>admin</jbpm.console.guvnor.user>
+                <jbpm.console.guvnor.password>admin</jbpm.console.guvnor.password>
+            </properties>
+        </profile>
+        <profile>
             <id>cloud Abada</id>    
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -118,6 +155,8 @@
                             <excludes>
                                 <exclude>**/README</exclude>
                                 <exclude>**/*.ftl</exclude>
+                                <exclude>**/*.json</exclude>
+                                <exclude>**/*.properties</exclude>
                             </excludes>
                         </configuration>                        
                     </execution>
