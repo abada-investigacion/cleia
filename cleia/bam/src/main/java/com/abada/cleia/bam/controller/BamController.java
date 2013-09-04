@@ -43,7 +43,7 @@ public class BamController{
     
     @RequestMapping(value = "/bam/bam.htm")
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-    @MenuEntry(icon = "bam/image/monitoriza.png", menuGroup = "Monitorizaci&oacute;n Paciente", order = 0, text = "Monitorizar")
+    @MenuEntry(icon = "bam/image/monitoriza.png", menuGroup = "bam.group", order = 0, text = "bam.monitor")
     public String getBam(Model model) {
         model.addAttribute("js", Arrays.asList("bam/js/bam.js"));
         return "dynamic/main";
@@ -51,7 +51,7 @@ public class BamController{
     
     @RequestMapping(value = "/bam/bam_m.htm")
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-    @MenuEntry(icon = "bam/image/monitoriza.png", menuGroup = "Monitorizaci&oacute;n Paciente", order = 0, text = "Monitorizar",devices = {Device.MOBILE, Device.TABLET})
+    @MenuEntry(icon = "bam/image/monitoriza.png", menuGroup = "bam.group", order = 0, text = "bam.monitor",devices = {Device.MOBILE, Device.TABLET})
     public String getBamkMobile(Model model) {
         model.addAttribute("js", Arrays.asList("bam/js_m/bam.js"));
         model.addAttribute("isDesktop", false);

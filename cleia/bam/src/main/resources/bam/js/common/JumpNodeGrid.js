@@ -25,37 +25,37 @@
  */
 Ext.define('App.bam.js.common.JumpNodeGrid', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     forceFit:true,    
     columns:[
     {
-        header:'Origen.Nodo',
+        header:'bam.jumpgrid.source.node',
         dataIndex:'nodeFrom'
     },
 
     {
-        header:'Origen.Proceso',
+        header:'bam.jumpgrid.source.process',
         dataIndex:'processIdFrom'
     },
 
     {
-        header:'Origen.Nodo.Id',
+        header:'bam.jumpgrid.source.id',
         dataIndex:'nodeIdFrom',
         hidden:true
     },
 
     {
-        header:'Destino.Nodo',
+        header:'bam.jumpgrid.target.node',
         dataIndex:'nodeTo'
     },
 
     {
-        header:'Destino.Proceso',
+        header:'bam.jumpgrid.target.process',
         dataIndex:'processIdTo'
     },
 
     {
-        header:'Destino.Nodo.Id',
+        header:'bam.jumpgrid.target.id',
         dataIndex:'nodeIdTo',
         hidden:true
     },                

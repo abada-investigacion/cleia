@@ -42,7 +42,7 @@ public class BamStatisticController {
 
     @RequestMapping(value = "/bam/statistic.htm")
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-    @MenuEntry(icon = "bam/image/estadistica.gif", menuGroup = "Monitorizaci&oacute;n Paciente", order = 2, text = "Estadisticas")
+    @MenuEntry(icon = "bam/image/estadistica.gif", menuGroup = "bam.group", order = 2, text = "bam.statistic")
     public String getBam(Model model) {
         model.addAttribute("js", Arrays.asList("bam/js/statistics.js"));
         return "dynamic/main";
