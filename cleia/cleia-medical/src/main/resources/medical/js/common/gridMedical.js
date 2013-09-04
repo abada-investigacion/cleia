@@ -28,62 +28,68 @@ Ext.define('App.medical.js.common.gridMedical', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'
     ,'Ext.ux.grid.FiltersFeature', 'Ext.ux.CheckColumn',
     'Abada.grid.column.CheckBox','Ext.grid.column.Date','Abada.grid.RowExpander'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         loadMask: true,
-        page:13
+        page:13,
+        details:undefined,
+        i18n:undefined
     },
-    title: 'Medicos',
     columns:[  
     {
-        header:'Id',
+        header:'medical.grid.column.idTitle',
         dataIndex:'id',
         hidden:true
     },
     {
-        header: 'Nombre', 
+        header: 'medical.grid.column.nameTitle', 
         dataIndex: 'name',
         width:40
     
     },
     {
-        header: 'Apellido', 
+        header: 'medical.grid.column.surname1Title', 
         dataIndex: 'surname',
         width:40
     
     },
     {
-        header: 'Apellido 2', 
+        header: 'medical.grid.column.surname2Title', 
         dataIndex: 'surname1',
         width:40
     
     },
     {
-        header: 'Genero', 
+        header: 'medical.grid.column.genreTitle', 
         dataIndex: 'genre',
-        width:30
+        width:30,
+        hidden:true
     
     },
     {
-        header: 'Fecha nacimiento', 
-        dataIndex: 'patient.birthDay',
+        header: 'medical.grid.column.birthdayTitle', 
+        dataIndex: 'birthDay',
         xtype: 'datecolumn',
         sortable: true,
         format: 'd-m-Y',
         width:40
     },
     {
-        header: 'Telefono', 
+        header: 'medical.grid.column.phoneNumberTitle', 
         dataIndex: 'tlf',
-        width:40    
+        width:30    
     },
     {
-        header: 'Direccion', 
-        renderer:templateRenderer(new Ext.Template('{address}, {city}, {cp}, {country}')) ,
-        width:50    
+        header: 'medical.grid.column.addressTitle', 
+        dataIndex:'address',
+        width:50,
+        hidden:true,
+        renderer:function(value, meta, record, rowIndex, colIndex, store) {
+            return new Ext.Template('{address}, {city}, {cp}, {country}').applyTemplate(record.data);
+        }
     },
     {
-        header: 'Habilitado', 
+        header: 'medical.grid.column.enabledTitle', 
         dataIndex: 'enabled',
         align:'center',
         xtype: 'checkboxcolumn',
@@ -148,7 +154,8 @@ Ext.define('App.medical.js.common.gridMedical', {
                 },
                 fields:[
                 {
-                    name:'patient.birthDay',
+                    name:'birthDay',
+                    mapping:'patient.birthDay',
                     type       : 'date',
                     dateFormat : 'c' 
                 },
@@ -206,6 +213,25 @@ Ext.define('App.medical.js.common.gridMedical', {
                 pageSize:config.page
             }); 
         }
+        
+        if(config.details){
+            
+            this.columns.push({
+                xtype:'actioncolumn',
+                width:30,
+                header:'medical.grid.column.detailsTitle',
+                align:'center',
+                scope:this,
+                items: [{
+                    icon: getRelativeURI('patient/image/group-expand.png'),  
+                    handler: function(grid, rowIndex, colIndex) {
+                        var record = grid.getStore().getAt(rowIndex);
+                        this.getDetails(record);
+                    }
+                }]
+            }) 
+            
+        }
        
         this.selModel= Ext.create('Ext.selection.RowModel');
         this.bbar= Ext.create('Ext.toolbar.Paging', {
@@ -213,13 +239,28 @@ Ext.define('App.medical.js.common.gridMedical', {
             pageSize: this.store.pageSize
         });
         this.callParent([config]);
-    }
+    },
+    getDetails: function(record){
+       
+        var detailsPanel = Ext.create('App.patient.js.common.detailsPanel', {
+            record:record,
+            width:410,
+            height: 450,
+            autoScroll: true        
+        });
+    
+        var detailsWind = Ext.create('Ext.window.Window', {
+            title: 'medical.wind.patientDetails',
+            id: 'detailsWind',
+            closable: true,
+            modal: true,
+            width: 450,
+            autoHeight: true,
+            items: [detailsPanel]
+        });
 
+        detailsWind.show();
+    
+    }
     
 });
-
-function templateRenderer(template) {
-    return function(value, meta, record, rowIndex, colIndex, store) {
-        return template.applyTemplate(record.data);
-    };
-}

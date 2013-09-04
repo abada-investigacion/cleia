@@ -208,10 +208,15 @@ Ext.onReady(function() {
             listeners: { 
                 afterrender: function() {   
                     
-                    patientsGrid.columns[4].hide();
-                    patientsGrid.columns[6].hide();
-                    patientsGrid.columns[7].hide();
-                    patientsGrid.columns[8].hide();
+                    for(var i=0;i<patientsGrid.columns.length;i++){
+                        
+                        if(patientsGrid.columns[i].dataIndex=='genre' || patientsGrid.columns[i].dataIndex=='tlf'
+                            || patientsGrid.columns[i].dataIndex=='enabled' || patientsGrid.columns[i].text=='Direci&oacute;n'){
+                            patientsGrid.columns[i].hide()                            
+                        }
+                        
+                    }
+                        
                     patientsGrid.headerCt.insert(patientsGrid.columns.length, Ext.create('Ext.grid.column.Column',{
                         header:'Identificador',
                         text:'identificador',
@@ -239,7 +244,7 @@ Ext.onReady(function() {
             }
         });      
         
-         function renderIdentifier(template) {
+        function renderIdentifier(template) {
             return function(value, meta, record, rowIndex, colIndex, store) {
                 
                 var ids=record.data.ids;
