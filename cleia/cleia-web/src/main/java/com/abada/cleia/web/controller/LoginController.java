@@ -30,6 +30,7 @@ import com.abada.extjs.ExtjsStore;
 import com.abada.springframework.web.servlet.menu.MenuEntry;
 import com.abada.springframework.web.servlet.menu.MenuService;
 import java.util.Arrays;
+import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -94,7 +95,7 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/mainmenu.do")
-    public ExtjsStore getMenu(HttpServletRequest request, Device device) {
+    public ExtjsStore getMenu(HttpServletRequest request, Device device,Locale locale) {        
         String[] roles = null;
         if (request.getUserPrincipal() instanceof AbstractAuthenticationToken) {
             AbstractAuthenticationToken user = (AbstractAuthenticationToken) request.getUserPrincipal();
@@ -112,7 +113,7 @@ public class LoginController {
             deviceAux=com.abada.springframework.web.servlet.menu.Device.DESKTOP;
         else
             deviceAux=com.abada.springframework.web.servlet.menu.Device.TABLET;
-        result.setData(this.menuService.getMenus(request.getContextPath(),deviceAux, roles));
+        result.setData(this.menuService.getMenus(request.getContextPath(),deviceAux,locale, roles));
         return result;
     }
 }
