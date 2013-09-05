@@ -43,7 +43,7 @@ public class TaskController {
 
     @RequestMapping(value = "/bam/task/task.htm")
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-    @MenuEntry(icon = "bam/image/humanTask.png", menuGroup = "Monitorizaci&oacute;n Paciente", order = 0, text = "Tareas")
+    @MenuEntry(icon = "bam/image/humanTask.png", menuGroup = "bam.group", order = 0, text = "bam.task")
     public String getTask(Model model) {
         model.addAttribute("js", Arrays.asList("bam/js/task.js"));
         return "dynamic/main";
@@ -51,7 +51,7 @@ public class TaskController {
     
     @RequestMapping(value = "/bam/task/task_m.htm")
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER"})
-    @MenuEntry(icon = "bam/image/humanTask.png", menuGroup = "Monitorizaci&oacute;n Paciente", order = 0, text = "Tareas",devices = {Device.MOBILE, Device.TABLET})
+    @MenuEntry(icon = "bam/image/humanTask.png", menuGroup = "bam.group", order = 0, text = "bam.task",devices = {Device.MOBILE, Device.TABLET})
     public String getTaskMobile(Model model) {
         model.addAttribute("js", Arrays.asList("bam/js_m/common/FormCustomPanel.js","bam/js_m/common/FormCustomFrame.js","bam/js_m/task.js"));
         model.addAttribute("isDesktop", false);

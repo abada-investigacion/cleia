@@ -34,7 +34,8 @@ Ext.define('App.bam.js.common.ProcessInstanceTabPanel',{
         urlDiagramInfo:'rs/process/definition/{0}/diagram',
         urlDocumentsNode:getRelativeURI('/bam/dms/documentsnode.do'),
         urlDocumentsNodeProcessInstance:getRelativeURI('/bam/dms/process/instance/documentsnode.do'),
-        urlJumpInTime:'rs/process/instance/{0}/jump'
+        urlJumpInTime:'rs/process/instance/{0}/jump',
+        i18n:undefined
     },
     initComponent:function(){        
         this.callParent();
@@ -50,7 +51,7 @@ Ext.define('App.bam.js.common.ProcessInstanceTabPanel',{
             '<tpl for="doc.data">'+                        
             '<a href="'+getRelativeURI('/bam/dms/file/read.do')+'?uuid={uuid}&fileName={fileName}" >{fileName}</a><br />'+
             '</tpl>'+
-            '<b>Informes Paciente</b><br />'+
+            '<b>'+this.i18n.getMsg('bam.tabinstance.text')+'</b><br />'+
             '<tpl for="patient.data">'+
             '<a href="'+getRelativeURI('/bam/dms/file/read.do')+'?uuid={uuid}&fileName={fileName}" >{fileName}</a><br />'+            
             '</tpl>');
@@ -79,7 +80,8 @@ Ext.define('App.bam.js.common.ProcessInstanceTabPanel',{
             var panel=Ext.create('App.bam.js.common.JumpPanel',{                
                 autoScroll:true,
                 height: 300,
-                width: 400
+                width: 400,
+                i18n:this.i18n
             });
             panel.addListener('jump',function(p,store){
                 function createInfo(store,processInstanceId,observation){

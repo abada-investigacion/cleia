@@ -27,20 +27,20 @@
 
 Ext.define('App.bam.js.common.DataGrid', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore','Ext.grid.column.Date'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         url:undefined,
         processInstanceId:undefined,
         patientId:undefined
     },
     forceFit:true,
-    title: 'Datos',
+    title: 'bam.datagrid.title',
     columns:[           
     {
-        header: 'Id', 
+        header: 'bam.datagrid.id', 
         dataIndex: 'id'    
     },{
-        header: 'valor', 
+        header: 'bam.datagrid.value', 
         dataIndex: 'value',
         renderer:function(value){
             return this.formatValue(value);
