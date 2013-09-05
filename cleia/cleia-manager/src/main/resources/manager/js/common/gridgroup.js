@@ -30,18 +30,18 @@ Ext.define('App.manager.js.common.gridgroup', {
     extend:'Ext.grid.Panel',
     config:{
         checkboxse:undefined,
-        page:14
+        page:14,
+        i18n:undefined
     },
-    title: 'Servicios',
     columns:[           
     {
-        header: 'Servicio', 
+        header: 'manager.grid.column.serviceTitle', 
         dataIndex: 'value',
         width:50
     
     },
     {
-        header: 'Habilitado', 
+        header: 'manager.grid.column.enabledTitle', 
         dataIndex: 'enabled',
         align:'center',
         xtype: 'checkboxcolumn',

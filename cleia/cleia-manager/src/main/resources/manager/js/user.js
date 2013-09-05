@@ -26,9 +26,9 @@
 
 Ext.require([
     'Ext.form.Panel', 'Ext.form.field.Checkbox', 'Abada.Ajax', 'Ext.JSON', 'Ext.Ajax',
-    'Ext.layout.container.Table', 'Abada.toolbar.ToolbarInsertUpdateDelete'
+    'Ext.layout.container.Table', 'Abada.toolbar.ToolbarInsertUpdateDelete','App.manager.js.common.griduserexpander'
 
-])
+    ])
 
 Ext.onReady(function() {
     var i18n = Ext.create('Abada.i18n.Bundle', {
@@ -46,19 +46,19 @@ Ext.onReady(function() {
         var toolbar = Ext.create('Abada.toolbar.ToolbarInsertUpdateDelete', {
             listeners: {
                 submitInsert: function() {
-                    handleFormulario('Inserta', usersGrid, 'Usuario', getRelativeServerURI('rs/user'), usersGrid.selModel);
+                    handleFormulario('insert', usersGrid, '', getRelativeServerURI('rs/user'), usersGrid.selModel);
                 },
                 submitUpdate: function() {
                     if (usersGrid.selModel.hasSelection()) {
                         if (usersGrid.selModel.getCount() == 1) {
-                            handleFormulario('Modifica', usersGrid, 'Usuario', getRelativeServerURI('rs/user/{iduser}', {
+                            handleFormulario('update', usersGrid, '', getRelativeServerURI('rs/user/{iduser}', {
                                 iduser: usersGrid.selModel.getLastSelected().get('id')
                             }), usersGrid.selModel);
                         } else {
-                            Ext.Msg.alert('', 'Seleccione un usuario');
+                            Ext.Msg.alert('', i18n.getMsg('manager.selectUser'));
                         }
                     } else
-                        Ext.Msg.alert('', 'Seleccione un usuario');
+                        Ext.Msg.alert('', i18n.getMsg('manager.selectUser'));
                 },
                 submitDelete: function() {
                     if (usersGrid.selModel.hasSelection()) {
@@ -66,31 +66,29 @@ Ext.onReady(function() {
                             enabled: !usersGrid.selModel.getLastSelected().get('enabled'),
                             id: usersGrid.selModel.getLastSelected().get('id')
                         }
-                        var status = 'habilita';
-
-                        if (usersGrid.selModel.getLastSelected().get('enabled')) {
-                            status = 'deshabilita'
-                        }
+                        
                         doAjaxrequestJson(getRelativeServerURI('rs/user/{iduser}/{enable}', {
                             iduser: form.id,
                             enable: form.enabled
-                        }), form, 'PUT', usersGrid, null, 'Usuario ' + status + 'do', 'Error. No se ha podido ' + status + 'r');
+                        }), form, 'PUT', usersGrid, null, i18n.getMsg('manager.operationSucess'), i18n.getMsg('manager.operationError'));
 
                         usersGrid.selModel.deselectAll();
 
                     } else
-                        Ext.Msg.alert('', 'Seleccione un usuario');
+                        Ext.Msg.alert('', i18n.getMsg('manager.selectUser'));
                 }
             }
 
         });
 
         var usersGrid = Ext.create('App.manager.js.common.griduserexpander', {
+            title:i18n.getMsg('manager.grid.userGridTitle'),
             url: getRelativeServerURI('rs/user/search'),
             width: 500,
             height: 400,
             padding: '5 5 5 5',
-            page: 14
+            page: 14,
+            i18n:i18n
         });
 
         usersGrid.getStore().load({
@@ -104,10 +102,10 @@ Ext.onReady(function() {
             autoWidth: true,
             autoHeight: true,
             title: '',
-            items: [toolbar, usersGrid]//ponemos el grid
+            items: [toolbar, usersGrid]
 
         });
-        toolbar.getComponent("Borrar").setText("Habilitar/Deshabilitar");
+        toolbar.getComponent("Borrar").setText(i18n.getMsg('manager.toolbar.enable/disable'));
         setCentralPanel(panel);
 
         //*Funcion para los frompanel
@@ -117,8 +115,11 @@ Ext.onReady(function() {
             for (var i = 0; i < nid; i++) {
                 oid = idGridStore.getAt(i).getData();
 
-                ids[i] = {value: oid.value,
-                    type: {value: oid.idtype}
+                ids[i] = {
+                    value: oid.value,
+                    type: {
+                        value: oid.idtype
+                    }
                 };
 
             }
@@ -146,34 +147,36 @@ Ext.onReady(function() {
 
         function handleFormulario(opt, grid, title, url, selection) {
 
-            var username, contrasena, id, method = 'POST', tooltip = 'Insertar usuario', enabled = true;
+            var username, contrasena, id, method = 'POST', enabled = true;
 
-            if (opt != 'Inserta' && selection.hasSelection()) {
+            if (opt != 'insert' && selection.hasSelection()) {
                 method = 'PUT';
                 username = selection.getLastSelected().get('username');
                 contrasena = selection.getLastSelected().get('password');
                 id = selection.getLastSelected().get('id');
                 enabled = selection.getLastSelected().get('enabled');
-                tooltip = 'Modificar usuario';
             }
 
             var groupGrid = Ext.create('App.manager.js.common.gridgroup', {
-                title: '',
+                title: i18n.getMsg('manager.grid.groupGridTitle'),
                 url: getRelativeServerURI('rs/group/search'),
                 width: 400,
                 height: 250,
                 checkboxse: true,
                 page: 500,
-                rowspan: 4
+                rowspan: 4,
+                i18n:i18n
             });
+            
             var roleGrid = Ext.create('App.manager.js.common.gridrole', {
-                title: '',
+                title: i18n.getMsg('manager.grid.rolesGridTitle'),
                 url: getRelativeServerURI('rs/role/search'),
                 width: 400,
                 height: 250,
                 checkboxse: true,
                 page: 500,
-                rowspan: 4
+                rowspan: 4,
+                i18n:i18n
             });
 
             var configIdGrid = {
@@ -181,18 +184,21 @@ Ext.onReady(function() {
                 width: 400,
                 height: 250,
                 page: 500,
-                rowspan: 4
+                rowspan: 4,
+                i18n:i18n
             };
+            
             if (id) {
                 configIdGrid.url = getRelativeServerURI('/rs/user/' + id + '/ids');
             }
+            
             var idGrid = Ext.create('App.manager.js.common.gridids', configIdGrid);
 
             var comboidtype = Ext.create('Abada.form.field.ComboBox', {
                 id: 'cbidtype',
                 url: getRelativeServerURI('rs/idtype/search/combo'),
-                fieldLabel: 'Tipo',
-                emptyText: 'Seleccione un Tipo',
+                fieldLabel: i18n.getMsg('manager.combo.type'),
+                emptyText: i18n.getMsg('manager.combo.selectType'),
                 padding: '0 15 10 0',
                 width: 150,
                 editable: false,
@@ -205,14 +211,14 @@ Ext.onReady(function() {
 
             var checkboxenabled = Ext.create('Ext.form.field.Checkbox', {
                 checked: enabled,
-                fieldLabel: 'Habilitar',
+                fieldLabel: i18n.getMsg('manager.checkbox.enable'),
                 id: 'enabled',
                 name: 'enabled',
                 labelWidth: 125
 
             });
 
-            //form panel de insertar
+     
             var formpanel = Ext.create('Ext.form.Panel', {
                 url: url,
                 defaultType: 'textfield',
@@ -227,135 +233,142 @@ Ext.onReady(function() {
                 defaults: {
                 },
                 items: [{
-                        xtype: 'fieldset',
-                        title: '<b>Datos de Usuario</b>',
-                        width: '100%',
-                        collapsible: false,
-                        defaultType: 'textfield',
-                        padding: '10 15 10 15',
-                        items: [
-                            {
-                                fieldLabel: 'Usuario',
-                                name: 'username',
-                                id: 'username',
-                                value: username,
-                                allowBlank: false,
-                                labelWidth: 125,
-                                width: 400
-                            }, {
-                                fieldLabel: 'Contrase&ntilde;a',
-                                name: 'password',
-                                id: 'password',
-                                allowBlank: false,
-                                inputType: 'password',
-                                value: contrasena,
-                                labelWidth: 125,
-                                width: 400
-                            },
-                            {
-                                fieldLabel: 'Repita Contrase&ntilde;a',
-                                name: 'password2',
-                                id: 'password2',
-                                allowBlank: false,
-                                inputType: 'password',
-                                value: contrasena,
-                                labelWidth: 125,
-                                width: 400
-
-                            }, checkboxenabled, {
-                                name: 'id',
-                                id: 'id',
-                                value: id,
-                                hidden: true
-                            }]
+                    xtype: 'fieldset',
+                    title: '<b>'+i18n.getMsg('manager.form.fieldset.userData')+'</b>',
+                    width: '100%',
+                    collapsible: false,
+                    defaultType: 'textfield',
+                    padding: '10 15 10 15',
+                    items: [
+                    {
+                        fieldLabel:i18n.getMsg('manager.form.user'),
+                        name: 'username',
+                        id: 'username',
+                        value: username,
+                        allowBlank: false,
+                        labelWidth: 125,
+                        width: 400
                     }, {
-                        xtype: 'fieldset',
-                        title: '<b>Identificadores</b>',
-                        width: '100%',
-                        collapsible: false,
-                        padding: '10 15 10 15',
-                        items: [
-                            {
-                                xtype: 'container',
-                                layout: 'hbox',
-                                items: [{
-                                        xtype: 'textfield',
-                                        fieldLabel: 'N&uacute;mero',
-                                        name: 'idnumber',
-                                        id: 'idnumber',
-                                        padding: '0 15 10 0',
-                                        labelWidth: 50,
-                                        labelAlign: 'top',
-                                        width: 150
+                        fieldLabel: i18n.getMsg('manager.form.password'),
+                        name: 'password',
+                        id: 'password',
+                        allowBlank: false,
+                        inputType: 'password',
+                        value: contrasena,
+                        labelWidth: 125,
+                        width: 400
+                    },
+                    {
+                        fieldLabel: i18n.getMsg('manager.form.repeatPassword'),
+                        name: 'password2',
+                        id: 'password2',
+                        allowBlank: false,
+                        inputType: 'password',
+                        value: contrasena,
+                        labelWidth: 125,
+                        width: 400
 
-                                    }, comboidtype, {
-                                        xtype: 'button',
-                                        id: 'addbutton',
-                                        icon: getRelativeURI('images/custom/add.png'),
-                                        handler: function() {
+                    }, checkboxenabled, {
+                        name: 'id',
+                        id: 'id',
+                        value: id,
+                        hidden: true
+                    }]
+                }, {
+                    xtype: 'fieldset',
+                    title: '<b>'+i18n.getMsg('manager.form.fieldset.identifiers')+'</b>',
+                    width: '100%',
+                    collapsible: false,
+                    padding: '10 15 10 15',
+                    items: [
+                    {
+                        xtype: 'container',
+                        layout: 'hbox',
+                        items: [{
+                            xtype: 'textfield',
+                            fieldLabel: i18n.getMsg('manager.form.identifierNumber'),
+                            name: 'idnumber',
+                            id: 'idnumber',
+                            padding: '0 15 10 0',
+                            labelWidth: 50,
+                            labelAlign: 'top',
+                            width: 150
 
-                                            idGrid.getStore().insert(0, {
-                                                value: Ext.getCmp("idnumber").getValue(),
-                                                idtype: Ext.getCmp("cbidtype").getRawValue()
-                                            });
+                        }, comboidtype, {
+                            xtype: 'button',
+                            id: 'addbutton',
+                            icon: getRelativeURI('images/custom/add.png'),
+                            handler: function() {
 
-                                            Ext.getCmp("idnumber").setValue('');
-                                            Ext.getCmp("cbidtype").setValue('');
-                                        }
-                                    }, {
-                                        xtype: 'button',
-                                        id: 'deletebutton',
-                                        icon: getRelativeURI('images/custom/delete.gif'),
-                                        handler: function() {
+                                idGrid.getStore().insert(0, {
+                                    value: Ext.getCmp("idnumber").getValue(),
+                                    idtype: Ext.getCmp("cbidtype").getRawValue()
+                                });
 
-                                            if (idGrid.getSelectionModel().getCount() > 0) {
-                                                idGrid.getStore().remove(idGrid.getSelectionModel().getSelection());
-                                            }
+                                Ext.getCmp("idnumber").setValue('');
+                                Ext.getCmp("cbidtype").setValue('');
+                            }
+                        }, {
+                            xtype: 'button',
+                            id: 'deletebutton',
+                            icon: getRelativeURI('images/custom/delete.gif'),
+                            handler: function() {
 
-                                        }
-                                    }]
-                            }, idGrid
-                        ]
-                    }, {
-                        xtype: 'fieldset',
-                        title: '<b>Servicios</b>',
-                        width: '100%',
-                        collapsible: false,
-                        padding: '10 15 10 15',
-                        items: [groupGrid]
-                    }, {
-                        xtype: 'fieldset',
-                        title: '<b>Roles</b>',
-                        width: '100%',
-                        collapsible: false,
-                        padding: '10 15 10 15',
-                        items: [roleGrid]
-                    }
+                                if (idGrid.getSelectionModel().getCount() > 0) {
+                                    idGrid.getStore().remove(idGrid.getSelectionModel().getSelection());
+                                }
+
+                            }
+                        }]
+                    }, idGrid
+                    ]
+                }, {
+                    xtype: 'fieldset',
+                    title: '<b>'+i18n.getMsg('manager.form.fieldset.services')+'</b>',
+                    width: '100%',
+                    collapsible: false,
+                    padding: '10 15 10 15',
+                    items: [groupGrid]
+                }, {
+                    xtype: 'fieldset',
+                    title: '<b>'+i18n.getMsg('manager.form.fieldset.roles')+'</b>',
+                    width: '100%',
+                    collapsible: false,
+                    padding: '10 15 10 15',
+                    items: [roleGrid]
+                }
 
 
                 ],
                 buttons: [{
-                        text: opt + 'r',
-                        id: 'formuser',
-                        formBind: true,
-                        handler: function() {
-                            if (Ext.getCmp("password2").getValue() == Ext.getCmp("password").getValue()) {
-                                if (formpanel.getForm().isValid()) {
-                                    var form = getO(formpanel, groupGrid.selModel, roleGrid.selModel, idGrid.getStore())
-                                    doAjaxrequestJson(url, form, method, usersGrid, wind, 'Usuario ' + opt + 'do', 'Error. No se ha podido ' + opt + 'r');
-                                }
-                            } else {
-                                Ext.Msg.alert('Error', 'Las contrase&ntilde;as no son iguales');
-
+                    text: i18n.getMsg('manager.send'),
+                    id: 'formuser',
+                    formBind: true,
+                    handler: function() {
+                        if (Ext.getCmp("password2").getValue() == Ext.getCmp("password").getValue()) {
+                            if (formpanel.getForm().isValid()) {
+                                var form = getO(formpanel, groupGrid.selModel, roleGrid.selModel, idGrid.getStore())
+                                doAjaxrequestJson(url, form, method, usersGrid, wind,i18n.getMsg('manager.operationSucess'), i18n.getMsg('manager.operationError') );
                             }
-                        },
-                        tooltip: tooltip
-                    }]
-            });
+                        } else {
+                            Ext.Msg.alert('Error',i18n.getMsg('manager.form.passwordNotEquals'));
 
+                        }
+                    }
+                }]
+            });
+   
+
+            var windTitle;
+            
+            if(opt=='insert'){
+                windTitle=i18n.getMsg('manager.wind.insertUserTitle');
+            }else{
+                windTitle=i18n.getMsg('manager.wind.updateUserTitle');
+            }
 
             var wind = Ext.create('Ext.window.Window', {
-                title: i18n.getMsg('name'), //opt + 'r',
+                title: windTitle,
                 id: 'usuario',
                 autoScroll: false,
                 closable: true,
@@ -367,10 +380,10 @@ Ext.onReady(function() {
 
             wind.show();
 
-            if (opt != 'Inserta') {
+            if (opt != 'insert') {
                 roleGrid.getStore().on('load', function() {
 
-                    if (opt != 'Inserta') {
+                    if (opt != 'insert') {
                         var roles = selection.getLastSelected().get('roles');
                         for (var i = 0; i < roleGrid.getStore().getCount(); i++) {
                             var record = roleGrid.getStore().getAt(i);

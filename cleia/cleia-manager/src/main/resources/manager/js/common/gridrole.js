@@ -30,13 +30,12 @@ Ext.define('App.manager.js.common.gridrole', {
     config:{
         checkboxse:undefined,
         scroll:true,
-        page:14
+        page:14,
+        i18n:undefined
     },
-    title: 'Roles',
-
     columns:[           
     {
-        header: 'Roles', 
+        header: 'manager.grid.column.roleTitle', 
         dataIndex: 'authority'
     
     }],

@@ -27,8 +27,7 @@
 Ext.require([
     'Ext.form.Panel', 'Ext.form.field.Checkbox', 'Abada.Ajax', 'Ext.JSON', 'Ext.Ajax',
     'Ext.layout.container.Table', 'Abada.toolbar.ToolbarInsertUpdateDelete', 'Abada.form.field.ComboBoxDeSelect',
-    , 'Ext.form.field.Date', 'Abada.form.field.ComboBox', 'App.manager.js.common.gridids', 'App.patient.js.common.gridPatient',
-    'App.patient.js.common.gridPatientExpander'
+    , 'Ext.form.field.Date', 'Abada.form.field.ComboBox', 'App.manager.js.common.gridids', 'App.patient.js.common.gridPatient'
 
     ])
 
@@ -267,7 +266,8 @@ Ext.onReady(function() {
                 height: 250,
                 url: null,
                 page: 500,
-                rowspan: 4
+                rowspan: 4,
+                i18n:i18n
             };
 
             var idGrid = Ext.create('App.manager.js.common.gridids', configIdGrid);

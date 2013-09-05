@@ -34,18 +34,17 @@ Ext.define('App.manager.js.common.gridids', {
     config:{
         checkboxse:undefined,
         loadMask: true,
-        page:14
-    },
-    title: 'Usuarios',
- 
+        page:14,
+        i18n:undefined
+    }, 
     columns:[           
     {
-        header: 'Numero', 
+        header: 'manager.grid.column.numberTitle', 
         dataIndex: 'value',
         width:50
     
     },{
-        header: 'Tipo', 
+        header: 'manager.grid.column.typeTitle', 
         dataIndex: 'idtype',
         width:50
     }
