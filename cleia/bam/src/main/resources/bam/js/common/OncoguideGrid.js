@@ -27,10 +27,11 @@
 Ext.define('App.bam.js.common.OncoguideGrid', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'
     ,'Ext.ux.grid.FiltersFeature','Ext.grid.column.Date'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         url:undefined,
-        patientId:undefined
+        patientId:undefined,
+        i18n:undefiend
     },
     forceFit:true,
     features:[{
@@ -66,33 +67,33 @@ Ext.define('App.bam.js.common.OncoguideGrid', {
     }],
     columns:[           
     {
-        header: 'Id. Paciente', 
+        header: 'bam.processgrid.patientid', 
         dataIndex: 'patientId',
         hidden:true    
     },{
-        header: 'Proceso Id',  
+        header: 'bam.processgrid.processid',  
         dataIndex: 'processId',
         hidden:true
     
     },{
-        header: 'Tipo', 
+        header: 'bam.processgrid.type', 
         dataIndex: 'type',
         hidden:true    
     },{
-        header: 'Nombre Processo', 
+        header: 'bam.processgrid.processname', 
         dataIndex: 'processName'
     
     },{
-        header: 'Proceso Instancia Id', 
+        header: 'bam.processgrid.processinstanceid', 
         dataIndex: 'processInstanceId'
     
     },{
-        header: 'inicio', 
+        header: 'bam.processgrid.start', 
         dataIndex: 'start',
         xtype: 'datecolumn', 
         format:'Y-m-d H:i'
     },{
-        header: 'fin', 
+        header: 'bam.processgrid.end', 
         dataIndex: 'end',
         xtype: 'datecolumn', 
         format:'Y-m-d H:i'
@@ -138,7 +139,7 @@ Ext.define('App.bam.js.common.OncoguideGrid', {
                 
         var button=Ext.create('Ext.button.Button', {
             icon:getRelativeURI('bam/image/historic.gif'),
-            text    : 'Historial',
+            text    : this.i18n.getMsg('bam.processgrid.history'),
             scope   : this,
             handler : function() {
                 if (this.selModel.getCount()>0){                    
@@ -148,7 +149,7 @@ Ext.define('App.bam.js.common.OncoguideGrid', {
         });
         var button1=Ext.create('Ext.button.Button', {
             icon:getRelativeURI('bam/image/flow.png'),
-            text    : 'Diagrama',
+            text    : this.i18n.getMsg('bam.processgrid.diagram'),
             scope   : this,
             handler : function() {
                 if (this.selModel.getCount()>0){                    
@@ -158,7 +159,7 @@ Ext.define('App.bam.js.common.OncoguideGrid', {
         });
         var button2=Ext.create('Ext.button.Button', {
             icon:getRelativeURI('bam/image/datos.gif'),
-            text    : 'Datos',
+            text    : this.i18n.getMsg('bam.processgrid.data'),
             scope   : this,
             handler : function() {
                 if (this.selModel.getCount()>0){                    
@@ -168,7 +169,7 @@ Ext.define('App.bam.js.common.OncoguideGrid', {
         });
         var button3=Ext.create('Ext.button.Button', {
             icon:getRelativeURI('bam/image/humanTask.png'),
-            text    : 'Tareas',
+            text    : this.i18n.getMsg('bam.processgrid.task'),
             scope   : this,
             handler : function() {
                 if (this.selModel.getCount()>0 && !this.selModel.getLastSelected().data.end){                    
@@ -178,7 +179,7 @@ Ext.define('App.bam.js.common.OncoguideGrid', {
         });
         var button4=Ext.create('Ext.button.Button', {
             icon:getRelativeURI('bam/image/evento.gif'),
-            text    : 'Eventos',
+            text    : this.i18n.getMsg('bam.processgrid.events'),
             scope   : this,
             handler : function() {
                 if (this.selModel.getCount()>0 && !this.selModel.getLastSelected().data.end){                    
@@ -189,7 +190,7 @@ Ext.define('App.bam.js.common.OncoguideGrid', {
         
         var button5=Ext.create('Ext.button.Button', {
             icon:getRelativeURI('bam/image/version.png'),
-            text    : 'Cambio Versi&oacute;n',
+            text    : this.i18n.getMsg('bam.processgrid.version'),
             scope   : this,
             handler : function() {
                 if (this.selModel.getCount()>0 && !this.selModel.getLastSelected().data.end){                    

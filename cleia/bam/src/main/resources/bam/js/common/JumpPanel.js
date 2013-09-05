@@ -58,7 +58,7 @@ Ext.define('App.bam.js.common.JumpPanel',{
         });  
         
         var jumper=Ext.create('Ext.button.Button', {
-            text: this.config.i18n.getMsg('bam.jumppanel.jump'),
+            text: this.i18n.getMsg('bam.jumppanel.jump'),
             scope:this,
             handler: function() {
                 this.fireEvent('jump',this,this.grid.store);

@@ -32,64 +32,78 @@ Ext.setup({
         fullscreen: true
     },
     onReady: function() {
+        var i18n = Ext.create('Abada.i18n.Bundle', {
+            path: getRelativeURI('/bam/locale'),
+            bundle: 'messages',
+            insertLocale: false
+        });
 
-        function principalAction(removePanel) {
+        i18n.on('error', function() {
+            i18n.language = i18n.defaultLanguage;
+            i18n.load();
+        });
 
-            var panel2 = Ext.create('App.bam.js_m.common.ProcessList', {
-                url: getRelativeServerURI('rs/patient/pinstance/list'), //FIXME
-                title: 'Procesos:',
-                listeners: {
-                    processselected: function(list, processInstanceId) {
-                        processSelectedAction(processInstanceId, panel);
+        i18n.on('loaded', function() {
+            function principalAction(removePanel) {
+
+                var panel2 = Ext.create('App.bam.js_m.common.ProcessList', {
+                    url: getRelativeServerURI('rs/patient/pinstance/list'), //FIXME
+                    title: i18n.getMsg('bam.process'),
+                    i18n:i18n,
+                    listeners: {
+                        processselected: function(list, processInstanceId) {
+                            processSelectedAction(processInstanceId, panel);
+                        }
                     }
-                }
-            });
+                });
 
-            var panel = Ext.create('Ext.Container', {
-                fullscreen: true,
-                items: [
-                    {
-                        xtype: 'toolbar',
-                        docked: 'top',
-                        title: 'Procesos:',
-                        height: 30,
-                        items: [
-                            {
-                                ui: 'back',
-                                text: 'Atras',
-                                handler: function() {
-                                    window.location = getRelativeURI('main.htm');
+                var panel = Ext.create('Ext.Container', {
+                    fullscreen: true,
+                    items: [
+                        {
+                            xtype: 'toolbar',
+                            docked: 'top',
+                            title: i18n.getMsg('bam.process'),
+                            height: 30,
+                            items: [
+                                {
+                                    ui: 'back',
+                                    text: i18n.getMsg('bam.toolbar1.back'),
+                                    handler: function() {
+                                        window.location = getRelativeURI('main.htm');
+                                    }
                                 }
-                            }
-                        ]
-                    }, {
-                        xtype: 'container',
-                        items: [panel2]
+                            ]
+                        }, {
+                            xtype: 'container',
+                            items: [panel2]
+                        }
+                    ]
+                });
+
+                if (removePanel)
+                    Ext.Viewport.remove(removePanel, true);
+
+                Ext.Viewport.add(panel);
+            }
+
+            function processSelectedAction(processInstanceId, removePanel) {
+                var imageOncoguide = Ext.create('App.bam.js_m.common.ProcessInstanceTabPanel', {
+                    listeners: {
+                        backButtonTap: function() {
+                            principalAction(imageOncoguide);
+                        }
                     }
-                ]
-            });
+                });
 
-            if (removePanel)
-                Ext.Viewport.remove(removePanel, true);
+                imageOncoguide.loadProcessInstancePanels(processInstanceId);
 
-            Ext.Viewport.add(panel);
-        }
+                if (removePanel)
+                    Ext.Viewport.remove(removePanel, true);
+                Ext.Viewport.add(imageOncoguide);
+            }
 
-        function processSelectedAction(processInstanceId, removePanel) {
-            var imageOncoguide = Ext.create('App.bam.js_m.common.ProcessInstanceTabPanel', {
-                listeners:{
-                    backButtonTap:function(){
-                        principalAction(imageOncoguide);
-                    }
-                }
-            });
-
-            imageOncoguide.loadProcessInstancePanels(processInstanceId);
-
-            if (removePanel)
-                Ext.Viewport.remove(removePanel, true);
-            Ext.Viewport.add(imageOncoguide);
-        }
-
-        principalAction();
+            principalAction();
+        });
+        i18n.load();
     }});

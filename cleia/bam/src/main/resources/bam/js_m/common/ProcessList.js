@@ -27,8 +27,9 @@ Ext.define('App.bam.js_m.common.ProcessList', {
     extend: 'Ext.dataview.List',
     config: {
         url: undefined,
-        itemTpl: '<div><b>Proceso: {processName}</b><br />Instancia: {processInstanceId}</div>',
-        grouped: true
+        itemTpl: '<div><b>'+this.i18n.getMsg('bam.process.list.text1')+' {processName}</b><br />'+this.i18n.getMsg('bam.process.list.text2')+' {processInstanceId}</div>',
+        grouped: true,
+        i18n:i18n
     },
     constructor: function(config) {
         this.callParent(arguments);
