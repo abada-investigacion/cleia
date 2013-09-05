@@ -28,47 +28,51 @@ Ext.define('App.patient.js.common.gridPatient', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'
     ,'Ext.ux.grid.FiltersFeature', 'Ext.ux.CheckColumn','Ext.selection.CheckboxModel',
     'Abada.grid.column.CheckBox','Ext.grid.column.Date','Abada.grid.RowExpander'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         checkboxse:undefined,
         bbar:undefined,
         loadMask: true,
-        page:undefined
+        page:undefined,
+        details:undefined,
+        i18n:undefined
+      
     },
-    title: 'Pacientes',
+    title: 'gridpatient.title',
     columns:[  
     {
-        header:'Id',
+        header:'gridpatient.id',
         dataIndex:'id',
         width:30,
         hidden:true
     },
     {
-        header: 'Nombre', 
+        header: 'gridpatient.name', 
         dataIndex: 'name',
         width:40
     
     },
     {
-        header: 'Apellido', 
+        header: 'gridpatient.surname', 
         dataIndex: 'surname',
         width:40
     
     },
     {
-        header: 'Apellido 2', 
+        header: 'gridpatient.surname1', 
         dataIndex: 'surname1',
         width:40
     
     },
     {
-        header: 'Genero', 
+        header: 'gridpatient.genre', 
         dataIndex: 'genre',
-        width:30
+        width:30,
+        hidden:true
     
     },
     {
-        header: 'Fecha nacimiento', 
+        header: 'gridpatient.birthDay', 
         dataIndex: 'birthDay',
         xtype: 'datecolumn',
         sortable: true,
@@ -76,17 +80,18 @@ Ext.define('App.patient.js.common.gridPatient', {
         width:40
     },
     {
-        header: 'Telefono', 
+        header: 'gridpatient.tlf', 
         dataIndex: 'tlf',
         width:40    
     },
     {
-        header: 'Direccion', 
+        header: 'gridpatient.address', 
         renderer:templateRenderer(new Ext.Template('{address}, {city}, {cp}, {country}')) ,
-        width:50    
+        width:50,
+        hidden:true
     },
     {
-        header: 'Habilitado', 
+        header: 'gridpatient.enabled', 
         dataIndex: 'enabled',
         align:'center',
         xtype: 'checkboxcolumn',
@@ -201,12 +206,33 @@ Ext.define('App.patient.js.common.gridPatient', {
                 },{
                     name:'ids',
                     mapping:'user.ids'
+                },{
+                    name:'medicals',
+                    mapping:'medicals'
                 }],
                 url:this.config.url,                
                 root:'data',                                
                 scope:this,
                 pageSize:config.page
             }); 
+        }
+        
+        if(config.details){
+            
+            this.columns.push({
+                xtype:'actioncolumn',
+                width:30,
+                header:'gridpatient.Detalles',
+                align:'center',
+                items: [{
+                    icon: getRelativeURI('patient/image/group-expand.png'),  
+                    handler: function(grid, rowIndex, colIndex) {
+                        var record = grid.getStore().getAt(rowIndex);
+                        getDetails(record);
+                    }
+                }]
+            }) 
+            
         }
        
         if(config.checkboxse){
