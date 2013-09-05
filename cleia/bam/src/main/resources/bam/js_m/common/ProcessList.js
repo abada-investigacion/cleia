@@ -27,12 +27,14 @@ Ext.define('App.bam.js_m.common.ProcessList', {
     extend: 'Ext.dataview.List',
     config: {
         url: undefined,
-        itemTpl: '<div><b>'+this.i18n.getMsg('bam.process.list.text1')+' {processName}</b><br />'+this.i18n.getMsg('bam.process.list.text2')+' {processInstanceId}</div>',
         grouped: true,
-        i18n:i18n
+        i18n:undefined
     },
     constructor: function(config) {
         this.callParent(arguments);
+        
+        this.setItemTpl('<div><b>'+this.config.i18n.getMsg('bam.process.list.text1')+' {processName}</b><br />'+this.config.i18n.getMsg('bam.process.list.text2')+' {processInstanceId}</div>');
+        
         Ext.define('App.bam.js_m.common.ProcessModel', {extend: 'Ext.data.Model',
             config: {
                 idProperty: 'processInstanceId',

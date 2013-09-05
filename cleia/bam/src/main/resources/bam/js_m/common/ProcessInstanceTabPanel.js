@@ -32,7 +32,7 @@ Ext.define('App.bam.js_m.common.ProcessInstanceTabPanel', {
         urlImageP: 'rs/process/definition/{0}/image',
         urlInfo: 'rs/process/instance/{0}/tree',
         urlDiagramInfo: 'rs/process/definition/{0}/diagram',
-        i18n:i18n
+        i18n:undefined
     },
     constructor: function(config) {
         this.callParent(arguments);
@@ -60,7 +60,7 @@ Ext.define('App.bam.js_m.common.ProcessInstanceTabPanel', {
             } else {
                 this.getTabBar().add(Ext.create('Ext.Spacer',{}));
                 var button=Ext.create('Ext.Button', {
-                    text: this.i18n.getMsg('bam.toolbar1.back'),
+                    text: this.config.i18n.getMsg('bam.toolbar1.back'),
                     ui: 'back'
                 });
                 button.addListener('tap',function(){

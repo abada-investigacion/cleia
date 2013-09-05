@@ -89,6 +89,7 @@ Ext.setup({
 
             function processSelectedAction(processInstanceId, removePanel) {
                 var imageOncoguide = Ext.create('App.bam.js_m.common.ProcessInstanceTabPanel', {
+                    i18n:i18n,
                     listeners: {
                         backButtonTap: function() {
                             principalAction(imageOncoguide);
