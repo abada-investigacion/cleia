@@ -85,9 +85,12 @@ Ext.define('App.patient.js.common.gridPatient', {
     },
     {
         header: 'gridpatient.address', 
-        renderer:templateRenderer(new Ext.Template('{address}, {city}, {cp}, {country}')) ,
+        dataIndex:'address',
         width:50,
-        hidden:true
+        hidden:true,
+        renderer:function(value, meta, record, rowIndex, colIndex, store) {
+            return new Ext.Template('{address}, {city}, {cp}, {country}').applyTemplate(record.data);
+        }
     },
     {
         header: 'gridpatient.enabled', 
@@ -223,11 +226,12 @@ Ext.define('App.patient.js.common.gridPatient', {
                 width:30,
                 header:'gridpatient.Detalles',
                 align:'center',
+                scope:this,
                 items: [{
                     icon: getRelativeURI('patient/image/group-expand.png'),  
                     handler: function(grid, rowIndex, colIndex) {
                         var record = grid.getStore().getAt(rowIndex);
-                        getDetails(record);
+                        this.getDetails(record,config.i18n);
                     }
                 }]
             }) 
@@ -249,13 +253,32 @@ Ext.define('App.patient.js.common.gridPatient', {
             });
         }
         this.callParent([config]);
+    },
+    getDetails:function(record,i18n) {
+
+        var detailsPanel = Ext.create('App.patient.js.common.detailsPanel', {
+            record: record,
+            width: 410,
+            height: 450,
+            autoScroll: true,
+            i18n:i18n
+        });
+
+
+
+        var detailsWind = Ext.create('Ext.window.Window', {
+            title: i18n.getMsg('patient.patient.title.Detailpatient'),
+            id: 'detailsWind',
+            closable: true,
+            modal: true,
+            width: 450,
+            autoHeight: true,
+            items: [detailsPanel]
+        });
+
+        detailsWind.show();
+
     }
 
     
 });
-
-function templateRenderer(template) {
-    return function(value, meta, record, rowIndex, colIndex, store) {
-        return template.applyTemplate(record.data);
-    };
-}

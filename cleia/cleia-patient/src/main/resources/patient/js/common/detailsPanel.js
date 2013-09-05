@@ -23,7 +23,8 @@
 Ext.define('App.patient.js.common.detailsPanel', {
     extend:'Ext.panel.Panel',
     config:{
-        record:undefined
+        record:undefined,
+        i18n:undefined
     },
     title: '',
     margin:'20 10 10 20',
@@ -43,17 +44,17 @@ function createHtml(config){
     
     var html,data=config.record.data;
     
-    html='<b>Nombre y Apellidos: </b>'+ data.name +' '+data.surname + ' '+ data.surname1 +'<br/><br/>'+
-    '<b>Fecha de Nacimiento: </b>'+ data.birthDay.getDate()+'-'+(data.birthDay.getMonth() + 1)+'-'+data.birthDay.getFullYear() +'<br/><br/>'+
-    '<b>Sexo: </b>'+getGenre(data.genre) +'<br/><br/>'+
-    '<b>Telefono: </b>'+data.tlf +'<br/><br/>'+
-    '<b>Direccion: </b>'+data.address +'<br/><br/>'+
-    '<b>Ciudad: </b>'+ data.city +'<br/><br/>'+
-    '<b>Codigo Postal: </b>' + data.cp +'<br/><br/>'+
-    '<b>Pais: </b>' + data.country +'<br/><br/>' +
-    '<b>Habilitado: </b>'+ getEnabled(data.enabled)+ '<br/><br/>' +
-    '<b>Servicios Asignados: <b><br/>'+getGroups(data.groups)+'<br/>'+
-    '<b>Identificadores: </b><br/>'+getIdentifiers(data.ids)+'<br/>'
+    html='<b>'+config.i18n.getMsg('patient.detailsPanel.fullName')+': </b>'+ data.name +' '+data.surname + ' '+ data.surname1 +'<br/><br/>'+
+    '<b>'+config.i18n.getMsg('patient.detailsPanel.birthday')+': </b>'+ data.birthDay.getDate()+'-'+(data.birthDay.getMonth() + 1)+'-'+data.birthDay.getFullYear() +'<br/><br/>'+
+    '<b>'+config.i18n.getMsg('patient.detailsPanel.genre')+': </b>'+getGenre(data.genre,config.i18n) +'<br/><br/>'+
+    '<b>'+config.i18n.getMsg('patient.detailsPanel.phone')+': </b>'+data.tlf +'<br/><br/>'+
+    '<b>'+config.i18n.getMsg('patient.detailsPanel.address')+': </b>'+data.address +'<br/><br/>'+
+    '<b>'+config.i18n.getMsg('patient.detailsPanel.city')+': </b>'+ data.city +'<br/><br/>'+
+    '<b>'+config.i18n.getMsg('patient.detailsPanel.postalcode')+': </b>' + data.cp +'<br/><br/>'+
+    '<b>'+config.i18n.getMsg('patient.detailsPanel.country')+': </b>' + data.country +'<br/><br/>' +
+    '<b>'+config.i18n.getMsg('patient.detailsPanel.enabled')+': </b>'+ getEnabled(data.enabled,config.i18n)+ '<br/><br/>' +
+    '<b>'+config.i18n.getMsg('patient.detailsPanel.assignedServices')+': <b><br/>'+getGroups(data.groups)+'<br/>'+
+    '<b>'+config.i18n.getMsg('patient.detailsPanel.identifiers')+': </b><br/>'+getIdentifiers(data.ids)+'<br/>'
 
 
 
@@ -61,14 +62,14 @@ function createHtml(config){
     
 }
 
-function getGenre(genre){
+function getGenre(genre,i18n){
     
     if(genre=='MALE'){
-        return 'Hombre';
+        return i18n.getMsg('patient.detailsPanel.man');
     }else if(genre=='FEMALE') {
-        return 'Mujer';
+        return i18n.getMsg('patient.detailsPanel.woman');
     }else{
-        return 'Indefinido';
+        return i18n.getMsg('patient.detailsPanel.undefined');
     }
 }
 
@@ -114,12 +115,12 @@ function getIdentifiers(ids){
     }
 }
 
-function getEnabled(enabled){
+function getEnabled(enabled,i18n){
     
     if(enabled==true){
-        return 'SI';
+        return i18n.getMsg('patient.detailsPanel.yes');
     }else{
-        return 'NO';
+        return i18n.getMsg('patient.detailsPanel.no');
     }
 }
 

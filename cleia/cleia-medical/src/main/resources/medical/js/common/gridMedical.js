@@ -226,7 +226,7 @@ Ext.define('App.medical.js.common.gridMedical', {
                     icon: getRelativeURI('patient/image/group-expand.png'),  
                     handler: function(grid, rowIndex, colIndex) {
                         var record = grid.getStore().getAt(rowIndex);
-                        this.getDetails(record);
+                        this.getDetails(record,config.i18n);
                     }
                 }]
             }) 
@@ -240,17 +240,18 @@ Ext.define('App.medical.js.common.gridMedical', {
         });
         this.callParent([config]);
     },
-    getDetails: function(record){
+    getDetails: function(record,i18n){
        
         var detailsPanel = Ext.create('App.patient.js.common.detailsPanel', {
             record:record,
             width:410,
             height: 450,
-            autoScroll: true        
+            autoScroll: true,
+            i18n:i18n
         });
     
         var detailsWind = Ext.create('Ext.window.Window', {
-            title: 'medical.wind.patientDetails',
+            title: i18n.getMsg('medical.wind.patientDetails'),
             id: 'detailsWind',
             closable: true,
             modal: true,

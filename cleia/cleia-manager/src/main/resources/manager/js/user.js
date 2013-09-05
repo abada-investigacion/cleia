@@ -147,7 +147,7 @@ Ext.onReady(function() {
 
         function handleFormulario(opt, grid, title, url, selection) {
 
-            var username, contrasena, id, idList, method = 'POST', enabled = true;
+            var username, contrasena, id, idList={}, method = 'POST', enabled = true;
 
             if (opt != 'insert' && selection.hasSelection()) {
                 method = 'PUT';
@@ -180,17 +180,15 @@ Ext.onReady(function() {
                 i18n:i18n
             });
 
-            var configIdGrid = {
+         
+            var idGrid = Ext.create('App.manager.js.common.gridids', {
                 title: '',
                 width: 400,
                 height: 250,
                 page: 500,
                 rowspan: 4,
                 i18n:i18n
-            };
-            
-         
-            var idGrid = Ext.create('App.manager.js.common.gridids', configIdGrid);
+            });
             
             for(var i=0;i<idList.length;i++){
                 
