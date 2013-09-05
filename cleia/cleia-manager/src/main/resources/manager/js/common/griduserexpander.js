@@ -29,40 +29,46 @@ Ext.define('App.manager.js.common.griduserexpander', {
     config:{
         checkboxse:undefined,
         loadMask: true,
-        page:14
+        page:14,
+        i18n:undefined
     },
-    title: 'Usuarios',
-    plugins:[{
-        ptype: 'abada.rowexpander',
-        rowBodyTpl: [
-        '<div>',
-        '<tpl if="roles.length">',
-        '<p><b>Roles:</b></p>',
-        '</tpl>',
-        '<tpl for="roles">',
-        '<li style="list-style: none;font-size: 12px;'+
-        'font-weight: bold; font-family: helvetica,arial,verdana,sans-serif;'+
-        'color: #666;"><b style="color:#157fcc">{#}  </b> {authority}</li>',
-        '</tpl>',
-        '<tpl if="groups.length">',
-        '<p><b>Servicios:</b></p>',
-        '</tpl>',
-        '<tpl for="groups">',
-        '<li style="list-style: none;font-size: 12px;'+
-        'font-weight: bold; font-family: helvetica,arial,verdana,sans-serif;'+
-        'color: #666;"><b style="color:#157fcc">{#}  </b> {value} </li>',
-        '</tpl>',
-        '<tpl if="ids.length">',
-        '<p><b>Identificadores:</b></p>',
-        '</tpl>',
-        '<tpl for="ids">',
-        '<li style="list-style: none;font-size: 12px;'+
-        'font-weight: bold; font-family: helvetica,arial,verdana,sans-serif;'+
-        'color: #666;"><b style="color:#157fcc">{#}  </b> {type.value}: {value} </li>',
-        '</tpl>',
-        '</div>'
+    constructor:function(config){
+        
+        this.plugins=[{
+            ptype: 'abada.rowexpander',
+            rowBodyTpl: [
+            '<div>',
+            '<tpl if="roles.length">',
+            '<p><b>'+config.i18n.getMsg('manager.grid.expander.rolesTitle')+':</b></p>',
+            '</tpl>',
+            '<tpl for="roles">',
+            '<li style="list-style: none;font-size: 12px;'+
+            'font-weight: bold; font-family: helvetica,arial,verdana,sans-serif;'+
+            'color: #666;"><b style="color:#157fcc">{#}  </b> {authority}</li>',
+            '</tpl>',
+            '<tpl if="groups.length">',
+            '<p><b>'+config.i18n.getMsg('manager.grid.expander.servicesTitle')+':</b></p>',
+            '</tpl>',
+            '<tpl for="groups">',
+            '<li style="list-style: none;font-size: 12px;'+
+            'font-weight: bold; font-family: helvetica,arial,verdana,sans-serif;'+
+            'color: #666;"><b style="color:#157fcc">{#}  </b> {value} </li>',
+            '</tpl>',
+            '<tpl if="ids.length">',
+            '<p><b>'+config.i18n.getMsg('manager.grid.expander.identifiersTitle')+':</b></p>',
+            '</tpl>',
+            '<tpl for="ids">',
+            '<li style="list-style: none;font-size: 12px;'+
+            'font-weight: bold; font-family: helvetica,arial,verdana,sans-serif;'+
+            'color: #666;"><b style="color:#157fcc">{#}  </b> {type.value}: {value} </li>',
+            '</tpl>',
+            '</div>'
+            ]
+        }
         ]
+        
+         this.callParent([config]);
     }
-    ]
+    
     
 });

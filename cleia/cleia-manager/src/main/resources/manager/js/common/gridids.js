@@ -30,22 +30,21 @@ Ext.define('App.manager.js.common.gridids', {
     requires: ['Ext.toolbar.Paging',
     ,'Ext.ux.grid.FiltersFeature','Ext.selection.CheckboxModel', 'Ext.ux.CheckColumn',
     'Abada.grid.column.CheckBox'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         checkboxse:undefined,
         loadMask: true,
-        page:14
-    },
-    title: 'Usuarios',
- 
+        page:14,
+        i18n:undefined
+    }, 
     columns:[           
     {
-        header: 'Numero', 
+        header: 'manager.grid.column.numberTitle', 
         dataIndex: 'value',
         width:50
     
     },{
-        header: 'Tipo', 
+        header: 'manager.grid.column.typeTitle', 
         dataIndex: 'idtype',
         width:50
     }

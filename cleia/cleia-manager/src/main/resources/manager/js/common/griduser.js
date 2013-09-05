@@ -30,29 +30,28 @@ Ext.define('App.manager.js.common.griduser', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'
     ,'Ext.ux.grid.FiltersFeature','Ext.selection.CheckboxModel', 'Ext.ux.CheckColumn',
     'Abada.grid.column.CheckBox'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         checkboxse:undefined,
         bbar:undefined,
         loadMask: true,
-        page:undefined
-    },
-    title: 'Usuarios',
- 
+        page:undefined,
+        i18n:undefined
+    }, 
     columns:[           
     {
-        header: 'id', 
+        header: 'manager.grid.column.idTitle', 
         dataIndex: 'id',
         width:25
     
     },{
-        header: 'Usuario', 
+        header: 'manager.grid.column.usernameTitle', 
         dataIndex: 'username',
         width:50
     
     },
     {
-        header: 'Habilitado', 
+        header: 'manager.grid.column.enabledTitle', 
         dataIndex: 'enabled',
         align:'center',
         xtype: 'checkboxcolumn',

@@ -26,17 +26,16 @@
 Ext.define('App.manager.js.common.gridrole', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'
     ,'Ext.ux.grid.FiltersFeature'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         checkboxse:undefined,
         scroll:true,
-        page:14
+        page:14,
+        i18n:undefined
     },
-    title: 'Roles',
-
     columns:[           
     {
-        header: 'Roles', 
+        header: 'manager.grid.column.roleTitle', 
         dataIndex: 'authority'
     
     }],

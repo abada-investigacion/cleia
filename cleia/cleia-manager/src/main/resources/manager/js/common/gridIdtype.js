@@ -29,24 +29,24 @@ Ext.define('App.patient.js.common.gridIdtype', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Ext.ux.grid.FiltersFeature',
     'Abada.grid.RowExpander','Ext.selection.CheckboxModel', 'Ext.ux.CheckColumn',
     'Ext.util.*','Abada.grid.column.CheckBox'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         checkboxse:undefined,
         loadMask: true,
-        page:14   
-    },
-    
+        page:14,
+        i18n:undefined
+    },    
     columns:[           
     {
-        header: 'Id', 
+        header: 'manager.grid.column.idTitle', 
         dataIndex: 'value',
         width:50    
     },{
-        header: 'Descripci&oacute;n', 
+        header:'manager.grid.column.descriptionTitle', 
         dataIndex: 'description',
         width:50
     },{
-        header: 'Se puede repetir', 
+        header:'manager.grid.column.repeatableTitle', 
         dataIndex: 'repeatable',
         xtype: 'checkboxcolumn',
         width:50

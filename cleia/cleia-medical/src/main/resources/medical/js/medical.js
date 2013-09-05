@@ -27,8 +27,7 @@
 Ext.require([
     'Ext.form.Panel', 'Ext.form.field.Checkbox', 'Abada.Ajax', 'Ext.JSON', 'Ext.Ajax',
     'Ext.layout.container.Table', 'Abada.toolbar.ToolbarInsertUpdateDelete', 'Abada.form.field.ComboBoxDeSelect',
-    , 'Ext.form.field.Date', 'Abada.form.field.ComboBox', 'App.manager.js.common.gridids', 'App.patient.js.common.gridPatient',
-    'App.patient.js.common.gridPatientExpander'
+    , 'Ext.form.field.Date', 'Abada.form.field.ComboBox', 'App.manager.js.common.gridids', 'App.patient.js.common.gridPatient'
 
     ])
 
@@ -193,7 +192,7 @@ Ext.onReady(function() {
             surname1,
             genre,
             birthDay = new Date(),
-            tlf, address, city, cp, country;
+            tlf, address, city, cp, country,idList={};
 
             if (opt != 'insert' && selection.hasSelection()) {
                 method = 'PUT';
@@ -209,7 +208,7 @@ Ext.onReady(function() {
                 city = selection.getLastSelected().get('city');
                 cp = selection.getLastSelected().get('cp');
                 country = selection.getLastSelected().get('country');
-
+                idList= selection.getLastSelected().get('ids');
             }
 
             var combogenre = Ext.create('Abada.form.field.ComboBoxDeSelect', {
@@ -255,23 +254,32 @@ Ext.onReady(function() {
                 checkboxse: true,
                 page: 500,
                 rowspan: 4,
-                padding: '10 15 0 15'
+                padding: '10 15 0 15',
+                i18n:i18n
             });
         
             groupGrid.getStore().load();
 
-            var configIdGrid = {
+
+            var idGrid = Ext.create('App.manager.js.common.gridids', {
                 id: 'idGrid',
                 title: '',
                 width: 400,
                 height: 250,
                 url: null,
                 page: 500,
-                rowspan: 4
-            };
+                rowspan: 4,
+                i18n:i18n
+            });
 
-            var idGrid = Ext.create('App.manager.js.common.gridids', configIdGrid);
-
+            for(var i=0;i<idList.length;i++){
+                
+                idGrid.getStore().insert(0, {
+                    value: idList[i].value,
+                    idtype: idList[i].type.value
+                });
+                
+            } 
 
             var comboidtype = Ext.create('Abada.form.field.ComboBox', {
                 id: 'cbidtype',
@@ -529,8 +537,6 @@ Ext.onReady(function() {
                     selectGroupGrid(id, groupGrid);
                 });
             
-                loadIdGrid(id, idGrid);
-
             }
 
             loadbutton.on('click', function() {

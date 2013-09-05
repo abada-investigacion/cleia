@@ -311,7 +311,7 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
 
             try {
                 this.persistMedical(medical1, medical);
-                userDao.updateUser(medical1.getPatient().getUser(), medical.getPatient().getUser());
+                userDao.putUser(medical1.getPatient().getUser().getId(), medical.getPatient().getUser());
                 patientDao.updatePatient(medical1.getPatient(), medical.getPatient());
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al modificar el medico "
