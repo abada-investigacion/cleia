@@ -27,10 +27,13 @@
 Ext.define('App.bam.js.common.JumpPanel',{
     requires: ['Abada.Ajax','Ext.button.Button','Ext.toolbar.Toolbar','Ext.window.MessageBox','App.bam.js.common.JumpNodeGrid'],
     extend:'Ext.panel.Panel',
+    config:{
+       i18n:undefined
+    },
     initComponent:function(){                                       
         var toolbar=Ext.create('Ext.toolbar.Toolbar',{
             items:[Ext.create('Ext.button.Button', {
-                text: 'A&ntilde;adir Nodo',
+                text: this.i18n.getMsg('bam.jumppanel.add'),
                 scope:this,
                 icon:getRelativeURI('images/custom/add.gif'),
                 handler: function() {
@@ -38,7 +41,7 @@ Ext.define('App.bam.js.common.JumpPanel',{
                     this.startAdding();
                 }
             }),Ext.create('Ext.button.Button', {
-                text: 'Quitar Nodo',
+                text: this.i18n.getMsg('bam.jumppanel.remove'),
                 scope:this,
                 icon:getRelativeURI('images/custom/delete.gif'),
                 handler: function() {
@@ -50,11 +53,12 @@ Ext.define('App.bam.js.common.JumpPanel',{
         this.grid=Ext.create('App.bam.js.common.JumpNodeGrid',{
             height: this.height-100,
             width: this.width-5,
-            autoScroll:true
+            autoScroll:true,
+            i18n:this.i18n
         });  
         
         var jumper=Ext.create('Ext.button.Button', {
-            text: 'Saltar',
+            text: this.config.i18n.getMsg('bam.jumppanel.jump'),
             scope:this,
             handler: function() {
                 this.fireEvent('jump',this,this.grid.store);
@@ -70,14 +74,14 @@ Ext.define('App.bam.js.common.JumpPanel',{
         this.step=0;
         this.sourceNode=undefined;           
         this.destinationNode=undefined;
-        this.setTitle('Seleccione nodo origen.');
+        this.setTitle(this.i18n.getMsg('bam.jumppanel.text1'));
     },
     nextNode:function(node){
         if (node){
             this.step++;
             if (this.step==1){
                 this.sourceNode=node;
-                this.setTitle('Seleccione nodo destino.');
+                this.setTitle(this.i18n.getMsg('bam.jumppanel.text2'));
             }else if(this.step==2){
                 this.destinationNode=node;
                 this.addToGrid(this.sourceNode,this.destinationNode);
