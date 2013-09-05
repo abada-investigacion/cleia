@@ -28,7 +28,7 @@ Ext.define('App.bam.js.common.PrincipalToolbar',{
     extend:'Ext.toolbar.Toolbar',
     config:{
         patientname:'',
-        i18n:i18n
+        i18n:undefined
     },    
     constructor:function(config){
         this.initConfig(config);

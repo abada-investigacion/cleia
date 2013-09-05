@@ -31,7 +31,7 @@ Ext.define('App.bam.js.common.OncoguideGrid', {
     config:{
         url:undefined,
         patientId:undefined,
-        i18n:undefiend
+        i18n:undefined
     },
     forceFit:true,
     features:[{

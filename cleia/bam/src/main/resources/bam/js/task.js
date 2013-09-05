@@ -75,7 +75,8 @@ Ext.onReady(function() {
 
         var panel = Ext.create('App.bam.js.common.TaskGrid', {
             height: App.height,
-            url: getRelativeServerURI('rs/tasks/participation/loggeduser')
+            url: getRelativeServerURI('rs/tasks/participation/loggeduser'),
+            i18n:i18n
         });
         panel.addListener('taskselected', onTaskSelected);
 

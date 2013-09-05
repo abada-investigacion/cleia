@@ -31,6 +31,11 @@
         </layout>
     </appender>
 
+    <logger name="com.abada.cleia.dao.impl">        
+        <level value="DEBUG" />
+        <appender-ref ref="CONSOLE.OUT"/>
+    </logger>
+
     <!--logger name="com.abada.jbpm">        
         <level value="ALL" />
         <appender-ref ref="CONSOLE.OUT"/>

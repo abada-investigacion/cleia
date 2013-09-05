@@ -21,7 +21,6 @@ package com.abada.cleia.dao.impl;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 import com.abada.cleia.entity.user.Group;
 import com.abada.cleia.entity.user.User;
 import javax.persistence.EntityManager;
@@ -31,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jbpm.task.identity.UserGroupCallback;
@@ -59,7 +60,7 @@ public class LoginDaoImpl extends JpaDaoUtils implements UserGroupCallback, User
             User result = (User) em.createQuery("select id.user from Id id where id.value = :dni and id.type.value =  'DNI'").setParameter("dni", dni).getSingleResult();
             if (result != null) {
                 result.getGroups().size();
-                result.getRoles().size();            
+                result.getRoles().size();
             }
             et.commit();
             return result;
@@ -74,6 +75,18 @@ public class LoginDaoImpl extends JpaDaoUtils implements UserGroupCallback, User
     }
 
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Search for " + username + " username");
+        }
+        //FIX to jbpm task, with a random user Administrator
+        if ("Administrator".equals(username)){            
+            User result=new User();
+            result.setPassword(RandomStringUtils.randomAlphanumeric(32));
+            result.setUsername("Administrator");
+            result.setGroups(new ArrayList<Group>());
+            return result;
+        }
+        
         EntityManager em = entityManagerFactory.createEntityManager();
         try {
             EntityTransaction et = em.getTransaction();
@@ -86,6 +99,8 @@ public class LoginDaoImpl extends JpaDaoUtils implements UserGroupCallback, User
             result.getRoles().size();
             et.commit();
             return result;
+        } catch (NoResultException e) {
+            throw new UsernameNotFoundException(username);
         } finally {
             if (em.isOpen()) {
                 em.close();
@@ -118,6 +133,9 @@ public class LoginDaoImpl extends JpaDaoUtils implements UserGroupCallback, User
     }
 
     public boolean existsGroup(String groupId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Search for " + groupId + " group");
+        }
         EntityManager em = entityManagerFactory.createEntityManager();
         try {
             EntityTransaction et = em.getTransaction();

@@ -57,7 +57,7 @@ Ext.define('App.bam.js.common.VersionFormPanel',{
         this.grid=Ext.create('App.bam.js.common.JumpNodeGrid',{
             autoScroll:true,
             height:400,
-            i18n:i18n,
+            i18n:this.i18n,
             tbar:Ext.create('Ext.toolbar.Toolbar',{
                 items:[Ext.create('Ext.button.Button', {
                     text: this.i18n.getMsg('bam.version.toolbar.button1'),

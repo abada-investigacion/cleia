@@ -349,7 +349,8 @@ Ext.onReady(function() {
 
             var taskGrid = Ext.create('App.bam.js.common.TaskGrid', {
                 url: getRelativeServerURI('rs/tasks/patient/{patientId}/loggeduser', {patientId: patientId}),
-                patientId: patientId
+                patientId: patientId,
+                i18n:i18n
             });
             taskGrid.addListener('taskselected', onTaskSelected);
             /**
