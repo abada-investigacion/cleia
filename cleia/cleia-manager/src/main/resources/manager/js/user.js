@@ -26,7 +26,7 @@
 
 Ext.require([
     'Ext.form.Panel', 'Ext.form.field.Checkbox', 'Abada.Ajax', 'Ext.JSON', 'Ext.Ajax',
-    'Ext.layout.container.Table', 'Abada.toolbar.ToolbarInsertUpdateDelete','App.manager.js.common.griduserexpander'
+    'Ext.layout.container.Table', 'Abada.toolbar.ToolbarInsertUpdateDelete','Abada.form.field.ComboBox'
 
     ])
 
@@ -147,7 +147,7 @@ Ext.onReady(function() {
 
         function handleFormulario(opt, grid, title, url, selection) {
 
-            var username, contrasena, id, method = 'POST', enabled = true;
+            var username, contrasena, id, idList, method = 'POST', enabled = true;
 
             if (opt != 'insert' && selection.hasSelection()) {
                 method = 'PUT';
@@ -155,10 +155,11 @@ Ext.onReady(function() {
                 contrasena = selection.getLastSelected().get('password');
                 id = selection.getLastSelected().get('id');
                 enabled = selection.getLastSelected().get('enabled');
+                idList= selection.getLastSelected().get('ids');
             }
 
             var groupGrid = Ext.create('App.manager.js.common.gridgroup', {
-                title: i18n.getMsg('manager.grid.groupGridTitle'),
+                //  title: i18n.getMsg('manager.grid.groupGridTitle'),
                 url: getRelativeServerURI('rs/group/search'),
                 width: 400,
                 height: 250,
@@ -169,7 +170,7 @@ Ext.onReady(function() {
             });
             
             var roleGrid = Ext.create('App.manager.js.common.gridrole', {
-                title: i18n.getMsg('manager.grid.rolesGridTitle'),
+                // title: i18n.getMsg('manager.grid.rolesGridTitle'),
                 url: getRelativeServerURI('rs/role/search'),
                 width: 400,
                 height: 250,
@@ -188,11 +189,17 @@ Ext.onReady(function() {
                 i18n:i18n
             };
             
-            if (id) {
-                configIdGrid.url = getRelativeServerURI('/rs/user/' + id + '/ids');
-            }
-            
+         
             var idGrid = Ext.create('App.manager.js.common.gridids', configIdGrid);
+            
+            for(var i=0;i<idList.length;i++){
+                
+                idGrid.getStore().insert(0, {
+                    value: idList[i].value,
+                    idtype: idList[i].type.value
+                });
+                
+            }            
 
             var comboidtype = Ext.create('Abada.form.field.ComboBox', {
                 id: 'cbidtype',

@@ -27,7 +27,7 @@
 Ext.define('App.manager.js.common.gridgroup', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'
     ,'Ext.ux.grid.FiltersFeature'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         checkboxse:undefined,
         page:14,

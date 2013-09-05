@@ -30,7 +30,7 @@ Ext.define('App.manager.js.common.gridids', {
     requires: ['Ext.toolbar.Paging',
     ,'Ext.ux.grid.FiltersFeature','Ext.selection.CheckboxModel', 'Ext.ux.CheckColumn',
     'Abada.grid.column.CheckBox'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         checkboxse:undefined,
         loadMask: true,

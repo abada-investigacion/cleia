@@ -29,7 +29,7 @@ Ext.define('App.patient.js.common.gridIdtype', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Ext.ux.grid.FiltersFeature',
     'Abada.grid.RowExpander','Ext.selection.CheckboxModel', 'Ext.ux.CheckColumn',
     'Ext.util.*','Abada.grid.column.CheckBox'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         checkboxse:undefined,
         loadMask: true,
