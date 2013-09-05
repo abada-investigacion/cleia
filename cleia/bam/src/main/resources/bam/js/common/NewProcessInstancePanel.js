@@ -29,19 +29,20 @@ Ext.define('App.bam.js.common.NewProcessInstancePanel',{
     extend:'Ext.form.Panel',        
     config:{
         urlOncoguides:undefined,
-        patientId:undefined
+        patientId:undefined,
+        i18n:undefined
     },
     initComponent:function(){                        
         
         this.cbOncoguide=Ext.create('Abada.form.field.SimpleGroupingComboBox',{
-            emptyText : 'seleccione un Proceso',
+            emptyText : this.i18n.getMsg('bam.newinstance.combo1.text'),
             width:200,
             url:this.urlOncoguides,
             allowBlank:false
         });
         
         this.button=Ext.create('Ext.button.Button', {
-            text: 'Crear',
+            text: this.i18n.getMsg('bam.newinstance.button1.text'),
             formBind: true
         });
         this.button.addListener('click',this.onButtonClick,this);
@@ -59,14 +60,14 @@ Ext.define('App.bam.js.common.NewProcessInstancePanel',{
             height:App.height
         });
         panel.addListener('success',function(frame,processInstanceId){  
-            Ext.Msg.alert('Info','Oncoguia creada correctamente',                        
+            Ext.Msg.alert(this.i18n.getMsg('bam.info'),this.i18n.getMsg('bam.newinstance.alert1.text'),
                 function(){
                     win.close();    
                     this.fireEvent('success', this,processInstanceId);
                 },this);       
         },this);
         panel.addListener('failure',function(frame,error){            
-            Ext.Msg.alert('Error','No se puede cargar el formulario.'+error,                        
+            Ext.Msg.alert(this.i18n.getMsg('bam.error'),this.i18n.getMsg('bam.newinstance.alert2.text',error),                        
                 function(){
                     win.close();    
                     this.fireEvent('failure', this,error);
@@ -74,7 +75,7 @@ Ext.define('App.bam.js.common.NewProcessInstancePanel',{
         },this);
         
         var win=Ext.create('Ext.window.Window', {
-            title: 'Tarea '+this.cbOncoguide.getValue(),
+            title: this.i18n.getMsg('bam.newinstance.title',this.cbOncoguide.getValue()),
             height: App.height,
             width: 900,
             autoScroll:true,

@@ -27,7 +27,7 @@ Ext.define('App.bam.js_m.common.TaskList', {
     extend: 'Ext.dataview.List',
     config: {
         url: undefined,
-        itemTpl: '<div><b>Tarea: {name}</b><br />Proceso: {processId}<br />Instancia: {processInstanceId}</div>',
+        itemTpl: '<div><b>'+this.i18n.getMsg('bam.task.list.text1')+' {processName}</b><br />'+this.i18n.getMsg('bam.process.list.text2')+' {processInstanceId}</div>',
         grouped: true
     },
     constructor: function(config) {

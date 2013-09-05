@@ -59,7 +59,7 @@ Ext.define('App.bam.js.common.ProcessInstanceTabPanel',{
         var button=Ext.create('Ext.button.Button',{
             icon:getRelativeURI('bam/image/cambio.gif'),
             width : 130,
-            text:'Cambiar estado'
+            text:this.i18n.getMsg('bam.tabinstance.button.text')
         });
                              
         this.addDocked(Ext.create('Ext.toolbar.Toolbar', {
@@ -106,11 +106,9 @@ Ext.define('App.bam.js.common.ProcessInstanceTabPanel',{
                     return Ext.JSON.encode(result);
                 }
                 
-                Ext.Msg.prompt('Cuidado','&iquest;Esta seguro de querer realizar los cambios al proceso?\n'+
-                    'Este hecho puede causar problemas en la ejecuci&oacute;n del proceso.\n'+
-                    'S&iacute; Comentario o No',function(btn,text){
+                Ext.Msg.prompt(this.i18n.getMsg('bam.warning'),this.i18n.getMsg('bam.tabinstance.question1.text'),function(btn,text){
                         var aux=text.substr(0,2).toLowerCase();
-                        if (aux=='sí' || aux == 'si'){
+                        if (aux==this.i18n.getMsg('bam.signal.response1') || aux == this.i18n.getMsg('bam.signal.response2')){
                             Abada.Ajax.requestJson({
                                 url:getRelativeServerURI(this.config.urlJumpInTime,[this.processInstanceId]),
                                 method:'POST',
@@ -125,8 +123,8 @@ Ext.define('App.bam.js.common.ProcessInstanceTabPanel',{
                                 },
                                 failure:function(error){
                                     Ext.Msg.show({
-                                        title:'Error',
-                                        msg: 'Ha ocurrido un error inesperado. Contacte con el servicio tecnico '+error.reason,
+                                        title:this.i18n.getMsg('bam.error'),
+                                        msg: this.i18n.getMsg('bam.tabinstance.error1.text',error.reason),
                                         icon: Ext.Msg.ERROR                             
                                     });
                                 }
@@ -139,7 +137,7 @@ Ext.define('App.bam.js.common.ProcessInstanceTabPanel',{
                 
             this.addListener('nodeselected',onNodeSelected,this);
             var win=Ext.create('Ext.window.Window', {
-                title: 'Saltos',                                               
+                title: this.i18n.getMsg('bam.tabinstance.jump'),
                 resizable:false,
                 modal:false,
                 items: [panel]

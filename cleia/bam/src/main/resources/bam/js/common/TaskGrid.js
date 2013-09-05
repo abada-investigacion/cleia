@@ -27,76 +27,76 @@
 
 Ext.define('App.bam.js.common.TaskGrid', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore','Ext.grid.column.Template'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         url:undefined,
         processInstanceId:undefined,
         patientId:undefined
     },
     forceFit:true,
-    title: 'Tareas',
+    title: 'bam.taskgrid.title',
     columns:[           
     {
-        header: 'Id', 
+        header: 'bam.taskgrid.id', 
         dataIndex: 'id',
         hidden:true
     
     },{
-        header: 'Proceso instancia id', 
+        header: 'bam.taskgrid.processinstanceid', 
         dataIndex: 'processInstanceId',
         hidden:true
     
     },{
-        header: 'Proceso id', 
+        header: 'bam.taskgrid.processid', 
         dataIndex: 'processId',
         hidden:true
     
     },{
-        header: 'Nombre', 
+        header: 'bam.taskgrid.name', 
         dataIndex: 'name'
     
     },{
-        header: 'Asignado', 
+        header: 'bam.taskgrid.assignee', 
         dataIndex: 'assignee'
     
     },{
-        header: 'Bloqueada', 
+        header: 'bam.taskgrid.isblock', 
         dataIndex: 'isBlocking'
     
     },{
-        header: 'Señalización', 
+        header: 'bam.taskgrid.issignalling', 
         dataIndex: 'isSignalling'
     
     },{
-        header: 'Estado Actual', 
+        header: 'bam.taskgrid.state', 
         dataIndex: 'currentState'
     
     },{
-        header: 'url', 
+        header: 'bam.taskgrid.url', 
         dataIndex: 'url',
         hidden:true
     
     },{
-        header: 'Fecha Debido', 
+        header: 'bam.taskgrid.duedate', 
         dataIndex: 'dueDate',
         hidden:true
     
     },{
-        header: 'Fecha creación', 
+        header: 'bam.taskgrid.createdate', 
         dataIndex: 'createDate',
         hidden:true
     
     },{
-        header: 'Prioridad', 
+        header: 'bam.taskgrid.priority', 
         dataIndex: 'priority'
     
     },{
-        header: 'Descripción', 
+        header: 'bam.taskgrid.description', 
         dataIndex: 'description'    
     },
-    { header: 'Servicios Asignados', xtype: 'templatecolumn', tpl: '<tpl for="participantGroups"><p>{idRef}</p><br /></tpl>' }
+    { header: 'bam.taskgrid.groups', xtype: 'templatecolumn', tpl: '<tpl for="participantGroups"><p>{idRef}</p><br /></tpl>' }
     ,
-    { header: 'Usuarios Potenciales Asignados', xtype: 'templatecolumn', tpl: '<tpl for="participantUsers"><p>{idRef}</p><br /></tpl>' , hidden:true}
+    { header: 'bam.taskgrid.potentialusers', xtype: 'templatecolumn', tpl: '<tpl for="participantUsers"><p>{idRef}</p><br /></tpl>' , hidden:true}
     ],
     constructor:function(config){       
         this.initConfig(config);  

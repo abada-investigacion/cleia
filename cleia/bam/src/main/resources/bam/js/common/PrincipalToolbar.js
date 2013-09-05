@@ -27,9 +27,9 @@
 Ext.define('App.bam.js.common.PrincipalToolbar',{
     extend:'Ext.toolbar.Toolbar',
     config:{
-        patientname:''
-    },
-    
+        patientname:'',
+        i18n:i18n
+    },    
     constructor:function(config){
         this.initConfig(config);
         this.patientname=config.patientname;
@@ -42,7 +42,7 @@ Ext.define('App.bam.js.common.PrincipalToolbar',{
         {
             icon:getRelativeURI('bam/image/atras.png'),
             width : 93,
-            text:'Atras',
+            text:this.i18n.getMsg('bam.toolbar1.back'),
             scope:this,
             handler:this.onBackClick
         },
@@ -50,7 +50,7 @@ Ext.define('App.bam.js.common.PrincipalToolbar',{
             xtype: 'label',
             width : 900,
             forId: 'patient',
-            text: 'Paciente: '+this.patientname
+            text: this.i18n.getMsg('bam.toolbar1.patient',this.patientname)
         }
        
         ];

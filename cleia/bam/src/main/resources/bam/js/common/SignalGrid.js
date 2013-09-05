@@ -27,7 +27,7 @@
 Ext.define('App.bam.js.common.SignalGrid',{
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'
     ,'Ext.ux.grid.FiltersFeature'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         url:undefined,
         processId:undefined,
@@ -58,23 +58,23 @@ Ext.define('App.bam.js.common.SignalGrid',{
     }],
     columns:[           
     {
-        header: 'id', 
+        header: 'bam.signalgrid.id', 
         dataIndex: 'id',
         hidden:true    
     },{
-        header: 'Nombre Tarea', 
+        header: 'bam.signalgrid.name', 
         dataIndex: 'name'
     
     },{
-        header: 'Tipo Tarea', 
+        header: 'bam.signalgrid.type', 
         dataIndex: 'type',
         hidden:true
     
     },{
-        header: 'Tipo Evento', 
+        header: 'bam.signalgrid.eventtype', 
         dataIndex: 'eventType'    
     },{
-        header: 'Proceso que lo contiene', 
+        header: 'bam.signalgrid.processid', 
         dataIndex: 'processId'    
     }],
     constructor:function(config){       

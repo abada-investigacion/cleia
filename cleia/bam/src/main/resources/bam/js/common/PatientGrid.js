@@ -34,12 +34,12 @@
 Ext.define('App.bam.js.common.PatientGrid', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore'
     ,'Ext.ux.grid.FiltersFeature'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         url:undefined
     },
     forceFit:true,
-    title: 'Pacientes',
+    title: 'bam.patientgrid.title',
     features:[{
         ftype: 'filters',
         autoReload: true,
@@ -65,36 +65,36 @@ Ext.define('App.bam.js.common.PatientGrid', {
     }],
     columns:[           
     {
-        header: 'Id', 
+        header: 'bam.patientgrid.id', 
         dataIndex: 'id',
         hidden:true    
     },{
-        header: 'Nombre', 
+        header: 'bam.patientgrid.name', 
         dataIndex: 'name'
     
     },{
-        header: 'Apellido 1', 
+        header: 'bam.patientgrid.surname1', 
         dataIndex: 'surname'
     
     },{
-        header: 'Apellido 2', 
+        header: 'bam.patientgrid.surname2', 
         dataIndex: 'surname1'
     
     },{
-        header: 'Fecha nacimiento', 
+        header: 'bam.patientgrid.birthday', 
         dataIndex: 'birthDay'
     
     },{
-        header: 'Genero', 
+        header: 'bam.patientgrid.genre', 
         dataIndex: 'genre'
     
     },{
-        header: 'Lista Paciente', 
+        header: 'bam.patientgrid.patientlist', 
         dataIndex: 'ids',
         hidden:true
     
     },{
-        header: 'Lista Oncoguia', 
+        header: 'bam.patientgrid.processlist', 
         dataIndex: 'processInstances',
         hidden:true    
     }],

@@ -27,59 +27,60 @@
 
 Ext.define('App.bam.js.common.NodeHistoryGrid', {
     requires: ['Abada.data.JsonStore','Ext.toolbar.Paging','Abada.data.JsonStore','Ext.grid.column.Date'],
-    extend:'Ext.grid.Panel',
+    extend:'Abada.grid.Panel',
     config:{
         url:undefined,
-        processInstanceId:undefined
+        processInstanceId:undefined,
+        i18n:undefined
     },
-    title: 'Historial Nodos',
+    title: 'bam.nodegrid.title',
     forceFit:true,
     columns:[           
         {
-            header: 'Id', 
+            header: 'bam.nodegrid.id', 
             dataIndex: 'id',
             hidden:true
     
         },{
-            header: 'Nodo Id', 
+            header: 'bam.nodegrid.nodeid', 
             dataIndex: 'nodeId',
             hidden:true
     
         },{
-            header: 'Proceso Instancia Id', 
+            header: 'bam.nodegrid.processinstanceid', 
             dataIndex: 'processInstanceId',
             hidden:true
     
         },{
-            header: 'Proceso Id', 
+            header: 'bam.nodegrid.processid', 
             dataIndex: 'processId',
             hidden:true    
         },{
-            header: 'Nombre', 
+            header: 'bam.nodegrid.name', 
             dataIndex: 'nodeName'
     
         },{
-            header: 'Fecha', 
+            header: 'bam.nodegrid.date', 
             dataIndex: 'date',
             xtype: 'datecolumn', format:'Y-m-d H:i:s'    
         },{
-            header: 'Nodo Instancia Id', 
+            header: 'bam.nodegrid.nodeinstanceid', 
             dataIndex: 'nodeInstanceId',
             hidden:true
     
         },{
-            header: 'Observaci&oacute;n M&eacute;dica', 
+            header: 'bam.nodegrid.observation', 
             dataIndex: 'observation'    
         },{
-            header: 'Tipo', 
+            header: 'bam.nodegrid.type', 
             dataIndex: 'type',
             renderer:function(value){
                 if (value=='1'){
-                    return 'Fin';
+                    return this.i18n.getMsg('bam.nodegrid.end');
                 }else if (value=='0'){
-                    return 'Inicio';
+                    return this.i18n.getMsg('bam.nodegrid.start');
                 }else if (value=='2'){
-                    return 'Cancelado/Salto';
+                    return this.i18n.getMsg('bam.nodegrid.cancel');
                 }
                 return '';
             }

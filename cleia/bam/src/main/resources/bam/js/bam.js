@@ -41,7 +41,8 @@ Ext.onReady(function() {
     i18n.on('loaded', function() {
         function showVersionChangeForm(patientId, processInstanceId, processId, patientname) {
             var tbar = Ext.create('App.bam.js.common.PrincipalToolbar', {
-                patientname: patientname
+                patientname: patientname,
+                i18n:i18n
             });
             tbar.addListener('back', function(toolbar) {
                 modeOncoguideList(patientId, processInstanceId, patientname);
@@ -51,7 +52,8 @@ Ext.onReady(function() {
                 title: i18n.getMsg('bam.version',processId,processInstanceId),
                 processInstanceId: processInstanceId,
                 tbar: tbar,
-                autoScroll: true
+                autoScroll: true,
+                i18n:i18n
             });
             panelAux.addListener('success', function(panel) {
                 modeOncoguideList(patientId, processInstanceId, patientname);
@@ -64,7 +66,8 @@ Ext.onReady(function() {
          */
         function modeSignalOnconguide(patientId, processInstanceId, processId, patientname) {
             var tbar = Ext.create('App.bam.js.common.PrincipalToolbar', {
-                patientname: patientname
+                patientname: patientname,
+                i18n:i18n
             });
             tbar.addListener('back', function(toolbar) {
                 modeOncoguideList(patientId, processInstanceId, patientname);
@@ -74,7 +77,8 @@ Ext.onReady(function() {
                 url: getRelativeServerURI('rs/process/definition/{0}/eventnodes', [processId]),
                 processInstanceId: processInstanceId,
                 processId: processId,
-                tbar: tbar
+                tbar: tbar,
+                i18n:i18n
             });
             panel.addListener('signalselected', function(grid, eventType, processId, processInstanceId) {
                 var win = Ext.Msg.prompt(i18n.getMsg('bam.warning'), i18n.getMsg('bam.signal.question',eventType,processId,processInstanceId), function(btn, text) {
@@ -147,7 +151,8 @@ Ext.onReady(function() {
             }
 
             var tbar = Ext.create('App.bam.js.common.PrincipalToolbar', {
-                patientname: patientname
+                patientname: patientname,
+                i18n:i18n
             });
             tbar.addListener('back', function(toolbar) {
                 modeOncoguideList(patientId, processInstanceId, patientname);
@@ -156,7 +161,8 @@ Ext.onReady(function() {
             var panel = Ext.create('App.bam.js.common.TaskGrid', {
                 url: getRelativeServerURI('rs/tasks/process/{0}/loggeduser', [processInstanceId]),
                 processInstanceId: processInstanceId,
-                tbar: tbar
+                tbar: tbar,
+                i18n:i18n
             });
             panel.addListener('taskselected', onTaskSelected);
 
@@ -170,7 +176,8 @@ Ext.onReady(function() {
          */
         function modeDataOncoguide(patientId, processInstanceId, patientname) {
             var tbar = Ext.create('App.bam.js.common.PrincipalToolbar', {
-                patientname: patientname
+                patientname: patientname,
+                i18n:i18n
             });
             tbar.addListener('back', function(toolbar) {
                 modeOncoguideList(patientId, processInstanceId, patientname);
@@ -193,7 +200,8 @@ Ext.onReady(function() {
          */
         function modeHistoryOncoguide(patientId, processInstanceId, patientname) {
             var tbar = Ext.create('App.bam.js.common.PrincipalToolbar', {
-                patientname: patientname
+                patientname: patientname,
+                i18n:i18n
             });
             tbar.addListener('back', function(toolbar) {
                 modeOncoguideList(patientId, processInstanceId, patientname);
@@ -202,7 +210,8 @@ Ext.onReady(function() {
             var grid = Ext.create('App.bam.js.common.NodeHistoryGrid', {
                 tbar: tbar,
                 processInstanceId: processInstanceId,
-                url: getRelativeServerURI('rs/process/instance/{0}/history', [processInstanceId])
+                url: getRelativeServerURI('rs/process/instance/{0}/history', [processInstanceId]),
+                i18n:i18n
             });
 
             grid.getStore().load();
@@ -215,7 +224,8 @@ Ext.onReady(function() {
          */
         function modeOncoguide(patientId, processInstanceId, patientname) {
             var tbar = Ext.create('App.bam.js.common.PrincipalToolbar', {
-                patientname: patientname
+                patientname: patientname,
+                i18n:i18n
             });
             tbar.addListener('back', function(toolbar) {
                 modeOncoguideList(patientId, processInstanceId, patientname);
@@ -223,7 +233,8 @@ Ext.onReady(function() {
 
             var imageOncoguide = Ext.create('App.bam.js.common.ProcessInstanceTabPanel', {
                 tbar: tbar,
-                height: App.height
+                height: App.height,
+                i18n:i18n
             });
             imageOncoguide.loadProcessInstancePanels(processInstanceId);
 
@@ -236,7 +247,8 @@ Ext.onReady(function() {
         function modeOncoguideList(patientId, processInstanceId, patientname) {
 
             var tbar = Ext.create('App.bam.js.common.PrincipalToolbar', {
-                patientname: patientname
+                patientname: patientname,
+                i18n:i18n
             });
             tbar.addListener('back', function(toolbar) {
                 modePatient();
@@ -244,7 +256,8 @@ Ext.onReady(function() {
 
             var oncoguide = Ext.create('App.bam.js.common.OncoguideGrid', {
                 url: getRelativeServerURI('rs/patient/{0}/pinstance/list', [patientId]),
-                patientId: patientId
+                patientId: patientId,
+                i18n:i18n
             });
             oncoguide.addListener('graphclick', function(grid, processInstanceId) {
                 modeOncoguide(patientId, processInstanceId, patientname);
@@ -291,7 +304,8 @@ Ext.onReady(function() {
             var newOncoguide = Ext.create('App.bam.js.common.NewProcessInstancePanel', {
                 urlOncoguides: getRelativeServerURI('/rs/process/definition/list/combo'),
                 patientId: patientId,
-                heigth: App.height
+                heigth: App.height,
+                i18n:i18n
             });
 
             newOncoguide.addListener('success', function(nOncoguide, processInstanceId) {
@@ -374,7 +388,8 @@ Ext.onReady(function() {
          */
         function modePatient() {
             var panelPatient = Ext.create('App.bam.js.common.PatientGrid', {
-                url: getRelativeServerURI('rs/patient/assigned/search')
+                url: getRelativeServerURI('rs/patient/assigned/search'),
+                i18n:i18n
             });
             panelPatient.addListener('patientselected', function(grid, patientId, patientname) {
                 modeOncoguideList(patientId, null, patientname);

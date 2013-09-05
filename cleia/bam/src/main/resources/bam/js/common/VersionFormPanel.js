@@ -35,7 +35,8 @@ Ext.define('App.bam.js.common.VersionFormPanel',{
         urlInfo:'rs/process/definition/{0}/tree',
         urlDiagramInfo:'rs/process/definition/{0}/diagram',
         urlActiveNodeInfo:'rs/process/instance/{0}/allActiveNodeInfo',
-        urlChangeVersion:'rs/process/instance/{0}/{1}/version'
+        urlChangeVersion:'rs/process/instance/{0}/{1}/version',
+        i18n:undefined
     },
     initComponent:function(){    
         this.cbOncoguide=Ext.create('Abada.form.field.SimpleGroupingComboBox',{
@@ -43,29 +44,30 @@ Ext.define('App.bam.js.common.VersionFormPanel',{
         }); 
         
         this.chFix=Ext.create('Ext.form.field.Checkbox',{
-            boxLabel:'Arreglar Proceso',
+            boxLabel:this.i18n.getMsg('bam.version.fix'),
             checked:false
         });
         
         var button=Ext.create('Ext.button.Button',{ 
             icon:getRelativeURI('bam/image/version.png'),
-            text:'Cambiar version'           
+            text:this.i18n.getMsg('bam.version.change')
         });
         button.addListener('click',this.onClickChangeVersion,this);
                         
         this.grid=Ext.create('App.bam.js.common.JumpNodeGrid',{
             autoScroll:true,
             height:400,
+            i18n:i18n,
             tbar:Ext.create('Ext.toolbar.Toolbar',{
                 items:[Ext.create('Ext.button.Button', {
-                    text: 'Conf.Destino.Nodo',
+                    text: this.i18n.getMsg('bam.version.toolbar.button1'),
                     scope:this,
                     icon:getRelativeURI('images/custom/add.gif'),
                     handler: function() {
                         this.onNodeSourceSelected();
                     }
                 }),Ext.create('Ext.button.Button', {
-                    text: 'Quitar.Nodo',
+                    text: this.i18n.getMsg('bam.version.toolbar.button2'),
                     scope:this,
                     icon:getRelativeURI('images/custom/delete.gif'),
                     handler: function() {
@@ -79,7 +81,7 @@ Ext.define('App.bam.js.common.VersionFormPanel',{
         this.loadActiveNodes();        
         
         var button1=Ext.create('Ext.button.Button',{            
-            text:'Oncoguia Actual'
+            text:this.i18n.getMsg('bam.version.button1.text')
         });
         button1.addListener('click',this.onClickButtonState,this);
 
@@ -145,11 +147,9 @@ Ext.define('App.bam.js.common.VersionFormPanel',{
             return Ext.JSON.encode(result);
         }
         
-        var win=Ext.Msg.prompt('Cuidado','&iquest;Esta seguro de querer realizar los cambios al proceso?\n'+
-            'Este hecho puede causar problemas en la ejecuci&oacute;n del proceso.\n'+
-            'S&iacute; Comentario o No',function(btn,text){
+        var win=Ext.Msg.prompt(this.i18n.getMsg('bam.warning'),this.i18n.getMsg('bam.version.alert1.text'),function(btn,text){
                 var aux=text.substr(0,2).toLowerCase();
-                if (aux=='sí' || aux == 'si'){
+                if (aux==this.i18n.getMsg('bam.signal.response1') || aux == this.i18n.getMsg('bam.signal.response2')){
                     Abada.Ajax.requestJson({
                         url:getRelativeServerURI(this.config.urlChangeVersion,[this.processInstanceId,this.cbOncoguide.getValue()]),
                         method:'POST',
@@ -164,8 +164,8 @@ Ext.define('App.bam.js.common.VersionFormPanel',{
                         },
                         failure:function(error){
                             Ext.Msg.show({
-                                title:'Error',
-                                msg: 'Ha ocurrido un error inesperado. Contacte con el servicio tecnico '+error.reason,
+                                title:this.i18n.getMsg('bam.error'),
+                                msg: this.i18n.getMsg('bam.tabinstance.error1.text',error.reason),
                                 icon: Ext.Msg.ERROR                             
                             });
                         }
@@ -210,7 +210,7 @@ Ext.define('App.bam.js.common.VersionFormPanel',{
                 panelAux.loadProcessPanels(this.cbOncoguide.getValue());
             
                 var win=Ext.create('Ext.window.Window', {
-                    title: 'Seleccione Nodo '+this.cbOncoguide.getValue(),
+                    title: this.i18n.getMsg('bam.version.node.title',this.cbOncoguide.getValue()),
                     height: 600,
                     width: 900,
                     autoScroll:true,
