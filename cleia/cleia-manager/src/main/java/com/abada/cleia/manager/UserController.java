@@ -48,7 +48,7 @@ public class UserController {
      */
     @RequestMapping(value = "/manager/user.htm")
     @RolesAllowed(value={"ROLE_ADMIN","ROLE_ADMINISTRATIVE"})
-    @MenuEntry(icon = "manager/image/user.png", menuGroup = "Manager", order = 0, text = "Usuarios")
+    @MenuEntry(icon = "manager/image/user.png", menuGroup = "manager.group", order = 0, text = "manager.usuarios")
     public String gridUser(Model model) {
         model.addAttribute("js", Arrays.asList("manager/js/common/griduser.js","manager/js/common/griduserexpander.js", 
                 "manager/js/common/gridrole.js", "manager/js/common/gridgroup.js","manager/js/common/gridids.js", "manager/js/user.js","manager/js/manager-utils.js"));
