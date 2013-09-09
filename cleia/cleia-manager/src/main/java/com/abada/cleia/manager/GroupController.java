@@ -48,7 +48,7 @@ public class GroupController {
      */
     @RequestMapping(value = "/manager/group.htm")
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
-    @MenuEntry(icon = "manager/image/servicio_me.png", menuGroup = "Manager", order = 1, text = "Servicios")
+    @MenuEntry(icon = "manager/image/servicio_me.png", menuGroup = "manager.group", order = 1, text = "manager.servicios")
     public String gridgroup(Model model) {
         model.addAttribute("js", Arrays.asList("manager/js/common/gridgroup.js", "manager/js/common/gridgroupexpander.js", 
                 "manager/js/group.js", "manager/js/common/griduser.js","manager/js/manager-utils.js"));
