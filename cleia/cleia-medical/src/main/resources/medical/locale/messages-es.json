@@ -66,5 +66,16 @@
     "manager.grid.column.serviceTitle":"Servicio",
     "manager.grid.column.enabledTitle":"Habilitado",
     "manager.grid.column.numberTitle":"N&uacute;mero",
-    "manager.grid.column.typeTitle":"Tipo"
+    "manager.grid.column.typeTitle":"Tipo",
+    "gridpatient.id": "Id",
+    "gridpatient.title": "Paciente",
+    "gridpatient.Detalles": "Detalles",
+    "gridpatient.name": "Nombre",
+    "gridpatient.surname": "Apellido 1",
+    "gridpatient.surname1": "Apellido 2",
+    "gridpatient.genre": "Genero",
+    "gridpatient.birthDay": "Fecha nacimiento",
+    "gridpatient.tlf": "Tel&eacute;fono",
+    "gridpatient.address": "Direcci&oacute;n",
+    "gridpatient.enabled": "Habilitar"
 }

@@ -44,20 +44,6 @@ Ext.onReady(function() {
     });
 
     i18n.on('loaded', function() {
-
-        var i18n1 = Ext.create('Abada.i18n.Bundle', {
-            path: getRelativeURI('/patient/locale'),
-            bundle: 'messages',
-            insertLocale: false
-        });
-
-        i18n1.on('error', function() {
-            i18n1.language = i18n1.defaultLanguage;
-            i18n1.load();
-        });
-
-        i18n1.on('loaded', function() {
-
             var toolbar = Ext.create('Abada.toolbar.ToolbarInsertUpdateDelete', {
                 listeners: {
                     submitInsert: function() {
@@ -587,7 +573,7 @@ Ext.onReady(function() {
             function gridpatient(groupGrid, idGrid, combogenre) {
 
                 var patientGrid = Ext.create('App.patient.js.common.gridPatient', {
-                    i18n: i18n1,
+                    i18n: i18n,
                     url: getRelativeServerURI('rs/patient/search/patientnotmedical'),
                     width: 800,
                     height: 400,
@@ -840,9 +826,6 @@ Ext.onReady(function() {
 
                 }
             }
-
-        });
-        i18n1.load();
 
 
     });
