@@ -251,7 +251,7 @@ Ext.define('App.medical.js.common.gridMedical', {
         });
     
         var detailsWind = Ext.create('Ext.window.Window', {
-            title: i18n.getMsg('medical.wind.patientDetails'),
+            title: i18n.getMsg('medical.wind.medicalDetails'),
             id: 'detailsWind',
             closable: true,
             modal: true,

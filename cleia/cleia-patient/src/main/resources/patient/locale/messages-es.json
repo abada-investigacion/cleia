@@ -31,7 +31,7 @@
     "patient.patient.button.send": "Enviar",
     "patient.patient.alert.notpasswordequal": "Las contrase&ntilde;as no son iguales",
     "patient.patient.alert.error": "Error",
-    "patient.patient.title.Detailpatient": "Detalles de paciente",
+    "patient.patient.title.Detailpatient": "Detalles de Paciente",
     "patient.detailsPanel.html.namesurname": "<b>Nombre y Apellidos: </b>",
     "patient.gridPatient.title.patient": "<b>Nombre y Apellidos: </b>",
     "gridpatient.id": "Id",

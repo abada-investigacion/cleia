@@ -174,6 +174,7 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
         patient.setSurname1(p.getSurname1());
         patient.setBirthDay(p.getBirthDay());
         patient.setProcessInstances(p.getProcessInstances());
+        patient.setTlf(p.getTlf());
     }
 
     /**

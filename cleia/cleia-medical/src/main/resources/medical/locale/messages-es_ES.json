@@ -46,7 +46,7 @@
     "medical.grid.column.addressTitle":"Direcci&oacute;n",
     "medical.grid.column.enabledTitle":"Habilitado",
     "medical.grid.column.detailsTitle":"Detalles",
-    "medical.wind.patientDetails":"Detalles de Paciente",
+    "medical.wind.medicalDetails":"Detalles de M&eacute;dico",
     "patient.detailsPanel.fullName":"Nombre y Apellidos",
     "patient.detailsPanel.birthday":"Fecha de Nacimiento",
     "patient.detailsPanel.genre":"Sexo",
