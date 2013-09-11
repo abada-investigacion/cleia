@@ -34,8 +34,10 @@
     "patient.patient.title.Detailpatient": "Detalles de Paciente",
     "patient.detailsPanel.html.namesurname": "<b>Nombre y Apellidos: </b>",
     "patient.gridPatient.title.patient": "<b>Nombre y Apellidos: </b>",
+    "patient.wind.insertPatientTitle":"Insertar PAciente",
+    "patient.wind.updatePatientTitle":"Modificar PAciente",
     "gridpatient.id": "Id",
-    "gridpatient.title": "Paciente",
+    "gridpatient.title": "Pacientes",
     "gridpatient.Detalles": "Detalles",
     "gridpatient.name": "Nombre",
     "gridpatient.surname": "Apellido 1",
@@ -66,7 +68,8 @@
     "manager.grid.column.enabledTitle": "Habilitado",
     "manager.grid.column.numberTitle": "N&uacute;mero",
     "manager.grid.column.typeTitle": "Tipo",
-    "manager.grid.column.idTitle":"Id",
-    "manager.grid.column.usernameTitle":"Usuario",
-    "manager.grid.column.enabledTitle":"Habilitado"
+    "manager.grid.column.idTitle": "Id",
+    "manager.grid.column.usernameTitle": "Usuario",
+    "manager.grid.column.enabledTitle": "Habilitado"
+    
 }

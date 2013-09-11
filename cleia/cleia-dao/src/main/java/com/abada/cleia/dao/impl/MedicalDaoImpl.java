@@ -235,18 +235,15 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
 
             medical.getPatient().getUser().setPassword(sha1PasswordEncoder.encodePassword(medical.getPatient().getUser().getPassword(), null));
             try {
-//                    for (Id id : medical.getPatient().getUser().getIds()) {
-//                        idDao.postId(id);
-//                    }
-//                    for (int i = 0; i < medical.getPatients().size(); i++) {
-//                        List<Patient> lpatients = patientDao.findPatientsrepeatable(medical.getPatients().get(i).getUser().getIds(), false);
-//                        if ((lpatients != null && lpatients.isEmpty())) {
-//                            patientDao.postPatient(medical.getPatients().get(i));
-//                        }
-//                    }
+
                 if (medical.getPatient() != null) {
-                    patientDao.postPatient(medical.getPatient());
-                    medical.setId(medical.getPatient().getUser().getId());
+
+                    if (medical.getPatient().getId() == null) {
+                        patientDao.postPatient(medical.getPatient());
+                    } else {
+                        patientDao.putPatient(medical.getPatient().getId(), medical.getPatient());
+                    }
+                    medical.setId(medical.getPatient().getId());
                     medical.setPatient(entityManager.find(medical.getPatient().getClass(), medical.getPatient().getUser().getId()));
                 }
 
@@ -310,9 +307,7 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
         if (medical1 != null) {
 
             try {
-                this.persistMedical(medical1, medical);
-                userDao.putUser(medical1.getPatient().getUser().getId(), medical.getPatient().getUser());
-                patientDao.updatePatient(medical1.getPatient(), medical.getPatient());
+                patientDao.putPatient(idmedical, medical.getPatient());
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al modificar el medico "
                         + medical.getPatient().getName() + " " + medical.getPatient().getSurname() + " " + medical.getPatient().getSurname1());
@@ -336,8 +331,6 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
              * Modificamos el medico
              */
             try {
-                this.persistMedical(medical1, medical);
-                userDao.updateUser(medical1.getPatient().getUser(), medical.getPatient().getUser());
                 patientDao.updatePatient(medical1.getPatient(), medical.getPatient());
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al modificar el medico "
