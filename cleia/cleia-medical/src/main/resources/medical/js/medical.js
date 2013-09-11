@@ -161,6 +161,7 @@ Ext.onReady(function() {
                             groups: getListForObject(selectionGroup, 'value'),
                             ids: ids
                         },
+                        id:id,
                         name: Ext.getCmp('name').getValue(),
                         surname: Ext.getCmp('surname').getValue(),
                         surname1: Ext.getCmp('surname1').getValue(),
@@ -573,6 +574,7 @@ Ext.onReady(function() {
             function gridpatient(groupGrid, idGrid, combogenre) {
 
                 var patientGrid = Ext.create('App.patient.js.common.gridPatient', {
+                    title:'',
                     i18n: i18n,
                     url: getRelativeServerURI('rs/patient/search/patientnotmedical'),
                     width: 800,
@@ -625,6 +627,7 @@ Ext.onReady(function() {
             function assignPatient(selection) {
 
                 var patientsGrid = Ext.create('App.patient.js.common.gridPatient', {
+                    title:'',
                     i18n: i18n,
                     url: getRelativeServerURI('rs/patient/searchforassignment'),
                     height: 400,
