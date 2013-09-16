@@ -279,30 +279,6 @@ public class MedicalController {
     }
 
     /**
-     * Modify a medical by id
-     *
-     * @param idmedical Medical id.
-     * @param medical Medical structure. Must set in JSON in the Http body
-     * request.
-     * @return Return success structure.
-     */
-    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/demographic/{idmedical}", method = RequestMethod.PUT)
-    public Success putMedicalData(@PathVariable Long idmedical, @RequestBody Medical medical) {
-
-        Success result = new Success(Boolean.FALSE);
-        try {
-            medicalDao.putMedicalData(idmedical, medical);
-            result.setSuccess(Boolean.TRUE);
-        } catch (Exception e) {
-            result.setErrors(new com.abada.extjs.Error(e.getMessage()));
-            logger.error(e);
-        }
-
-        return result;
-    }
-
-    /**
      * Enable a medical by id
      *
      * @param idmedical Medical id.
