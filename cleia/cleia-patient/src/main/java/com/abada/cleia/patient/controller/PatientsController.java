@@ -50,7 +50,7 @@ public class PatientsController {
      */
     @RequestMapping(value = "/patient/patient.htm")
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
-    @MenuEntry(icon = "patient/image/paciente.png", menuGroup = "Pacientes", order = 0, text = "Gestión Pacientes")
+    @MenuEntry(icon = "patient/image/paciente.png", menuGroup = "patient.patient", order = 0, text = "patient.patient")
     public String gridPatient(Model model) {
         model.addAttribute("js", Arrays.asList("patient/js/common/gridPatient.js","patient/js/common/gridPatientExpander.js",
                 "patient/js/patient.js","manager/js/common/gridrole.js", "manager/js/common/gridgroup.js","manager/js/common/griduser.js",

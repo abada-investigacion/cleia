@@ -48,7 +48,7 @@ public class RoleController {
      */
     @RequestMapping(value = "/manager/role.htm")
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
-    @MenuEntry(icon = "manager/image/rol.png", menuGroup = "Manager", order = 2, text = "Roles")
+    @MenuEntry(icon = "manager/image/rol.png", menuGroup = "manager.group", order = 2, text = "manager.roles")
     public String gridrole(Model model) {
         model.addAttribute("js", Arrays.asList("manager/js/common/gridrole.js","manager/js/role.js", 
                 "manager/js/common/griduser.js","manager/js/manager-utils.js"));

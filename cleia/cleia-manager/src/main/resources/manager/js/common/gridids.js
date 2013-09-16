@@ -41,7 +41,8 @@ Ext.define('App.manager.js.common.gridids', {
     {
         header: 'manager.grid.column.numberTitle', 
         dataIndex: 'value',
-        width:50
+        width:50,
+        editor:{xtype: 'textfield'}
     
     },{
         header: 'manager.grid.column.typeTitle', 
@@ -50,13 +51,15 @@ Ext.define('App.manager.js.common.gridids', {
     }
     ],
     forceFit:true,
-    
+    plugins:[Ext.create('Ext.grid.plugin.RowEditing', {
+        clicksToMoveEditor: 1,
+        autoCancel: false
+    })],
     constructor:function(config){
         this.initConfig(config);  
             
             this.store=Ext.create('Abada.data.JsonStore',{
-                storeId:'gridIdStore',
-             
+                storeId:'gridIdStore',             
                 fields:[{
                     name:'value',
                     mapping:'value'

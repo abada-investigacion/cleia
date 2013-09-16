@@ -66,7 +66,7 @@ Ext.onReady(function() {
                             enabled: !patientsGrid.selModel.getLastSelected().get('enabled'),
                             id: patientsGrid.selModel.getLastSelected().get('id')
                         }
-                        var opt = 'modifica';
+                          
                         doAjaxrequestJson(getRelativeServerURI('rs/patient/{idpatient}/{enable}', {
                             idpatient: form.id,
                             enable: form.enabled
@@ -169,7 +169,7 @@ Ext.onReady(function() {
             surname1,
             genre,
             birthDay = new Date(),
-            tlf, address, city, cp, country,idList={};
+            tlf, address, city, cp, country, idList = {};
 
             if (opt != 'insert' && selection.hasSelection()) {
                 method = 'PUT';
@@ -185,7 +185,7 @@ Ext.onReady(function() {
                 city = selection.getLastSelected().get('city');
                 cp = selection.getLastSelected().get('cp');
                 country = selection.getLastSelected().get('country');
-                idList= selection.getLastSelected().get('ids');
+                idList = selection.getLastSelected().get('ids');
             }
 
             var combogenre = Ext.create('Abada.form.field.ComboBoxDeSelect', {
@@ -231,11 +231,11 @@ Ext.onReady(function() {
                 page: 500,
                 rowspan: 4,
                 padding: '10 15 0 15',
-                i18n:i18n
+                i18n: i18n
             });
             groupGrid.getStore().load();
 
-        
+
             var idGrid = Ext.create('App.manager.js.common.gridids', {
                 id: 'idGrid',
                 title: '',
@@ -244,17 +244,17 @@ Ext.onReady(function() {
                 url: null,
                 page: 500,
                 rowspan: 4,
-                i18n:i18n
+                i18n: i18n
             });
 
-            for(var i=0;i<idList.length;i++){
-                
+            for (var i = 0; i < idList.length; i++) {
+
                 idGrid.getStore().insert(0, {
                     value: idList[i].value,
                     idtype: idList[i].type.value
                 });
-                
-            } 
+
+            }
 
             var comboidtype = Ext.create('Abada.form.field.ComboBox', {
                 id: 'cbidtype',
@@ -514,10 +514,19 @@ Ext.onReady(function() {
                 });
 
             }
+                
+            var windTitle;
+            
+            if(opt=='insert'){
+                windTitle=i18n.getMsg('patient.wind.insertPatientTitle');
+            }else{
+                windTitle=i18n.getMsg('patient.wind.updatePatientTitle');
+            }
+
 
 
             var wind = Ext.create('Ext.window.Window', {
-                title: opt + 'r',
+                title: windTitle,
                 id: 'patientWindow',
                 closable: true,
                 modal: true,
@@ -571,7 +580,7 @@ Ext.onReady(function() {
         function griduser(groupGrid, idGrid) {
 
             var usersGrid = Ext.create('App.manager.js.common.griduser', {
-                title: '',
+                i18n: i18n,
                 url: getRelativeServerURI('rs/user/search/usernotpatient'),
                 width: 340,
                 height: 400,
@@ -596,7 +605,7 @@ Ext.onReady(function() {
                 }
             });
             var winds = Ext.create('Ext.window.Window', {
-                title: 'Usuarios',
+                title: i18n.getMsg('patient.title.users'),
                 id: 'usergridWindow',
                 closable: true,
                 modal: true,
@@ -621,9 +630,7 @@ Ext.onReady(function() {
 
         }
 
-
     });
-    
 
     i18n.load();
 

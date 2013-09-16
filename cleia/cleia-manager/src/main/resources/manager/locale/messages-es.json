@@ -46,7 +46,7 @@
     "manager.form.idtypeName":"Nombre",
     "manager.form.idtypeDescription":"Descripci&oacute;n",
     "manager.grid.column.idTitle":"Id",
-    "manager.grid.column.usernameTitle":"Username",
+    "manager.grid.column.usernameTitle":"Usuario",
     "manager.grid.column.enabledTitle":"Habilitado",
     "manager.grid.column.roleTitle":"Rol",
     "manager.grid.column.numberTitle":"N&uacute;mero",
