@@ -173,7 +173,6 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
         patient.setSurname(p.getSurname());
         patient.setSurname1(p.getSurname1());
         patient.setBirthDay(p.getBirthDay());
-        patient.setProcessInstances(p.getProcessInstances());
         patient.setTlf(p.getTlf());
     }
 
@@ -242,29 +241,6 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al modificar el paciente "
                         + patient.getName() + " " + patient.getSurname() + " " + patient.getSurname(), e);
-            }
-        } else {
-            throw new Exception("Error. El paciente no existe");
-        }
-    }
-
-    /**
-     * update patient data
-     *
-     * @param idpatient
-     * @param patient
-     */
-    @Transactional(value = "cleia-txm")
-    public void putPatientData(Long idpatient, Patient patient) throws Exception {
-        Patient patient1 = entityManager.find(Patient.class, idpatient);
-        if (patient1 != null) {
-            /*Modificamos el paciente*/
-            try {
-                this.updatePatient(patient1, patient);
-                userDao.updateUser(patient1.getUser(), patient.getUser());
-            } catch (Exception e) {
-                throw new Exception("Error. Ha ocurrido un error al modificar el paciente "
-                        + patient1.getName() + " " + patient1.getSurname() + " " + patient1.getSurname1());
             }
         } else {
             throw new Exception("Error. El paciente no existe");

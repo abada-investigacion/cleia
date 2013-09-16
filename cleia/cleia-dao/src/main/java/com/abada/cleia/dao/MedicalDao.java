@@ -60,8 +60,6 @@ public interface MedicalDao {
 
     public void putMedical(Long id, Medical medical) throws Exception;
 
-    public void putMedicalData(Long id, Medical medical) throws Exception;
-
     public void enableDisableMedical(Long id, boolean enable) throws Exception;
 
     public List<Id> getIdsForMedical(Long id);

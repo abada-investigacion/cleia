@@ -65,8 +65,6 @@ public interface PatientDao {
 
     public void putPatient(Long idpatient, Patient patient) throws Exception;
 
-    public void putPatientData(Long idpatient, Patient patient) throws Exception;
-
     public void enableDisablePatient(Long idpatient, boolean enable) throws Exception;
 
     public List<Id> getIdsForPatient(Long idpatient);

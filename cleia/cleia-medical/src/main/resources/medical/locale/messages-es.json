@@ -1,8 +1,8 @@
 {
     "medical.send": "Enviar",
     "medical.selectMedical":"Seleccione un M&eacute;dico",
-    "medical.operationSucess":"Operaci&oacute;n Realizada",
-    "medical.operationError":"Operaci&oacute;n no Realizada",
+    "medical.operationSucess":"Operaci&oacute;n realizada",
+    "medical.operationError":"Operaci&oacute;n no realizada",
     "medical.assignPatients":"Asignar Pacientes",
     "medical.wind.patients":"Pacientes",
     "medical.toolbar.enable/disable":"Habilitar/Deshabilitar",
