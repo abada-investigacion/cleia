@@ -240,6 +240,25 @@ public class PatientController {
         model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
+    
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/search/sessionPatient", method = RequestMethod.GET)
+    public void getSearchPatientUser(HttpServletRequest request, Model model) {
+
+        List<Patient> lpatient;
+        ExtjsStore aux = new ExtjsStore();
+        try {
+            String username = request.getUserPrincipal().getName();
+            lpatient = this.patientDao.getPatientUser(null, username);
+            aux.setData(lpatient);
+            aux.setTotal(lpatient.size());
+        } catch (Exception e) {
+            logger.error(e);
+        }
+
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
+    }
 
     /**
      * Insert a patient
