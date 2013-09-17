@@ -106,6 +106,5 @@ Ext.define('App.patient.js.common.gridIdtype', {
             });
         
         this.callParent([config]);
-    },
-    renderTo: Ext.getBody()    
+    }  
 });

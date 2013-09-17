@@ -92,7 +92,6 @@ Ext.onReady(function() {
             url: getRelativeServerURI('rs/idtype/search'),
             width: 500,
             height: 400,
-            checkboxse: true,
             page: 14,
             i18n:i18n
         });
@@ -105,7 +104,6 @@ Ext.onReady(function() {
         });
 
         var panel = Ext.create('Ext.panel.Panel', {
-            frame: true,
             autoWidth: true,
             autoHeight: true,
             title: '',
