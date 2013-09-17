@@ -8,7 +8,8 @@ package com.abada.cleia.dao.impl;
  * #%L
  * Cleia
  * %%
- * Copyright (C) 2013 Abada Servicios Desarrollo (investigacion@abadasoft.com)
+ * Copyright (C) 2013 Abada Servicios Desarrollo
+ * (investigacion@abadasoft.com)
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -25,7 +26,6 @@ package com.abada.cleia.dao.impl;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 import com.abada.cleia.dao.IdDao;
 import com.abada.cleia.dao.UserDao;
 import com.abada.cleia.entity.user.Group;
@@ -105,8 +105,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
                 u.getIds().size();
                 /*
                  * if (u instanceof Patient) { Patient p = (Patient) u;
-                 * p.getMedicals().size(); p.getProcessInstances().size();
-                 }
+                 * p.getMedicals().size(); p.getProcessInstances().size(); }
                  */
 
             }
@@ -147,8 +146,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
             user.getIds().size();
             /*
              * if (user instanceof Patient) { Patient p = (Patient) user;
-             * p.getMedicals().size(); p.getProcessInstances();
-             }
+             * p.getMedicals().size(); p.getProcessInstances(); }
              */
             return user;
         }
@@ -157,17 +155,25 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
 
     }
 
-    /**
+    /*
      * find user given id
      *
-     * @param asList
-     * @return
-     * @throws Exception
+     * @param asList @return @throws Exception
      */
     @Transactional(value = "cleia-txm", readOnly = true)
     public List<User> findUsersrepeatable(List<Id> asList, Boolean repeatable) throws Exception {
+
         List<User> u = new ArrayList<User>();
         if (asList != null && !asList.isEmpty()) {
+            for (int i = 0; i < asList.size(); i++) {
+                if (!asList.get(i).getType().isRepeatable()) {
+                    for (int j = 0; j < asList.size(); j++) {
+                        if (i != j && asList.get(i).getType().getValue().equals(asList.get(j).getType().getValue())) {
+                            throw new Exception("Error. El identificador " + asList.get(i).getType().getValue() + " no se puede repetir");
+                        }
+                    }
+                }
+            }
             int append = 0;
             StringBuilder query = new StringBuilder();
             query.append("SELECT u FROM User u join u.ids idss WHERE idss.id in (select distinct pid.id from Id pid where ");
@@ -215,9 +221,12 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
     @Transactional(value = "cleia-txm")
     public void postUser(User user) throws Exception {
 
-        if (user.getGroups() == null || user.getGroups().isEmpty()) {
-            throw new Exception("Error. El usuario debe pertenecer a un servicio");
-        } else if (user.getRoles() == null || user.getRoles().isEmpty()) {
+        /*
+         * if (user.getGroups() == null || user.getGroups().isEmpty()) { throw
+         * new Exception("Error. El usuario debe pertenecer a un servicio"); }
+         * else
+         */
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
             Role r = new Role();
             r.setAuthority(DEFAUL_ROLE);
             user.addRole(r);
@@ -260,33 +269,54 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
      */
     @Transactional(value = "cleia-txm")
     public void putUser(Long iduser, User newuser) throws Exception {
-        if (newuser.getGroups() == null || newuser.getGroups().isEmpty()) {
+        /*if (newuser.getGroups() == null || newuser.getGroups().isEmpty()) {
             throw new Exception("Error. El usuario debe pertenecer a un servicio");
-        } else if (newuser.getRoles() == null || newuser.getRoles().isEmpty()) {
+        } else */if (newuser.getRoles() == null || newuser.getRoles().isEmpty()) {
             Role r = new Role();
             r.setAuthority(DEFAUL_ROLE);
             newuser.addRole(r);
         }
         User user = entityManager.find(User.class, iduser);
+        List<User> luserid = findUsersrepeatable(newuser.getIds(), Boolean.FALSE);
 
-        if (user != null) {
-            List<User> luser = entityManager.createQuery("select u from User u where u.username=?").setParameter(1, newuser.getUsername()).getResultList();
-            if (luser!=null&&luser.isEmpty() || newuser.getUsername().equals(user.getUsername())) {
+        boolean flag = false;
+        User userAux = null;
 
-                try {
-                    this.addGroupsAndRoles(user, newuser.getGroups(), newuser.getRoles(), false);
-                    this.addIds(user, newuser.getIds(), false);
-                    this.updateUser(user, newuser);
-                } catch (Exception e) {
+        for (int i = 0; i < luserid.size() && !flag; i++) {
 
-                    throw new Exception("Error. Ha ocurrido un error al modificar el usuario " + newuser.getUsername(), e);
+            if (luserid.get(i).getId() == iduser) {
+                flag = true;
+                userAux = luserid.get(i);
+            }
+
+        }
+
+        if (userAux != null) {
+            luserid.remove(userAux);
+        }
+
+        if (luserid != null && luserid.isEmpty()) {
+            if (user != null) {
+                List<User> luser = entityManager.createQuery("select u from User u where u.username=?").setParameter(1, newuser.getUsername()).getResultList();
+                if (luser != null && luser.isEmpty() || newuser.getUsername().equals(user.getUsername())) {
+
+                    try {
+                        this.addGroupsAndRoles(user, newuser.getGroups(), newuser.getRoles(), false);
+                        this.addIds(user, newuser.getIds(), false);
+                        this.updateUser(user, newuser);
+                    } catch (Exception e) {
+
+                        throw new Exception("Error. Ha ocurrido un error al modificar el usuario " + newuser.getUsername(), e);
+                    }
+
+                } else {
+                    throw new Exception("Error. El usuario " + newuser.getUsername() + " ya existe");
                 }
-
             } else {
-                throw new Exception("Error. El usuario " + newuser.getUsername() + " ya existe");
+                throw new Exception("Error. El usuario no existe");
             }
         } else {
-            throw new Exception("Error. El usuario no existe");
+            throw new Exception("Error. Ya existe un usuario con esos identificadores");
         }
     }
 
@@ -303,15 +333,14 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         /*
          * Fuerzo a que cada usuario traiga sus lista de Role y Group
          */
-        if (luser!=null&&!luser.isEmpty()) {
+        if (luser != null && !luser.isEmpty()) {
             for (User u : luser) {
                 u.getGroups().size();
                 u.getRoles().size();
                 u.getIds().size();
                 /*
                  * if (u instanceof Patient) { Patient p = (Patient) u;
-                 * p.getProcessInstances().size(); p.getMedicals().size();
-                 }
+                 * p.getProcessInstances().size(); p.getMedicals().size(); }
                  */
 
             }
@@ -333,8 +362,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         u.getIds().size();
         /*
          * if (u instanceof Patient) { Patient p = (Patient) u;
-         * p.getMedicals().size(); p.getProcessInstances().size();
-         }
+         * p.getMedicals().size(); p.getProcessInstances().size(); }
          */
 
         return u;
@@ -413,7 +441,6 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
 
         return (List<Id>) user.getIds();
     }
-
 
     /**
      * Modifies the relationship between a user and a role
@@ -670,7 +697,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
     @Transactional(value = "cleia-txm", readOnly = true)
     public Long getUsernotPatientsize(GridRequest filters) {
         List<Long> result = this.find(entityManager, "SELECT count(*) FROM User u WHERE u.id not in (select distinct p.id from Patient p)" + filters.getQL("u", false), filters.getParamsValues());
-        Long a=result.get(0);
+        Long a = result.get(0);
         return result.get(0);
     }
 }

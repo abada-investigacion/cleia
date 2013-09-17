@@ -307,30 +307,6 @@ public class PatientController {
     }
 
     /**
-     * Modify a patient by id
-     *
-     * @param idpatient Patient id.
-     * @param patient Patient structure. Must set in JSON in the Http body
-     * request.
-     * @return Return success structure.
-     */
-    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/demographic/{idpatient}", method = RequestMethod.PUT)
-    public Success putPatientData(@PathVariable Long idpatient, @RequestBody Patient patient) {
-
-        Success result = new Success(Boolean.FALSE);
-        try {
-            patientDao.putPatientData(idpatient, patient);
-            result.setSuccess(Boolean.TRUE);
-        } catch (Exception e) {
-            result.setErrors(new com.abada.extjs.Error(e.getMessage()));
-            logger.error(e);
-        }
-
-        return result;
-    }
-
-    /**
      * Enable a patient by id
      *
      * @param idpatient Patient id.

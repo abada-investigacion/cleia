@@ -318,30 +318,6 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
     }
 
     /**
-     * update medical data
-     *
-     * @param idmedical
-     * @param medical
-     */
-    @Transactional(value = "cleia-txm")
-    public void putMedicalData(Long idmedical, Medical medical) throws Exception {
-        Medical medical1 = entityManager.find(Medical.class, idmedical);
-        if (medical1 != null) {
-            /*
-             * Modificamos el medico
-             */
-            try {
-                patientDao.updatePatient(medical1.getPatient(), medical.getPatient());
-            } catch (Exception e) {
-                throw new Exception("Error. Ha ocurrido un error al modificar el medico "
-                        + medical1.getPatient().getName() + " " + medical1.getPatient().getSurname() + " " + medical1.getPatient().getSurname1());
-            }
-        } else {
-            throw new Exception("Error. El medico no existe");
-        }
-    }
-
-    /**
      * enable or disable medical
      *
      * @param idmedical
