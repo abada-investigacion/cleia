@@ -269,33 +269,36 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
      */
     @Transactional(value = "cleia-txm")
     public void putUser(Long iduser, User newuser) throws Exception {
-        /*if (newuser.getGroups() == null || newuser.getGroups().isEmpty()) {
-            throw new Exception("Error. El usuario debe pertenecer a un servicio");
-        } else */if (newuser.getRoles() == null || newuser.getRoles().isEmpty()) {
+        /*
+         * if (newuser.getGroups() == null || newuser.getGroups().isEmpty()) {
+         * throw new Exception("Error. El usuario debe pertenecer a un
+         * servicio"); } else
+         */ if (newuser.getRoles() == null || newuser.getRoles().isEmpty()) {
             Role r = new Role();
             r.setAuthority(DEFAUL_ROLE);
             newuser.addRole(r);
         }
         User user = entityManager.find(User.class, iduser);
-        List<User> luserid = findUsersrepeatable(newuser.getIds(), Boolean.FALSE);
+        List<User> repeatedIds = findUsersrepeatable(newuser.getIds(), Boolean.FALSE);
+        
+        List<User> luserAux = new ArrayList<User>();
 
-        boolean flag = false;
-        User userAux = null;
-
-        for (int i = 0; i < luserid.size() && !flag; i++) {
-
-            if (luserid.get(i).getId() == iduser) {
-                flag = true;
-                userAux = luserid.get(i);
+        //Remove updated user from repeatedIds list
+        for (int i = 0; i < repeatedIds.size(); i++) {
+            if (repeatedIds.get(i).getId() == iduser) {
+              
+                luserAux.add(repeatedIds.get(i));
             }
 
         }
 
-        if (userAux != null) {
-            luserid.remove(userAux);
+        if (luserAux != null && !luserAux.isEmpty()) {
+            for (User u : luserAux) {
+                repeatedIds.remove(u);
+            }
         }
 
-        if (luserid != null && luserid.isEmpty()) {
+        if (repeatedIds != null && repeatedIds.isEmpty()) {
             if (user != null) {
                 List<User> luser = entityManager.createQuery("select u from User u where u.username=?").setParameter(1, newuser.getUsername()).getResultList();
                 if (luser != null && luser.isEmpty() || newuser.getUsername().equals(user.getUsername())) {
