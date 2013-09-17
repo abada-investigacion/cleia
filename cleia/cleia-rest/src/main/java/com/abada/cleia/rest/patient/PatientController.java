@@ -305,6 +305,25 @@ public class PatientController {
 
         return result;
     }
+    
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/patientData", method = RequestMethod.PUT)
+    public Success putPatientSessionUser( @RequestBody Patient patient, HttpServletRequest request) {
+
+        Success result = new Success(Boolean.FALSE);
+        try {
+            if(!patient.getName().equals(request.getUserPrincipal().getName())){
+                throw new Exception("El usuario no coincide con la sessión");
+            }
+            patientDao.putPatient(patient.getId(), patient);
+            result.setSuccess(Boolean.TRUE);
+        } catch (Exception e) {
+            result.setErrors(new com.abada.extjs.Error(e.getMessage()));
+            logger.error(e);
+        }
+
+        return result;
+    }
 
     /**
      * Enable a patient by id

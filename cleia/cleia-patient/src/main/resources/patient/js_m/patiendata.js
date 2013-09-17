@@ -30,17 +30,14 @@ Ext.setup({
         fullscreen: true
     },
     onReady: function() {
-        
-        function formSubmit(){
-            
+
+        function formSubmit() {
+
             var fvalues = Ext.getCmp('patientDataForm').getValues();
-            
-            
-            
-            fvalues.birthDay = Ext.Date.format(fvalues.birthDay,'Y-m-d h:i:s');
-            
-            alert(fvalues.birthDay);
-            
+
+            fvalues.birthDay = Ext.Date.format(fvalues.birthDay, 'Y-m-d h:i:s');
+
+
             patient.name = fvalues.name;
             patient.surname = fvalues.surname;
             patient.surname1 = fvalues.surname1;
@@ -52,10 +49,16 @@ Ext.setup({
             patient.address.countryAddress = fvalues.address.countryAddress;
             patient.genre = fvalues.genre;
             
-            doAjaxrequestJson(getRelativeServerURI("/rs/patient/"+patient.id), patient,'put',null,null, "bien", "mal");
-            
+           /* if(fvalues.password != "" && fvalues.password == fvalues.repassword){
+                patient.user.password = fvalues.password;t
+            }*/
+
+            alert(Ext.encode(patient));
+
+            doAjaxrequestJson(getRelativeServerURI("/rs/patient/patientData"), patient, 'put', null, null, "bien", "mal");
+
         }
-        
+
         function principalAction(removePanel) {
             Ext.define("Genre", {
                 extend: "Ext.data.Model",
@@ -157,6 +160,20 @@ Ext.setup({
                                     }
                                 ]
                             }, {
+                                xtype: 'fieldset',
+                                title: 'Cambio de Contrase&ntilde;a',
+                                items: [
+                                    {
+                                        xtype: 'passwordfield',
+                                        label: 'Contrase&ntilde;a',
+                                        name: 'password'
+                                    }, {
+                                        xtype: 'passwordfield',
+                                        label: 'Rep. Contrase&ntilde;a',
+                                        name: 'repassword'
+                                    }
+                                ]
+                            }, {
                                 xtype: 'button',
                                 ui: 'action',
                                 margin: 15,
@@ -177,27 +194,26 @@ Ext.setup({
 
             Ext.Ajax.request({
                 url: getRelativeServerURI("/rs/patient/search/sessionPatient"),
-                
                 success: function(response) {
-                  
+
                     patient = Ext.decode(response.responseText);
+                    
                     var form = Ext.getCmp('patientDataForm');
                     var bitdday = patient.birthDay.split('-');
                     form.setValues({
-                        
-                        name : patient.name,
+                        name: patient.name,
                         surname: patient.surname,
                         surname1: patient.surname1,
-                        birthDay: new Date(bitdday[0],bitdday[1],bitdday[2]),
+                        birthDay: new Date(bitdday[0], bitdday[1], bitdday[2]),
                         tlf: patient.tlf,
-                        address:patient.address.address,
+                        address: patient.address.address,
                         city: patient.address.city,
-                        cp:patient.address.cp,
+                        cp: patient.address.cp,
                         countryAddress: patient.address.countryAddress,
                         genre: patient.genre
-                        
+
                     });
-                    
+
                 }
             });
         }
