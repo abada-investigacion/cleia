@@ -220,8 +220,40 @@ Ext.onReady(function() {
                 id: 'enabled',
                 name: 'enabled',
                 labelWidth: 125
-
             });
+            
+            if (opt != 'insert') {
+                  
+                roleGrid.getStore().on('load', function() {
+                    var roles = selection.getLastSelected().get('roles');
+                    for (var i = 0; i < roleGrid.getStore().getCount(); i++) {
+                        var record = roleGrid.getStore().getAt(i);
+                        for (var j = 0; j < roles.length; j++) {
+                            if (record.get("authority") == roles[j].authority) {
+                                roleGrid.selModel.select(record, true, true);
+                            }
+                        }
+                    }
+                    
+                });
+
+
+                groupGrid.getStore().on('load', function() {
+                    var groups = selection.getLastSelected().get('groups');
+                    for (var i = 0; i < groupGrid.getStore().getCount(); i++) {
+                        var record = groupGrid.getStore().getAt(i);
+                        for (var j = 0; j < groups.length; j++) {
+                            if (record.get("value") == groups[j].value) {
+                                groupGrid.selModel.select(record, true, true);
+                            }
+                        }
+
+                    }
+                });
+            }
+
+            roleGrid.getStore().load();
+            groupGrid.getStore().load();
 
      
             var formpanel = Ext.create('Ext.form.Panel', {
@@ -385,41 +417,7 @@ Ext.onReady(function() {
 
             wind.show();
 
-            if (opt != 'insert') {
-                roleGrid.getStore().on('load', function() {
-
-                    if (opt != 'insert') {
-                        var roles = selection.getLastSelected().get('roles');
-                        for (var i = 0; i < roleGrid.getStore().getCount(); i++) {
-                            var record = roleGrid.getStore().getAt(i);
-                            for (var j = 0; j < roles.length; j++) {
-                                if (record.get("authority") == roles[j].authority) {
-                                    roleGrid.selModel.select(record, true, true);
-                                }
-                            }
-                        }
-                    }
-                });
-
-
-                groupGrid.getStore().on('load', function() {
-                    var groups = selection.getLastSelected().get('groups');
-                    for (var i = 0; i < groupGrid.getStore().getCount(); i++) {
-                        var record = groupGrid.getStore().getAt(i);
-                        for (var j = 0; j < groups.length; j++) {
-                            if (record.get("value") == groups[j].value) {
-                                groupGrid.selModel.select(record, true, true);
-                            }
-                        }
-
-                    }
-                });
-            }
-
-            roleGrid.getStore().load();
-            groupGrid.getStore().load();
-
-
+          
             return formpanel;
         }
     });
