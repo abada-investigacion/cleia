@@ -243,15 +243,14 @@ public class PatientController {
     
     @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
     @RequestMapping(value = "/search/sessionPatient", method = RequestMethod.GET)
-    public void getSearchPatientUser(HttpServletRequest request, Model model) {
+    public void getSearchPatientSessionUser(HttpServletRequest request, Model model) {
 
-        List<Patient> lpatient;
-        ExtjsStore aux = new ExtjsStore();
+        
+        Patient aux = null;
         try {
             String username = request.getUserPrincipal().getName();
-            lpatient = this.patientDao.getPatientUser(null, username);
-            aux.setData(lpatient);
-            aux.setTotal(lpatient.size());
+            aux = this.patientDao.getPatientUser(null, username).get(0);
+            
         } catch (Exception e) {
             logger.error(e);
         }

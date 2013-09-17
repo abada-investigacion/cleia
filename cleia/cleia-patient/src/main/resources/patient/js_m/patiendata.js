@@ -23,11 +23,39 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+patient = null;
+
 Ext.setup({
     viewport: {
         fullscreen: true
     },
     onReady: function() {
+        
+        function formSubmit(){
+            
+            var fvalues = Ext.getCmp('patientDataForm').getValues();
+            
+            
+            
+            fvalues.birthDay = Ext.Date.format(fvalues.birthDay,'Y-m-d h:i:s');
+            
+            alert(fvalues.birthDay);
+            
+            patient.name = fvalues.name;
+            patient.surname = fvalues.surname;
+            patient.surname1 = fvalues.surname1;
+            patient.birthDay = fvalues.birthDay;
+            patient.tlf = fvalues.tlf;
+            patient.address.address = fvalues.address;
+            patient.address.city = fvalues.city;
+            patient.address.cp = fvalues.cp;
+            patient.address.countryAddress = fvalues.address.countryAddress;
+            patient.genre = fvalues.genre;
+            
+            doAjaxrequestJson(getRelativeServerURI("/rs/patient/"+patient.id), patient,'put',null,null, "bien", "mal");
+            
+        }
+        
         function principalAction(removePanel) {
             Ext.define("Genre", {
                 extend: "Ext.data.Model",
@@ -35,7 +63,6 @@ Ext.setup({
                     fields: [
                         {name: "id", type: "string"},
                         {name: "value", type: "string"},
-                        
                     ]
                 }
             });
@@ -51,19 +78,18 @@ Ext.setup({
                 },
                 autoLoad: true
             });
-            
-            var genreSelect = Ext.create("Ext.field.Select",{
-                
+
+            var genreSelect = Ext.create("Ext.field.Select", {
                 label: 'Genero',
-                name: 'cambiar',
+                name: 'genre',
                 store: genreStore,
-                displayField:"id",
-                valueField : "value"
+                displayField: "id",
+                valueField: "value"
             });
 
 
             var panel = Ext.create('Ext.form.Panel', {
-                id:'patientDataForm',
+                id: 'patientDataForm',
                 items: [
                     {
                         xtype: 'toolbar',
@@ -89,23 +115,23 @@ Ext.setup({
                                     {
                                         xtype: 'textfield',
                                         label: 'Nombre',
-                                        name: 'firstName'
+                                        name: 'name'
                                     }, {
                                         xtype: 'textfield',
                                         label: 'Primer Apellido',
-                                        name: 'firstName'
+                                        name: 'surname'
                                     }, {
                                         xtype: 'textfield',
                                         label: 'Segundo Apellido',
-                                        name: 'firstName'
+                                        name: 'surname1'
                                     }, {
                                         xtype: 'datepickerfield',
                                         label: 'Fecha de Nacimiento',
-                                        name: 'firstName'
+                                        name: 'birthDay'
                                     }, {
                                         xtype: 'textfield',
                                         label: 'Telefono',
-                                        name: 'firstName'
+                                        name: 'tlf'
                                     }, genreSelect
                                 ]
                             }, {
@@ -115,26 +141,28 @@ Ext.setup({
                                     {
                                         xtype: 'textfield',
                                         label: 'Direccion',
-                                        name: 'firstName'
+                                        name: 'address'
                                     }, {
                                         xtype: 'textfield',
                                         label: 'Localidad',
-                                        name: 'firstName'
+                                        name: 'city'
                                     }, {
                                         xtype: 'textfield',
                                         label: 'C. Postal',
-                                        name: 'firstName'
+                                        name: 'cp'
                                     }, {
                                         xtype: 'textfield',
                                         label: 'Pais',
-                                        name: 'firstName'
+                                        name: 'countryAddress'
                                     }
                                 ]
                             }, {
                                 xtype: 'button',
                                 ui: 'action',
-                                margin:15,
-                                text: 'Guardar'}
+                                margin: 15,
+                                text: 'Guardar',
+                                handler: formSubmit
+                            }
 
 
                         ]
@@ -146,6 +174,32 @@ Ext.setup({
                 Ext.Viewport.remove(removePanel, true);
 
             Ext.Viewport.add(panel);
+
+            Ext.Ajax.request({
+                url: getRelativeServerURI("/rs/patient/search/sessionPatient"),
+                
+                success: function(response) {
+                  
+                    patient = Ext.decode(response.responseText);
+                    var form = Ext.getCmp('patientDataForm');
+                    var bitdday = patient.birthDay.split('-');
+                    form.setValues({
+                        
+                        name : patient.name,
+                        surname: patient.surname,
+                        surname1: patient.surname1,
+                        birthDay: new Date(bitdday[0],bitdday[1],bitdday[2]),
+                        tlf: patient.tlf,
+                        address:patient.address.address,
+                        city: patient.address.city,
+                        cp:patient.address.cp,
+                        countryAddress: patient.address.countryAddress,
+                        genre: patient.genre
+                        
+                    });
+                    
+                }
+            });
         }
         principalAction();
     }
