@@ -283,7 +283,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         
         List<User> luserAux = new ArrayList<User>();
 
-        //Remove updated user from repeatedIds list
+        //Remove the user that is being updated from repeatedIds list
         for (int i = 0; i < repeatedIds.size(); i++) {
             if (repeatedIds.get(i).getId() == iduser) {
               
