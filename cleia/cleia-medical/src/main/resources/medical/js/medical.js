@@ -184,7 +184,7 @@ Ext.onReady(function() {
 
             function handleFormulario(opt, grid, title, url, selection) {
                 var method = 'POST';
-                var id,
+                var id,readOnly=false,
                         username,
                         password,
                         name,
@@ -209,6 +209,7 @@ Ext.onReady(function() {
                     cp = selection.getLastSelected().get('cp');
                     country = selection.getLastSelected().get('country');
                     idList = selection.getLastSelected().get('ids');
+                    readOnly=true;
                 }
 
                 var combogenre = Ext.create('Abada.form.field.ComboBoxDeSelect', {
@@ -335,6 +336,7 @@ Ext.onReady(function() {
                                             id: 'username',
                                             value: username,
                                             allowBlank: false,
+                                            readOnly:readOnly,
                                             width: 270
                                         }, {
                                             fieldLabel: i18n.getMsg('medical.form.password'),
