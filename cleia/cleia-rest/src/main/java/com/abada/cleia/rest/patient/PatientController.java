@@ -312,7 +312,7 @@ public class PatientController {
 
         Success result = new Success(Boolean.FALSE);
         try {
-            if(!patient.getName().equals(request.getUserPrincipal().getName())){
+            if(!patient.getUser().getUsername().equals(request.getUserPrincipal().getName())){
                 throw new Exception("El usuario no coincide con la sessión");
             }
             patientDao.putPatient(patient.getId(), patient);
