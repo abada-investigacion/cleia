@@ -70,6 +70,28 @@
     "manager.grid.column.typeTitle": "Tipo",
     "manager.grid.column.idTitle": "Id",
     "manager.grid.column.usernameTitle": "Usuario",
-    "manager.grid.column.enabledTitle": "Habilitado"
+    "manager.grid.column.enabledTitle": "Habilitado",
+    
+     "patient.mobile.data.titlebar" : "Datos Personales",
+     "patient.mobile.data.msg.ok" : "Datos Guardados Correctamente",
+     "patient.mobile.data.msg.error" : "Error al guardar",
+     "patient.mobile.data.name" : "Nombre",
+     "patient.mobile.data.surname" : "P. Apellido",
+     "patient.mobile.data.surname1" : "S. Apellido",
+     "patient.mobile.data.birthday" : "F. Nacimiento",
+     "patient.mobile.data.tlf" : "Tel&eacute;fono",
+     "patient.mobile.data.address" : "Direcci&oacute;n",
+     "patient.mobile.data.city" : "Localidad",
+     "patient.mobile.data.cp" : "C. P.",
+     "patient.mobile.data.countryAddress" : "Pais",
+     "patient.mobile.data.changePass" : "Cambiar Contrase&ntilde;a",
+     "patient.mobile.data.password" : "Contrase&ntilde;a",
+     "patient.mobile.data.repassword" : "Rep. Contrase&ntilde;a",
+     "patient.mobile.data.errorpass" : "Las Contrase&ntilde;as deben coincidir"
+     
+     
+     
+     
+     
     
 }
