@@ -130,7 +130,7 @@ Ext.define('App.patient.js.common.gridPatient', {
         {   
             type: 'date',
             dataIndex: 'birthDay',
-            dateFormat : 'd-m-Y'
+            dateFormat : 'd/m/Y'
         },
         {
             type: 'string',
