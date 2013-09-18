@@ -53,7 +53,7 @@ Ext.onReady(function() {
                         if (medicalGrid.selModel.hasSelection()) {
                             if (medicalGrid.selModel.getCount() == 1) {
                                 handleFormulario('update', medicalGrid, '', getRelativeServerURI('rs/medical/{idmedical}', {
-                                    idmedical: medicalGrid.selModel.getLastSelected().get('id')
+                                    idmedical: medicalGrid.selModel.getLastSelected().get('patient.id')
                                 }), medicalGrid.selModel);
                             } else {
                                 Ext.Msg.alert('', i18n.getMsg('medical.selectMedical'));
@@ -64,8 +64,8 @@ Ext.onReady(function() {
                     submitDelete: function() {
                         if (medicalGrid.selModel.hasSelection()) {
                             var form = {
-                                enabled: !medicalGrid.selModel.getLastSelected().get('enabled'),
-                                id: medicalGrid.selModel.getLastSelected().get('id')
+                                enabled: !medicalGrid.selModel.getLastSelected().get('patient.user.enabled'),
+                                id: medicalGrid.selModel.getLastSelected().get('patient.id')
                             }
 
                             doAjaxrequestJson(getRelativeServerURI('rs/medical/{idmedical}/{enable}', {
@@ -196,18 +196,18 @@ Ext.onReady(function() {
 
                 if (opt != 'insert' && selection.hasSelection()) {
                     method = 'PUT';
-                    id = selection.getLastSelected().get('id');
-                    username = selection.getLastSelected().get('username');
-                    name = selection.getLastSelected().get('name');
-                    surname = selection.getLastSelected().get('surname');
-                    surname1 = selection.getLastSelected().get('surname1');
-                    genre = selection.getLastSelected().get('genre');
-                    birthDay = selection.getLastSelected().get('birthDay');
-                    tlf = selection.getLastSelected().get('tlf');
-                    address = selection.getLastSelected().get('address');
-                    city = selection.getLastSelected().get('city');
-                    cp = selection.getLastSelected().get('cp');
-                    country = selection.getLastSelected().get('country');
+                    id = selection.getLastSelected().get('patient.id');
+                    username = selection.getLastSelected().get('patient.user.username');
+                    name = selection.getLastSelected().get('patient.name');
+                    surname = selection.getLastSelected().get('patient.surname');
+                    surname1 = selection.getLastSelected().get('patient.surname1');
+                    genre = selection.getLastSelected().get('patient.genre');
+                    birthDay = selection.getLastSelected().get('patient.birthDay');
+                    tlf = selection.getLastSelected().get('patient.tlf');
+                    address = selection.getLastSelected().get('patient.address.address');
+                    city = selection.getLastSelected().get('patient.address.city');
+                    cp = selection.getLastSelected().get('patient.address.cp');
+                    country = selection.getLastSelected().get('patient.address.countryAddress');
                     idList = selection.getLastSelected().get('ids');
                     readOnly=true;
                 }
