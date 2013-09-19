@@ -199,7 +199,7 @@ Ext.onReady(function() {
         function assignPatient(selection) {
         
             var patientsGrid = Ext.create('App.patient.js.common.gridPatient', {
-                title:i18n.getMsg('manager.grid.patientGridTitle'),
+                title:'',
                 url: getRelativeServerURI('rs/patient/searchforassignment'),
                 height:400,
                 width:800,

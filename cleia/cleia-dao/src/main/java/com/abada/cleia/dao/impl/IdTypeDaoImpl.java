@@ -8,7 +8,8 @@ package com.abada.cleia.dao.impl;
  * #%L
  * Cleia
  * %%
- * Copyright (C) 2013 Abada Servicios Desarrollo (investigacion@abadasoft.com)
+ * Copyright (C) 2013 Abada Servicios Desarrollo
+ * (investigacion@abadasoft.com)
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -25,11 +26,8 @@ package com.abada.cleia.dao.impl;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 import com.abada.cleia.dao.IdTypeDao;
-import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.IdType;
-import com.abada.cleia.entity.user.User;
 import com.abada.springframework.orm.jpa.support.JpaDaoUtils;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import java.util.List;
@@ -75,8 +73,14 @@ public class IdTypeDaoImpl extends JpaDaoUtils implements IdTypeDao {
 
     @Transactional(value = "cleia-txm")
     public void postIdType(IdType idtype) throws Exception {
-        entityManager.persist(idtype);
 
+        IdType idType = entityManager.find(IdType.class, idtype.getValue());
+
+        if (idType != null) {
+            throw new Exception("Error. El tipo de identificador enviado ya existe");
+        } else {
+            entityManager.persist(idtype);
+        }
     }
 
     @Transactional(value = "cleia-txm")
@@ -97,17 +101,25 @@ public class IdTypeDaoImpl extends JpaDaoUtils implements IdTypeDao {
      */
     @Transactional(value = "cleia-txm")
     public void deleteIdType(String value) throws Exception {
-        
-        IdType idType=entityManager.find(IdType.class, value);
-        entityManager.remove(idType);
-        
+
+        Long count = (Long) entityManager.createQuery("SELECT count(*) FROM User u join u.ids idss WHERE idss.id in "
+                + "(select distinct pid.id from Id pid where pid.type.value= :value)").setParameter("value", value).getSingleResult();
+
+        if (count > 0) {
+            throw new Exception("Error. No se puede eliminar un tipo de identificador que est&eacute; asignado a un paciente.");
+
+        } else {
+            IdType idType = entityManager.find(IdType.class, value);
+            entityManager.remove(idType);
+        }
+
     }
 
     /**
      *
      * @return
      */
-    @Transactional(value = "cleia-txm",readOnly=true)
+    @Transactional(value = "cleia-txm", readOnly = true)
     public List<IdType> getAll() {
         List<IdType> lidtype = entityManager.createQuery("SELECT u FROM IdType u").getResultList();
         return lidtype;
