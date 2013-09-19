@@ -147,7 +147,7 @@ Ext.onReady(function() {
 
         function handleFormulario(opt, grid, title, url, selection) {
 
-            var username, contrasena, id, idList={}, method = 'POST', enabled = true;
+            var username, contrasena, id, idList={}, method = 'POST', enabled = true,allowBlank=false,readOnly=false;
 
             if (opt != 'insert' && selection.hasSelection()) {
                 method = 'PUT';
@@ -156,6 +156,8 @@ Ext.onReady(function() {
                 id = selection.getLastSelected().get('id');
                 enabled = selection.getLastSelected().get('enabled');
                 idList= selection.getLastSelected().get('ids');
+                allowBlank=true;
+                readOnly=true;
             }
 
             var groupGrid = Ext.create('App.manager.js.common.gridgroup', {
@@ -283,13 +285,14 @@ Ext.onReady(function() {
                         id: 'username',
                         value: username,
                         allowBlank: false,
+                        readOnly:readOnly,
                         labelWidth: 125,
                         width: 400
                     }, {
                         fieldLabel: i18n.getMsg('manager.form.password'),
                         name: 'password',
                         id: 'password',
-                        allowBlank: false,
+                        allowBlank: allowBlank,
                         inputType: 'password',
                         value: contrasena,
                         labelWidth: 125,
@@ -299,7 +302,7 @@ Ext.onReady(function() {
                         fieldLabel: i18n.getMsg('manager.form.repeatPassword'),
                         name: 'password2',
                         id: 'password2',
-                        allowBlank: false,
+                        allowBlank: allowBlank,
                         inputType: 'password',
                         value: contrasena,
                         labelWidth: 125,

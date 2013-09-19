@@ -259,7 +259,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
                     entityManager.persist(user);
                 } catch (Exception e) {
 
-                    throw new Exception("Error. Ha ocurrido un error al insertar el usuario " + user.getUsername(), e);
+                    throw new Exception("Error. Ha ocurrido un error al insertar el usuario " + user.getUsername());
                 }
 
             } else {
@@ -525,7 +525,9 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         user.setAccountNonExpired(newuser.isAccountNonExpired());
         user.setCredentialsNonExpired(newuser.isCredentialsNonExpired());
         user.setAccountNonLocked(newuser.isAccountNonLocked());
-        user.setPassword(sha1PasswordEncoder.encodePassword(newuser.getPassword(), null));
+        if (newuser.getPassword() != null && !newuser.getPassword().equals("")) {
+            user.setPassword(sha1PasswordEncoder.encodePassword(newuser.getPassword(), null));
+        }
         user.setUsername(newuser.getUsername());
     }
 
