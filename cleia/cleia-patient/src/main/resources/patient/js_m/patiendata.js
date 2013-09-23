@@ -71,7 +71,7 @@ Ext.setup({
                             width: 350,
                             buttons: Ext.MessageBox.OK,
                             multiLine: true,
-                            prompt: {maxlength: 180, autocapitalize: true},
+                            prompt: {maxlength: 180, autocapitalize: true}
                         });
                         return false;
                     }
@@ -85,7 +85,7 @@ Ext.setup({
                     scope: this,
                     method: 'put',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json; charset=UTF-8'
                     },
                     params:
                             Ext.JSON.encode(patient)
@@ -106,7 +106,7 @@ Ext.setup({
                             width: 350,
                             buttons: Ext.MessageBox.OK,
                             multiLine: true,
-                            prompt: {maxlength: 180, autocapitalize: true},
+                            prompt: {maxlength: 180, autocapitalize: true}
                         });
                     }
                 });

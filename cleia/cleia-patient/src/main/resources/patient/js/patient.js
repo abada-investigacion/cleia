@@ -355,6 +355,9 @@ Ext.onReady(function() {
                                     Ext.getCmp('username').setValue('');
                                     groupGrid.selModel.deselectAll();
                                     idGrid.getStore().removeAll();
+                                    
+                                    Ext.getCmp('password').allowBlank=false;
+                                    Ext.getCmp('password2').allowBlank=false;
                                 }
                             }]
                         }
@@ -564,7 +567,7 @@ Ext.onReady(function() {
                 scope: this,
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json; charset=UTF-8'
                 },
                 failure: function() {
 
@@ -604,15 +607,21 @@ Ext.onReady(function() {
                 groupGrid.selModel.deselectAll();
                 selectGroupGrid(record.data.id, groupGrid);
                 loadIdGrid(record.data.id, idGrid);
-                winds.close();
+                
+                Ext.getCmp('password').allowBlank=true;
+                Ext.getCmp('password2').allowBlank=true;
+                
+                winds.close();                               
 
             });
+            
             usersGrid.getStore().load({
                 params: {
                     start: 0,
                     limit: 14
                 }
             });
+            
             var winds = Ext.create('Ext.window.Window', {
                 title: i18n.getMsg('patient.title.users'),
                 id: 'usergridWindow',

@@ -352,7 +352,7 @@ Ext.onReady(function() {
                             fieldLabel: i18n.getMsg('medical.form.repeatPassword'),
                             name: 'password2',
                             id: 'password2',
-                            allowBlank: false,
+                            allowBlank: allowBlank,
                             inputType: 'password',
                             value: password,
                             width: 270
@@ -378,6 +378,9 @@ Ext.onReady(function() {
                                     Ext.getCmp('username').setValue('');
                                     groupGrid.selModel.deselectAll();
                                     idGrid.getStore().removeAll();
+                                    
+                                    Ext.getCmp('password').allowBlank=false;
+                                    Ext.getCmp('password2').allowBlank=false;
                                 }
                             }]
                         }
@@ -606,7 +609,12 @@ Ext.onReady(function() {
                 Ext.getCmp('cp').setValue(record.data.cp);
                 Ext.getCmp('country').setValue(record.data.country);
                 combogenre.setValue(record.data.genre);
+                
+                Ext.getCmp('password').allowBlank=true;
+                Ext.getCmp('password2').allowBlank=true;
+
                 winds.close();
+                
 
             });
 
@@ -804,7 +812,7 @@ Ext.onReady(function() {
                 scope: this,
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json; charset=UTF-8'
                 },
                 failure: function() {
 
