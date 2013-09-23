@@ -67,7 +67,7 @@ function entityListPreSelected(grid,idEntity,idEntityString,idList,url){
         scope:this,
         method:'GET',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json; charset=UTF-8'
         },
         params:{
             search:Ext.JSON.encode(generateSearchParam(idEntity,idEntityString))
