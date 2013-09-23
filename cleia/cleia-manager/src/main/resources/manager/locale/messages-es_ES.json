@@ -21,6 +21,7 @@
     "manager.form.identifierNumber":"N&uacute;mero",
     "manager.form.fieldset.services":"Servicios",
     "manager.form.fieldset.roles":"Roles",
+    "manager.form.idRequired":"Debe asignar al menos un identificador",
     "manager.grid.userGridTitle":"Usuarios",
     "manager.grid.groupGridTitle":"Servicios",
     "manager.grid.rolesGridTitle":"Roles",

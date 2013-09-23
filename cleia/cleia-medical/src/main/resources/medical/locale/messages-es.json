@@ -31,6 +31,7 @@
     "medical.form.city":"Ciudad",
     "medical.form.postalCode":"C. Postal",
     "medical.form.country":"Pa&iacute;s",
+    "medical.form.idRequired":"Debe asignar al menos un identificador",
     "medical.error":"Error",
     "medical.form.passwordNotEquals":"Las contrase&ntilde;as no son iguales",
     "medical.wind.insertTitle":"Insertar M&eacute;dico",

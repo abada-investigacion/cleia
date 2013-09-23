@@ -28,7 +28,7 @@ Ext.require([
     'Ext.form.Panel', 'Ext.form.field.Checkbox', 'Abada.Ajax', 'Ext.JSON', 'Ext.Ajax',
     'Ext.layout.container.Table', 'Abada.toolbar.ToolbarInsertUpdateDelete', 'Abada.form.field.ComboBoxDeSelect',
     , 'Ext.form.field.Date', 'Abada.form.field.ComboBox', 'App.manager.js.common.gridids'
-]);
+    ]);
 
 Ext.onReady(function() {
     var i18n = Ext.create('Abada.i18n.Bundle', {
@@ -162,15 +162,16 @@ Ext.onReady(function() {
         function handleFormulario(opt, grid, title, url, selection) {
             var method = 'POST';
             var id,
-                    readOnly = false,
-                    username,
-                    password,
-                    name,
-                    surname,
-                    surname1,
-                    genre,
-                    birthDay = new Date(),
-                    tlf, address, city, cp, country, idList = {};
+            readOnly = false,
+            allowBlank=false,
+            username,
+            password,
+            name,
+            surname,
+            surname1,
+            genre,
+            birthDay = new Date(),
+            tlf, address, city, cp, country, idList = {};
 
             if (opt != 'insert' && selection.hasSelection()) {
                 method = 'PUT';
@@ -188,6 +189,7 @@ Ext.onReady(function() {
                 country = selection.getLastSelected().get('country');
                 idList = selection.getLastSelected().get('ids');
                 readOnly = true;
+                allowBlank=true;
             }
 
             var combogenre = Ext.create('Abada.form.field.ComboBoxDeSelect', {
@@ -285,211 +287,212 @@ Ext.onReady(function() {
                     columns: 2
                 },
                 items: [{
-                        xtype: 'fieldset',
-                        title: i18n.getMsg('patient.patient.fieldset.dateuser'),
-                        width: '100%',
-                        collapsible: false,
+                    xtype: 'fieldset',
+                    title: i18n.getMsg('patient.patient.fieldset.dateuser'),
+                    width: '100%',
+                    collapsible: false,
+                    defaultType: 'textfield',
+                    layout: {
+                        type: 'table',
+                        column: 2
+                    },
+                    padding: '10 15 10 15',
+                    items: [{
+                        xtype: 'container',
                         defaultType: 'textfield',
-                        layout: {
-                            type: 'table',
-                            column: 2
-                        },
-                        padding: '10 15 10 15',
+                        layout: 'vbox',
                         items: [{
-                                xtype: 'container',
-                                defaultType: 'textfield',
-                                layout: 'vbox',
-                                items: [{
-                                        fieldLabel: 'Id',
-                                        name: 'id',
-                                        id: 'id',
-                                        value: id,
-                                        readOnly: true,
-                                        width: 270
-                                    }, {
-                                        fieldLabel: i18n.getMsg('patient.patient.fieldLabel.user'),
-                                        name: 'username',
-                                        id: 'username',
-                                        value: username,
-                                        readOnly: readOnly,
-                                        allowBlank: false,
-                                        width: 270
-                                    }, {
-                                        fieldLabel: i18n.getMsg('patient.patient.fieldLabel.password'),
-                                        name: 'password',
-                                        id: 'password',
-                                        allowBlank: false,
-                                        inputType: 'password',
-                                        value: password,
-                                        width: 270
-                                    },
-                                    {
-                                        fieldLabel: i18n.getMsg('patient.patient.fieldLabel.repitpassword'),
-                                        name: 'password2',
-                                        id: 'password2',
-                                        allowBlank: false,
-                                        inputType: 'password',
-                                        value: password,
-                                        width: 270
+                            fieldLabel: 'Id',
+                            name: 'id',
+                            id: 'id',
+                            value: id,
+                            readOnly: true,
+                            width: 270
+                        }, {
+                            fieldLabel: i18n.getMsg('patient.patient.fieldLabel.user'),
+                            name: 'username',
+                            id: 'username',
+                            value: username,
+                            readOnly: readOnly,
+                            allowBlank: false,
+                            width: 270
+                        }, {
+                            fieldLabel: i18n.getMsg('patient.patient.fieldLabel.password'),
+                            name: 'password',
+                            id: 'password',
+                            allowBlank: allowBlank,
+                            inputType: 'password',
+                            value: password,
+                            width: 270
+                        },
+                        {
+                            fieldLabel: i18n.getMsg('patient.patient.fieldLabel.repitpassword'),
+                            name: 'password2',
+                            id: 'password2',
+                            allowBlank: allowBlank,
+                            inputType: 'password',
+                            value: password,
+                            width: 270
 
-                                    }]
+                        }]
 
-                            }, {
-                                xtype: 'container',
-                                layout: 'vbox',
-                                items: [
-                                    {
-                                        xtype: 'container',
-                                        layout: 'hbox',
-                                        items: [loadbutton, {
-                                                xtype: 'button',
-                                                id: 'clearbutton',
-                                                text: i18n.getMsg('patient.patient.button.clear'),
-                                                margin: '10 15 0 0',
-                                                handler: function() {
-
-                                                    Ext.getCmp('id').setValue('');
-                                                    Ext.getCmp('username').setReadOnly(false);
-                                                    Ext.getCmp('username').setValue('');
-                                                    groupGrid.selModel.deselectAll();
-                                                    idGrid.getStore().removeAll();
-                                                }
-                                            }]
-                                    }
-                                    , groupGrid]
-                            }
-                        ]
                     }, {
-                        xtype: 'fieldset',
-                        title: i18n.getMsg('patient.patient.title.identifiers'),
-                        width: '100%',
-                        collapsible: false,
-                        padding: '10 15 10 15',
+                        xtype: 'container',
+                        layout: 'vbox',
                         items: [
-                            {
-                                xtype: 'container',
-                                layout: 'hbox',
-                                items: [{
-                                        xtype: 'textfield',
-                                        fieldLabel: i18n.getMsg('patient.patient.fieldLabel.number'),
-                                        name: 'idnumber',
-                                        id: 'idnumber',
-                                        padding: '0 15 10 0',
-                                        labelWidth: 50,
-                                        labelAlign: 'top',
-                                        width: 150
+                        {
+                            xtype: 'container',
+                            layout: 'hbox',
+                            items: [loadbutton, {
+                                xtype: 'button',
+                                id: 'clearbutton',
+                                text: i18n.getMsg('patient.patient.button.clear'),
+                                margin: '10 15 0 0',
+                                handler: function() {
 
-                                    }, comboidtype, {
-                                        xtype: 'button',
-                                        id: 'addbutton',
-                                        icon: getRelativeURI('images/custom/add.png'),
-                                        handler: function() {
-
-                                            idGrid.getStore().insert(0, {
-                                                value: Ext.getCmp("idnumber").getValue(),
-                                                idtype: Ext.getCmp("cbidtype").getRawValue()
-                                            });
-
-                                            Ext.getCmp("idnumber").setValue('');
-                                            Ext.getCmp("cbidtype").setValue('');
-                                        }
-                                    }, {
-                                        xtype: 'button',
-                                        id: 'deletebutton',
-                                        icon: getRelativeURI('images/custom/delete.gif'),
-                                        handler: function() {
-
-                                            if (idGrid.getSelectionModel().getCount() > 0) {
-                                                idGrid.getStore().remove(idGrid.getSelectionModel().getSelection());
-                                            }
-
-                                        }
-                                    }]
-                            }, idGrid
-                        ]
-                    }, {
-                        xtype: 'fieldset',
-                        title: i18n.getMsg('patient.patient.title.personal'),
-                        width: '100%',
-                        collapsible: false,
-                        defaultType: 'textfield',
-                        padding: '10 15 10 15',
-                        items: [
-                            {
-                                fieldLabel: i18n.getMsg('patient.patient.fieldLabel.name'),
-                                name: 'name',
-                                id: 'name',
-                                value: name,
-                                width: 270,
-                                allowBlank: false
-                            }, {
-                                fieldLabel: i18n.getMsg('patient.patient.fieldLabel.surname'),
-                                name: 'surname',
-                                id: 'surname',
-                                value: surname,
-                                width: 270,
-                                allowBlank: false
-
-                            }, {
-                                fieldLabel: i18n.getMsg('patient.patient.fieldLabel.surname1'),
-                                name: 'surname1',
-                                id: 'surname1',
-                                value: surname1,
-                                width: 270,
-                                allowBlank: false
-                            }, datebirthday, {
-                                fieldLabel: i18n.getMsg('patient.patient.fieldLabel.telephone'),
-                                name: 'tlf',
-                                id: 'tlf',
-                                value: tlf,
-                                width: 270,
-                                allowBlank: false
-                            }, combogenre]
-                    }, {
-                        xtype: 'fieldset',
-                        title: i18n.getMsg('patient.patient.title.address'),
-                        width: '100%',
-                        collapsible: false,
-                        defaultType: 'textfield',
-                        padding: '10 15 10 15',
-                        items: [
-                            {
-                                fieldLabel: i18n.getMsg('patient.patient.fieldLabel.address'),
-                                name: 'address',
-                                id: 'address',
-                                value: address,
-                                width: 270,
-                                allowBlank: false
-                            }, {
-                                fieldLabel: i18n.getMsg('patient.patient.fieldLabel.city'),
-                                name: 'city',
-                                id: 'city',
-                                value: city,
-                                width: 270,
-                                allowBlank: false
-
-                            }, {
-                                fieldLabel: i18n.getMsg('patient.patient.fieldLabel.cp'),
-                                name: 'cp',
-                                id: 'cp',
-                                value: cp,
-                                width: 270,
-                                allowBlank: false
-                            }, {
-                                fieldLabel: i18n.getMsg('patient.patient.fieldLabel.country'),
-                                name: 'country',
-                                id: 'country',
-                                value: country,
-                                width: 270,
-                                allowBlank: false
+                                    Ext.getCmp('id').setValue('');
+                                    Ext.getCmp('username').setReadOnly(false);
+                                    Ext.getCmp('username').setValue('');
+                                    groupGrid.selModel.deselectAll();
+                                    idGrid.getStore().removeAll();
+                                }
                             }]
-                    }],
-                buttons: [{
-                        text: i18n.getMsg('patient.patient.button.send'),
-                        id: 'formPatient',
-                        formBind: true,
-                        handler: function() {
+                        }
+                        , groupGrid]
+                    }
+                    ]
+                }, {
+                    xtype: 'fieldset',
+                    title: i18n.getMsg('patient.patient.title.identifiers'),
+                    width: '100%',
+                    collapsible: false,
+                    padding: '10 15 10 15',
+                    items: [
+                    {
+                        xtype: 'container',
+                        layout: 'hbox',
+                        items: [{
+                            xtype: 'textfield',
+                            fieldLabel: i18n.getMsg('patient.patient.fieldLabel.number'),
+                            name: 'idnumber',
+                            id: 'idnumber',
+                            padding: '0 15 10 0',
+                            labelWidth: 50,
+                            labelAlign: 'top',
+                            width: 150
 
+                        }, comboidtype, {
+                            xtype: 'button',
+                            id: 'addbutton',
+                            icon: getRelativeURI('images/custom/add.png'),
+                            handler: function() {
+
+                                idGrid.getStore().insert(0, {
+                                    value: Ext.getCmp("idnumber").getValue(),
+                                    idtype: Ext.getCmp("cbidtype").getRawValue()
+                                });
+
+                                Ext.getCmp("idnumber").setValue('');
+                                Ext.getCmp("cbidtype").setValue('');
+                            }
+                        }, {
+                            xtype: 'button',
+                            id: 'deletebutton',
+                            icon: getRelativeURI('images/custom/delete.gif'),
+                            handler: function() {
+
+                                if (idGrid.getSelectionModel().getCount() > 0) {
+                                    idGrid.getStore().remove(idGrid.getSelectionModel().getSelection());
+                                }
+
+                            }
+                        }]
+                    }, idGrid
+                    ]
+                }, {
+                    xtype: 'fieldset',
+                    title: i18n.getMsg('patient.patient.title.personal'),
+                    width: '100%',
+                    collapsible: false,
+                    defaultType: 'textfield',
+                    padding: '10 15 10 15',
+                    items: [
+                    {
+                        fieldLabel: i18n.getMsg('patient.patient.fieldLabel.name'),
+                        name: 'name',
+                        id: 'name',
+                        value: name,
+                        width: 270,
+                        allowBlank: false
+                    }, {
+                        fieldLabel: i18n.getMsg('patient.patient.fieldLabel.surname'),
+                        name: 'surname',
+                        id: 'surname',
+                        value: surname,
+                        width: 270,
+                        allowBlank: false
+
+                    }, {
+                        fieldLabel: i18n.getMsg('patient.patient.fieldLabel.surname1'),
+                        name: 'surname1',
+                        id: 'surname1',
+                        value: surname1,
+                        width: 270,
+                        allowBlank: false
+                    }, datebirthday, {
+                        fieldLabel: i18n.getMsg('patient.patient.fieldLabel.telephone'),
+                        name: 'tlf',
+                        id: 'tlf',
+                        value: tlf,
+                        width: 270,
+                        allowBlank: false
+                    }, combogenre]
+                }, {
+                    xtype: 'fieldset',
+                    title: i18n.getMsg('patient.patient.title.address'),
+                    width: '100%',
+                    collapsible: false,
+                    defaultType: 'textfield',
+                    padding: '10 15 10 15',
+                    items: [
+                    {
+                        fieldLabel: i18n.getMsg('patient.patient.fieldLabel.address'),
+                        name: 'address',
+                        id: 'address',
+                        value: address,
+                        width: 270,
+                        allowBlank: false
+                    }, {
+                        fieldLabel: i18n.getMsg('patient.patient.fieldLabel.city'),
+                        name: 'city',
+                        id: 'city',
+                        value: city,
+                        width: 270,
+                        allowBlank: false
+
+                    }, {
+                        fieldLabel: i18n.getMsg('patient.patient.fieldLabel.cp'),
+                        name: 'cp',
+                        id: 'cp',
+                        value: cp,
+                        width: 270,
+                        allowBlank: false
+                    }, {
+                        fieldLabel: i18n.getMsg('patient.patient.fieldLabel.country'),
+                        name: 'country',
+                        id: 'country',
+                        value: country,
+                        width: 270,
+                        allowBlank: false
+                    }]
+                }],
+                buttons: [{
+                    text: i18n.getMsg('patient.patient.button.send'),
+                    id: 'formPatient',
+                    formBind: true,
+                    handler: function() {
+
+                        if(idGrid.getStore().count()>0){
                             if (Ext.getCmp('password2').getValue() === Ext.getCmp('password').getValue()) {
                                 if (formpanel.getForm().isValid()) {
 
@@ -500,9 +503,12 @@ Ext.onReady(function() {
                                 Ext.Msg.alert(i18n.getMsg('patient.patient.alert.error'), i18n.getMsg('patient.patient.alert.notpasswordequal'));
                             }
 
+                        }else{
+                            Ext.Msg.alert('Error',i18n.getMsg('patient.form.idRequired'));
                         }
+                    }
 
-                    }]
+                }]
             });
 
 

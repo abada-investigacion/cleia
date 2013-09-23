@@ -164,7 +164,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
      * @param asList @return @throws Exception
      */
     @Transactional(value = "cleia-txm", readOnly = true)
-    private boolean findUsersrepeatable(Long iduser, List<Id> asList, Boolean repeatable) throws Exception {
+    private boolean findUsersrepeatable(Long iduser, List<Id> asList) throws Exception {
 
         boolean result = true;
 
@@ -194,10 +194,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
                         query.append(" or ");
                     }
                     query.append("pid.value='").append(pid.getValue()).append("'");
-                    if (repeatable != null) {
-                        query.append(" and pid.type.repeatable=").append(repeatable);
-                    }
-
+                    
                     query.append(" and pid.type.value='").append(pid.getType().getValue()).append("'");
                 } else {
                     throw new Exception("Error. Ha ocurrido un error en uno de los identificadores");
@@ -242,7 +239,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         List<User> luser = entityManager.createQuery("select u from User u where u.username=?").setParameter(1, user.getUsername()).getResultList();
 
 
-        if (findUsersrepeatable(null, user.getIds(), Boolean.FALSE)) {
+        if (findUsersrepeatable(null, user.getIds())) {
             if (luser != null && luser.isEmpty()) {
 
                 try {
@@ -298,7 +295,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
             newuser.addRole(r);
         }
 
-        if (newuser.getIds() == null || this.findUsersrepeatable(iduser, newuser.getIds(), Boolean.FALSE)) {
+        if (newuser.getIds() == null || this.findUsersrepeatable(iduser, newuser.getIds())) {
             if (user != null) {
                 List<User> luser = entityManager.createQuery("select u from User u where u.username=?").setParameter(1, newuser.getUsername()).getResultList();
                 if (luser != null && luser.isEmpty() || newuser.getUsername().equals(user.getUsername())) {
@@ -311,7 +308,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
                             this.addRoles(user, newuser.getRoles(), false);
                         }
 
-                        if (newuser.getIds() != null) {
+                        if (newuser.getIds() != null && newuser.getIds().size()>0) {
                             this.addIds(user, newuser.getIds(), false);
                         }
                         this.updateUser(user, newuser);

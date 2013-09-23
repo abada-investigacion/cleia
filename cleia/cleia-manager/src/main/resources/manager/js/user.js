@@ -385,46 +385,51 @@ Ext.onReady(function() {
                     id: 'formuser',
                     formBind: true,
                     handler: function() {
-                        if (Ext.getCmp("password2").getValue() == Ext.getCmp("password").getValue()) {
-                            if (formpanel.getForm().isValid()) {
-                                var form = getO(formpanel, groupGrid.selModel, roleGrid.selModel, idGrid.getStore())
-                                doAjaxrequestJson(url, form, method, usersGrid, wind,i18n.getMsg('manager.operationSucess'), i18n.getMsg('manager.operationError') );
-                            }
-                        } else {
-                            Ext.Msg.alert('Error',i18n.getMsg('manager.form.passwordNotEquals'));
+                        
+                        if(idGrid.getStore().count()>0){
+                            if (Ext.getCmp("password2").getValue() == Ext.getCmp("password").getValue()) {
+                                if (formpanel.getForm().isValid()) {
+                                    var form = getO(formpanel, groupGrid.selModel, roleGrid.selModel, idGrid.getStore())
+                                    doAjaxrequestJson(url, form, method, usersGrid, wind,i18n.getMsg('manager.operationSucess'), i18n.getMsg('manager.operationError') );
+                                }
+                            } else {
+                                Ext.Msg.alert('Error',i18n.getMsg('manager.form.passwordNotEquals'));
 
+                            }
+                        }else{
+                             Ext.Msg.alert('Error',i18n.getMsg('manager.form.idRequired'));
                         }
                     }
-                }]
+            }]
             });
    
 
-            var windTitle;
+        var windTitle;
             
-            if(opt=='insert'){
-                windTitle=i18n.getMsg('manager.wind.insertUserTitle');
-            }else{
-                windTitle=i18n.getMsg('manager.wind.updateUserTitle');
-            }
+        if(opt=='insert'){
+            windTitle=i18n.getMsg('manager.wind.insertUserTitle');
+        }else{
+            windTitle=i18n.getMsg('manager.wind.updateUserTitle');
+        }
 
-            var wind = Ext.create('Ext.window.Window', {
-                title: windTitle,
-                id: 'usuario',
-                autoScroll: false,
-                closable: true,
-                modal: true,
-                width: 500,
-                autoHeight: true,
-                items: [formpanel]
-            });
+        var wind = Ext.create('Ext.window.Window', {
+            title: windTitle,
+            id: 'usuario',
+            autoScroll: false,
+            closable: true,
+            modal: true,
+            width: 500,
+            autoHeight: true,
+            items: [formpanel]
+        });
 
-            wind.show();
+        wind.show();
 
           
-            return formpanel;
-        }
+        return formpanel;
+    }
     });
 
-    i18n.load();
+i18n.load();
 
-});
+    });

@@ -107,25 +107,6 @@ public class PatientController {
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
-    /**
-     * Find patient with the passed identificators
-     *
-     * @param lpatientid Patient id list.
-     * @return Return patient structure.
-     */
-    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(method = RequestMethod.PUT)
-    public void getPatientByListId(@RequestBody Id[] lpatientid, Model model) {
-        try {
-            List<Patient> lpatient = patientDao.findPatientsbylisId(Arrays.asList(lpatientid), null);
-            if (!lpatient.isEmpty() && lpatient.size() == 1) {
-                model.addAttribute(JsonView.JSON_VIEW_RESULT, lpatient.get(0));
-                model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
-            }
-        } catch (Exception e) {
-            logger.error(e);
-        }
-    }
 
     /**
      * Search a list of users by params
