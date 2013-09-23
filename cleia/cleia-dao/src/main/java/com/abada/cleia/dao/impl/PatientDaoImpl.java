@@ -199,9 +199,8 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
      */
     @Transactional(value = "cleia-txm")
     public void postPatient(Patient patient) throws Exception {
-
-        List<Patient> lpatientid = findPatientsbylisId(patient.getUser().getIds(), Boolean.FALSE);
-        if (lpatientid != null && lpatientid.isEmpty()) {
+        
+      
             try {
 
                 if (patient.getUser() != null && patient.getUser().getId() <= 0) {
@@ -218,9 +217,7 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
             } catch (Exception e) {
                 throw new Exception("Error. Ha ocurrido un error al insertar el paciente " + patient.getName() + " " + patient.getSurname() + " " + patient.getSurname1() + " " + e.toString());
             }
-        } else {
-            throw new Exception("Error. El patient " + patient.getName() + " ya existe con esos identificadores");
-        }
+        
     }
 
     /**
@@ -280,51 +277,6 @@ public class PatientDaoImpl extends JpaDaoUtils implements PatientDao {
         } else {
             throw new Exception("Error. El paciente no existe");
         }
-    }
-
-    /**
-     * find patient by list id
-     *
-     * @param asList
-     * @param object
-     */
-    @Transactional(value = "cleia-txm")
-    public List<Patient> findPatientsbylisId(List<Id> asList, Boolean repeatable) throws Exception {
-        List<Patient> p = new ArrayList<Patient>();
-        if (asList != null && !asList.isEmpty()) {
-            int append = 0;
-            StringBuilder query = new StringBuilder();
-            query.append("SELECT p FROM Patient p join p.user.ids idss WHERE idss.id in (select distinct pid.id from Id pid where ");
-            for (Id pid : asList) {
-                if (pid.getValue() != null && !pid.getValue().equals("") && pid.getType() != null && pid.getType().getValue() != null) {
-                    append++;
-                    if (append != 1) {
-                        query.append(" or ");
-                    }
-                    query.append("pid.value='").append(pid.getValue()).append("'");
-                    if (repeatable != null) {
-                        query.append(" and pid.type.repeatable=").append(repeatable);
-                    }
-
-                    query.append(" and pid.type.value='").append(pid.getType().getValue()).append("'");
-                } else {
-                    throw new Exception("Error. Ha ocurrido un error en uno de los identificadores");
-                }
-            }
-            if (append != 0) {
-                query.append(")");
-                p = entityManager.createQuery(query.toString()).getResultList();
-                for (Patient patient : p) {
-                    patient.getUser().getGroups().size();
-                    patient.getUser().getRoles().size();
-                    patient.getUser().getIds().size();
-                    patient.getProcessInstances().size();
-                    patient.getMedicals().size();
-                }
-
-            }
-        }
-        return p;
     }
     
      /**
