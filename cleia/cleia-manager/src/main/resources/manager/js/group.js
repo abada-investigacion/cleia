@@ -284,7 +284,7 @@ Ext.onReady(function() {
                     scope: this,
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json; charset=UTF-8'
                     },
                     failure: function(error) {
                         if (error && error.reason) {
