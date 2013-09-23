@@ -27,7 +27,7 @@
     "manager.grid.idsGridTitle":"Identificadores",
     "manager.grid.patientGridTitle":"Pacientes",
     "manager.attention":"Atenci&oacute;n",
-    "manager.deleteRoleMsg":"\u00BFEsta seguro que desear borrar el rol",
+    "manager.deleteRoleMsg":"\u00BFEsta seguro que desear borrar el rol ",
     "manager.deleteIdentifierTypeMsg":"\u00BFEsta seguro que desear borrar el identificador ",
     "manager.form.role":"Rol",
     "manager.form.prefixRegex":"Debe contener el prefijo ROLE_",

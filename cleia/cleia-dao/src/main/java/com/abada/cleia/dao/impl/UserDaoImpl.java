@@ -605,7 +605,7 @@ public class UserDaoImpl extends JpaDaoUtils implements UserDao {
         }
     }
 
-    @Transactional(value = "cleia-txm")
+    @Transactional(value = "cleia-txm", readOnly=true)
     private void addRoles(User user, List<Role> lrole, boolean newUser) throws Exception {
 
         if (lrole != null) {

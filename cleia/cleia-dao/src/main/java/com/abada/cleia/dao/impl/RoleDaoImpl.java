@@ -8,7 +8,8 @@ package com.abada.cleia.dao.impl;
  * #%L
  * Cleia
  * %%
- * Copyright (C) 2013 Abada Servicios Desarrollo (investigacion@abadasoft.com)
+ * Copyright (C) 2013 Abada Servicios Desarrollo
+ * (investigacion@abadasoft.com)
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -25,7 +26,6 @@ package com.abada.cleia.dao.impl;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 import com.abada.cleia.dao.RoleDao;
 import com.abada.cleia.entity.user.Role;
 import com.abada.cleia.entity.user.User;
@@ -143,22 +143,24 @@ public class RoleDaoImpl extends JpaDaoUtils implements RoleDao {
     /**
      * Delete a role by id
      *
-     * @param idrolepriv
+     * @param idrole
      * @return
      */
     @Transactional(value = "cleia-txm", rollbackFor = {Exception.class})
     public void deleteRole(String idrole) throws Exception {
 
         Role role = (Role) entityManager.find(Role.class, idrole);
+
+
         if (role != null) {
-            try {
-                for (User user : role.getUsers()) {
-                    user.getRoles().remove(role);
+            if (role.getUsers().isEmpty()) {
+                try {
+                    entityManager.remove(role);
+                } catch (Exception e) {
+                    throw new Exception("Error. Ha ocurrido un error al borrar el rol: " + role.getAuthority());
                 }
-                role.getUsers().clear();
-                entityManager.remove(role);
-            } catch (Exception e) {
-                throw new Exception("Error. Ha ocurrido un error al borrar el rol: " + role.getAuthority());
+            } else {
+                throw new Exception("Error. No se puede eliminar un rol que est&eacute; asignado a un usuario.");
             }
         } else {
             throw new Exception("Error. No se puede borrar el rol. Compruebe que exista.");
