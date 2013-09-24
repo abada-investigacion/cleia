@@ -107,25 +107,6 @@ public class PatientController {
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
 
-    /**
-     * Find patient with the passed identificators
-     *
-     * @param lpatientid Patient id list.
-     * @return Return patient structure.
-     */
-    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(method = RequestMethod.PUT)
-    public void getPatientByListId(@RequestBody Id[] lpatientid, Model model) {
-        try {
-            List<Patient> lpatient = patientDao.findPatientsbylisId(Arrays.asList(lpatientid), null);
-            if (!lpatient.isEmpty() && lpatient.size() == 1) {
-                model.addAttribute(JsonView.JSON_VIEW_RESULT, lpatient.get(0));
-                model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
-            }
-        } catch (Exception e) {
-            logger.error(e);
-        }
-    }
 
     /**
      * Search a list of users by params
@@ -240,6 +221,24 @@ public class PatientController {
         model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
     }
+    
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/search/sessionPatient", method = RequestMethod.GET)
+    public void getSearchPatientSessionUser(HttpServletRequest request, Model model) {
+
+        
+        Patient aux = null;
+        try {
+            String username = request.getUserPrincipal().getName();
+            aux = this.patientDao.getPatientUser(null, username).get(0);
+            
+        } catch (Exception e) {
+            logger.error(e);
+        }
+
+        model.addAttribute(JsonView.JSON_VIEW_RESULT, aux);
+        model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Public.class);
+    }
 
     /**
      * Insert a patient
@@ -279,6 +278,25 @@ public class PatientController {
         Success result = new Success(Boolean.FALSE);
         try {
             patientDao.putPatient(idpatient, patient);
+            result.setSuccess(Boolean.TRUE);
+        } catch (Exception e) {
+            result.setErrors(new com.abada.extjs.Error(e.getMessage()));
+            logger.error(e);
+        }
+
+        return result;
+    }
+    
+    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/patientData", method = RequestMethod.PUT)
+    public Success putPatientSessionUser( @RequestBody Patient patient, HttpServletRequest request) {
+
+        Success result = new Success(Boolean.FALSE);
+        try {
+            if(!patient.getUser().getUsername().equals(request.getUserPrincipal().getName())){
+                throw new Exception("El usuario no coincide con la sessión");
+            }
+            patientDao.putPatient(patient.getId(), patient);
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));

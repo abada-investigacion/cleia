@@ -66,7 +66,7 @@ Ext.onReady(function() {
                             enabled: !patientsGrid.selModel.getLastSelected().get('enabled'),
                             id: patientsGrid.selModel.getLastSelected().get('id')
                         }
-                          
+
                         doAjaxrequestJson(getRelativeServerURI('rs/patient/{idpatient}/{enable}', {
                             idpatient: form.id,
                             enable: form.enabled
@@ -162,6 +162,8 @@ Ext.onReady(function() {
         function handleFormulario(opt, grid, title, url, selection) {
             var method = 'POST';
             var id,
+            readOnly = false,
+            allowBlank=false,
             username,
             password,
             name,
@@ -186,6 +188,8 @@ Ext.onReady(function() {
                 cp = selection.getLastSelected().get('cp');
                 country = selection.getLastSelected().get('country');
                 idList = selection.getLastSelected().get('ids');
+                readOnly = true;
+                allowBlank=true;
             }
 
             var combogenre = Ext.create('Abada.form.field.ComboBoxDeSelect', {
@@ -309,13 +313,14 @@ Ext.onReady(function() {
                             name: 'username',
                             id: 'username',
                             value: username,
+                            readOnly: readOnly,
                             allowBlank: false,
                             width: 270
                         }, {
                             fieldLabel: i18n.getMsg('patient.patient.fieldLabel.password'),
                             name: 'password',
                             id: 'password',
-                            allowBlank: false,
+                            allowBlank: allowBlank,
                             inputType: 'password',
                             value: password,
                             width: 270
@@ -324,7 +329,7 @@ Ext.onReady(function() {
                             fieldLabel: i18n.getMsg('patient.patient.fieldLabel.repitpassword'),
                             name: 'password2',
                             id: 'password2',
-                            allowBlank: false,
+                            allowBlank: allowBlank,
                             inputType: 'password',
                             value: password,
                             width: 270
@@ -350,6 +355,9 @@ Ext.onReady(function() {
                                     Ext.getCmp('username').setValue('');
                                     groupGrid.selModel.deselectAll();
                                     idGrid.getStore().removeAll();
+                                    
+                                    Ext.getCmp('password').allowBlank=false;
+                                    Ext.getCmp('password2').allowBlank=false;
                                 }
                             }]
                         }
@@ -487,16 +495,20 @@ Ext.onReady(function() {
                     formBind: true,
                     handler: function() {
 
-                        if (Ext.getCmp('password2').getValue() === Ext.getCmp('password').getValue()) {
-                            if (formpanel.getForm().isValid()) {
+                        if(idGrid.getStore().count()>0){
+                            if (Ext.getCmp('password2').getValue() === Ext.getCmp('password').getValue()) {
+                                if (formpanel.getForm().isValid()) {
 
-                                doAjaxrequestJson(url, getO(groupGrid.selModel, idGrid.getStore()), method, patientsGrid, wind, i18n.getMsg('patient.patient.operation.performed'), i18n.getMsg('patient.patient.operation.notperformed'));
+                                    doAjaxrequestJson(url, getO(groupGrid.selModel, idGrid.getStore()), method, patientsGrid, wind, i18n.getMsg('patient.patient.operation.performed'), i18n.getMsg('patient.patient.operation.notperformed'));
 
+                                }
+                            } else {
+                                Ext.Msg.alert(i18n.getMsg('patient.patient.alert.error'), i18n.getMsg('patient.patient.alert.notpasswordequal'));
                             }
-                        } else {
-                            Ext.Msg.alert(i18n.getMsg('patient.patient.alert.error'), i18n.getMsg('patient.patient.alert.notpasswordequal'));
-                        }
 
+                        }else{
+                            Ext.Msg.alert('Error',i18n.getMsg('patient.form.idRequired'));
+                        }
                     }
 
                 }]
@@ -514,13 +526,13 @@ Ext.onReady(function() {
                 });
 
             }
-                
+
             var windTitle;
-            
-            if(opt=='insert'){
-                windTitle=i18n.getMsg('patient.wind.insertPatientTitle');
-            }else{
-                windTitle=i18n.getMsg('patient.wind.updatePatientTitle');
+
+            if (opt == 'insert') {
+                windTitle = i18n.getMsg('patient.wind.insertPatientTitle');
+            } else {
+                windTitle = i18n.getMsg('patient.wind.updatePatientTitle');
             }
 
 
@@ -555,7 +567,7 @@ Ext.onReady(function() {
                 scope: this,
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json; charset=UTF-8'
                 },
                 failure: function() {
 
@@ -595,15 +607,21 @@ Ext.onReady(function() {
                 groupGrid.selModel.deselectAll();
                 selectGroupGrid(record.data.id, groupGrid);
                 loadIdGrid(record.data.id, idGrid);
-                winds.close();
+                
+                Ext.getCmp('password').allowBlank=true;
+                Ext.getCmp('password2').allowBlank=true;
+                
+                winds.close();                               
 
             });
+            
             usersGrid.getStore().load({
                 params: {
                     start: 0,
                     limit: 14
                 }
             });
+            
             var winds = Ext.create('Ext.window.Window', {
                 title: i18n.getMsg('patient.title.users'),
                 id: 'usergridWindow',

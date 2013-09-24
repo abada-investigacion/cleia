@@ -147,7 +147,7 @@ Ext.onReady(function() {
 
         function handleFormulario(opt, grid, title, url, selection) {
 
-            var username, contrasena, id, idList={}, method = 'POST', enabled = true;
+            var username, contrasena, id, idList={}, method = 'POST', enabled = true,allowBlank=false,readOnly=false;
 
             if (opt != 'insert' && selection.hasSelection()) {
                 method = 'PUT';
@@ -156,6 +156,8 @@ Ext.onReady(function() {
                 id = selection.getLastSelected().get('id');
                 enabled = selection.getLastSelected().get('enabled');
                 idList= selection.getLastSelected().get('ids');
+                allowBlank=true;
+                readOnly=true;
             }
 
             var groupGrid = Ext.create('App.manager.js.common.gridgroup', {
@@ -220,8 +222,40 @@ Ext.onReady(function() {
                 id: 'enabled',
                 name: 'enabled',
                 labelWidth: 125
-
             });
+            
+            if (opt != 'insert') {
+                  
+                roleGrid.getStore().on('load', function() {
+                    var roles = selection.getLastSelected().get('roles');
+                    for (var i = 0; i < roleGrid.getStore().getCount(); i++) {
+                        var record = roleGrid.getStore().getAt(i);
+                        for (var j = 0; j < roles.length; j++) {
+                            if (record.get("authority") == roles[j].authority) {
+                                roleGrid.selModel.select(record, true, true);
+                            }
+                        }
+                    }
+                    
+                });
+
+
+                groupGrid.getStore().on('load', function() {
+                    var groups = selection.getLastSelected().get('groups');
+                    for (var i = 0; i < groupGrid.getStore().getCount(); i++) {
+                        var record = groupGrid.getStore().getAt(i);
+                        for (var j = 0; j < groups.length; j++) {
+                            if (record.get("value") == groups[j].value) {
+                                groupGrid.selModel.select(record, true, true);
+                            }
+                        }
+
+                    }
+                });
+            }
+
+            roleGrid.getStore().load();
+            groupGrid.getStore().load();
 
      
             var formpanel = Ext.create('Ext.form.Panel', {
@@ -251,13 +285,14 @@ Ext.onReady(function() {
                         id: 'username',
                         value: username,
                         allowBlank: false,
+                        readOnly:readOnly,
                         labelWidth: 125,
                         width: 400
                     }, {
                         fieldLabel: i18n.getMsg('manager.form.password'),
                         name: 'password',
                         id: 'password',
-                        allowBlank: false,
+                        allowBlank: allowBlank,
                         inputType: 'password',
                         value: contrasena,
                         labelWidth: 125,
@@ -267,7 +302,7 @@ Ext.onReady(function() {
                         fieldLabel: i18n.getMsg('manager.form.repeatPassword'),
                         name: 'password2',
                         id: 'password2',
-                        allowBlank: false,
+                        allowBlank: allowBlank,
                         inputType: 'password',
                         value: contrasena,
                         labelWidth: 125,
@@ -350,80 +385,51 @@ Ext.onReady(function() {
                     id: 'formuser',
                     formBind: true,
                     handler: function() {
-                        if (Ext.getCmp("password2").getValue() == Ext.getCmp("password").getValue()) {
-                            if (formpanel.getForm().isValid()) {
-                                var form = getO(formpanel, groupGrid.selModel, roleGrid.selModel, idGrid.getStore())
-                                doAjaxrequestJson(url, form, method, usersGrid, wind,i18n.getMsg('manager.operationSucess'), i18n.getMsg('manager.operationError') );
-                            }
-                        } else {
-                            Ext.Msg.alert('Error',i18n.getMsg('manager.form.passwordNotEquals'));
+                        
+                        if(idGrid.getStore().count()>0){
+                            if (Ext.getCmp("password2").getValue() == Ext.getCmp("password").getValue()) {
+                                if (formpanel.getForm().isValid()) {
+                                    var form = getO(formpanel, groupGrid.selModel, roleGrid.selModel, idGrid.getStore())
+                                    doAjaxrequestJson(url, form, method, usersGrid, wind,i18n.getMsg('manager.operationSucess'), i18n.getMsg('manager.operationError') );
+                                }
+                            } else {
+                                Ext.Msg.alert('Error',i18n.getMsg('manager.form.passwordNotEquals'));
 
+                            }
+                        }else{
+                             Ext.Msg.alert('Error',i18n.getMsg('manager.form.idRequired'));
                         }
                     }
-                }]
+            }]
             });
    
 
-            var windTitle;
+        var windTitle;
             
-            if(opt=='insert'){
-                windTitle=i18n.getMsg('manager.wind.insertUserTitle');
-            }else{
-                windTitle=i18n.getMsg('manager.wind.updateUserTitle');
-            }
-
-            var wind = Ext.create('Ext.window.Window', {
-                title: windTitle,
-                id: 'usuario',
-                autoScroll: false,
-                closable: true,
-                modal: true,
-                width: 500,
-                autoHeight: true,
-                items: [formpanel]
-            });
-
-            wind.show();
-
-            if (opt != 'insert') {
-                roleGrid.getStore().on('load', function() {
-
-                    if (opt != 'insert') {
-                        var roles = selection.getLastSelected().get('roles');
-                        for (var i = 0; i < roleGrid.getStore().getCount(); i++) {
-                            var record = roleGrid.getStore().getAt(i);
-                            for (var j = 0; j < roles.length; j++) {
-                                if (record.get("authority") == roles[j].authority) {
-                                    roleGrid.selModel.select(record, true, true);
-                                }
-                            }
-                        }
-                    }
-                });
-
-
-                groupGrid.getStore().on('load', function() {
-                    var groups = selection.getLastSelected().get('groups');
-                    for (var i = 0; i < groupGrid.getStore().getCount(); i++) {
-                        var record = groupGrid.getStore().getAt(i);
-                        for (var j = 0; j < groups.length; j++) {
-                            if (record.get("value") == groups[j].value) {
-                                groupGrid.selModel.select(record, true, true);
-                            }
-                        }
-
-                    }
-                });
-            }
-
-            roleGrid.getStore().load();
-            groupGrid.getStore().load();
-
-
-            return formpanel;
+        if(opt=='insert'){
+            windTitle=i18n.getMsg('manager.wind.insertUserTitle');
+        }else{
+            windTitle=i18n.getMsg('manager.wind.updateUserTitle');
         }
+
+        var wind = Ext.create('Ext.window.Window', {
+            title: windTitle,
+            id: 'usuario',
+            autoScroll: false,
+            closable: true,
+            modal: true,
+            width: 500,
+            autoHeight: true,
+            items: [formpanel]
+        });
+
+        wind.show();
+
+          
+        return formpanel;
+    }
     });
 
-    i18n.load();
+i18n.load();
 
-});
+    });

@@ -26,6 +26,7 @@ package com.abada.cleia.patient.controller;
  * #L%
  */
 
+import com.abada.springframework.web.servlet.menu.Device;
 import com.abada.springframework.web.servlet.menu.MenuEntry;
 import java.util.Arrays;
 import javax.annotation.security.RolesAllowed;
@@ -57,4 +58,14 @@ public class PatientsController {
         return "dynamic/main";
 
     }
+    @RequestMapping(value = "/patient/patientData_m.htm")
+    @RolesAllowed(value = {"ROLE_ADMIN","ROLE_USER"})
+    @MenuEntry(icon = "patient/image/paciente.png", menuGroup = "Pacientes", order = 0, text = "Modificar Datos",devices = {Device.MOBILE, Device.TABLET})
+    public String gridPatienDataMobile(Model model){
+        
+        model.addAttribute("js", Arrays.asList("patient/js_m/patiendata.js"));
+        model.addAttribute("isDesktop", false);
+        return "dynamic/main";
+    }
+    
 }
