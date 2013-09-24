@@ -175,7 +175,9 @@ Ext.define('App.bam.js.common.VersionFormPanel',{
     },
     onClickButtonState:function(btn){                
         var imageOncoguide=Ext.create('App.bam.js.common.ProcessInstanceTabPanel',{
-            height:App.height
+            height:App.height,
+            i18n:this.i18n,
+            mode:'version'
         });
                 
         imageOncoguide.loadProcessInstancePanels(this.processInstanceId);        
