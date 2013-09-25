@@ -37,10 +37,12 @@ import com.abada.extjs.Success;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.factory.GridRequestFactory;
 import com.abada.springframework.web.servlet.view.JsonView;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,33 +153,7 @@ public class MedicalController {
         model.addAttribute(JsonView.JSON_VIEW_CLASS, Views.Level1.class);
     }
 
-    /**
-     * Search a list of users by params
-     *
-     * @param filter Filter conditions of results. Set in JSON by an array of
-     * FilterRequestPriv
-     * @param sort Order of results. Set in JSON by an array of OrderByRequest
-     * @param limit Set the limit of the results. Use it for pagination
-     * @param start Set the start of the results. Use it for pagination
-     * @return Return a list of results.
-     */
-    @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_USER", "ROLE_ADMINISTRATIVE"})
-    @RequestMapping(value = "/search/byUser/{username}", method = RequestMethod.GET)
-    public ExtjsStore getSearchMedicaluser(@PathVariable String username, String filter, String sort, Integer limit, Integer start) {
-
-        List<Medical> lmedical;
-        ExtjsStore aux = new ExtjsStore();
-        try {
-            GridRequest grequest = GridRequestFactory.parse(sort, start, limit, filter);
-            lmedical = this.medicalDao.getMedicalUser(grequest, username);
-            aux.setData(lmedical);
-            aux.setTotal(lmedical.size());
-        } catch (Exception e) {
-            logger.error(e);
-        }
-
-        return aux;
-    }
+   
 
     /**
      * Get patients by Medical id
@@ -360,6 +336,21 @@ public class MedicalController {
             result.setSuccess(Boolean.TRUE);
         } catch (Exception e) {
             result.setErrors(new com.abada.extjs.Error(e.getMessage()));
+            logger.error(e);
+        }
+        return result;
+    }
+     
+     
+       @RolesAllowed(value = {"ROLE_ADMIN", "ROLE_ADMINISTRATIVE"})
+    @RequestMapping(value = "/idmedical", method = RequestMethod.GET)
+    public Long idmedical(HttpServletRequest request) {
+        
+        Long result =null;
+        try {
+             Principal principal=request.getUserPrincipal();
+             result=this.medicalDao.getMedicalUser(principal.getName());
+        } catch (Exception e) {
             logger.error(e);
         }
         return result;

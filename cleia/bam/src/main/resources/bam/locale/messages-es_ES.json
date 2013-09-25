@@ -110,5 +110,18 @@
     "bam.process.list.text1":"Proceso: ",
     "bam.process.list.text2":"Instancia: ",
     "bam.task.list.text1":"Tarea: ",
-    "bam.process":"Proceso:"
+    "bam.process":"Proceso:",
+    "medical.assignPatients":"Asignar Pacientes",
+    "gridpatient.id": "Id",
+    "gridpatient.title": "Paciente",
+    "gridpatient.Detalles": "Detalles",
+    "gridpatient.name": "Nombre",
+    "gridpatient.surname": "Apellido 1",
+    "gridpatient.surname1": "Apellido 2",
+    "gridpatient.genre": "Genero",
+    "gridpatient.birthDay": "Fecha nacimiento",
+    "gridpatient.tlf": "Tel&eacute;fono",
+    "gridpatient.address": "Direcci&oacute;n",
+    "gridpatient.enabled": "Habilitar",
+    "medical.patientGrid.column.identifier":"Identificador"
 }
