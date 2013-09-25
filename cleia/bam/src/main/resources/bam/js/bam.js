@@ -388,7 +388,180 @@ Ext.onReady(function() {
          * Screen for patient's search
          */
         function modePatient() {
+            
+            function assignPatient(panelPatient) {
+                var id;
+                Abada.Ajax.requestJsonObject({
+                    scope: this,
+                    method: 'GET',
+                    url: getRelativeServerURI('rs/medical/idmedical'),
+                    success: function(result) {
+                        id = result;
 
+                    },
+                    failure: function() {
+
+                    }
+                });
+                var patientsGrid = Ext.create('App.patient.js.common.gridPatient', {
+                    title: '',
+                    i18n: i18n,
+                    url: getRelativeServerURI('rs/patient/searchforassignment'),
+                    height: 400,
+                    width: 800,
+                    checkboxse: true,
+                    padding: '10 5 5 5',
+                    page: 25,
+                    listeners: {
+                        afterrender: function() {
+
+                            for (var i = 0; i < patientsGrid.columns.length; i++) {
+
+                                if (patientsGrid.columns[i].dataIndex === 'genre' || patientsGrid.columns[i].dataIndex === 'tlf'
+                                        || patientsGrid.columns[i].dataIndex === 'enabled' || patientsGrid.columns[i].dataIndex === 'address') {
+                                    patientsGrid.columns[i].hide()
+                                }
+
+                            }
+
+
+                            patientsGrid.headerCt.insert(patientsGrid.columns.length, Ext.create('Ext.grid.column.Column', {
+                                header: i18n.getMsg('medical.patientGrid.column.identifier'),
+                                text: '',
+                                renderer: renderIdentifier(new Ext.Template('{ids}')),
+                                width: 40,
+                                hidden: false
+                            })
+                                    );
+
+                            patientsGrid.getView().refresh();
+
+
+
+                        },
+                        select: function(constructor, record) {
+
+                            doAjaxAssign('add', record);
+
+                        },
+                        deselect: function(constructor, record) {
+
+                            doAjaxAssign('remove', record);
+
+                        }
+                    }
+                });
+
+                function renderIdentifier(template) {
+                    return function(value, meta, record, rowIndex, colIndex, store) {
+
+                        var ids = record.data.ids;
+
+                        if (ids.length > 0) {
+
+                            for (var i = 0; i < ids.length; i++) {
+
+                                if (ids[i].type.value.toUpperCase() === 'DNI') {
+
+                                    return ids[i].type.value.toUpperCase() + ': ' + ids[i].value;
+
+                                }
+
+                            }
+
+                            return ids[0].type.value.toUpperCase() + ': ' + ids[0].value;
+                        } else {
+                            return '';
+                        }
+                    };
+                }
+
+
+                function doAjaxAssign(operation, record) {
+                    var url = getRelativeServerURI('rs/medical/{idmedical}/{operation}/{idpatient}', {
+                        idmedical: id,
+                        operation: operation,
+                        idpatient: record.data.id
+                    });
+                    Abada.Ajax.requestJson({
+                        url: url,
+                        scope: this,
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json; charset=UTF-8'
+                        },
+                        failure: function(error) {
+                            if (error && error.reason) {
+                                Ext.Msg.alert(i18n.getMsg('medical.error'), error.reason);
+                            } else
+                                Ext.Msg.alert('', i18n.getMsg('medical.error'));
+                        },
+                        success: function() {
+
+                        }
+                    });
+
+                }
+                patientsGrid.getStore().on('load', function(constructor, records) {
+                    var medicals;
+                    var exit;
+
+                    for (var i = 0; i < records.length; i++) {
+
+                        exit = false;
+                        medicals = records[i].data.medicals;
+
+                        for (var z = 0; z < medicals.length && !exit; z++) {
+
+                            if (medicals[z].id == id) {
+
+                                patientsGrid.selModel.select(records[i], true, true);
+
+                                exit = true;
+                            }
+
+                        }
+
+                    }
+
+
+                });
+
+                patientsGrid.getStore().load({
+                    params: {
+                        start: 0,
+                        limit: 25
+                    }
+                });
+
+
+
+                var assignForm = Ext.create('Ext.form.Panel', {
+                    monitorValid: true,
+                    frame: false,
+                    autoScroll: true,
+                    items: [patientsGrid]
+                });
+
+
+                var wind = Ext.create('Ext.window.Window', {
+                    title: i18n.getMsg('medical.assignPatients'),
+                    id: 'assignPatientWindow',
+                    closable: true,
+                    modal: true,
+                    items: [assignForm],
+                    listeners: {
+                        close: function() {
+                            panelPatient.getStore().load();
+                        }
+                    }
+                });
+
+                wind.show();
+
+                return assignForm;
+
+            }
 
             var panelPatient = Ext.create('App.bam.js.common.PatientGrid', {
                 url: getRelativeServerURI('rs/patient/assigned/search'),
@@ -411,183 +584,6 @@ Ext.onReady(function() {
                 items: [assignar, panelPatient]});
             setCentralPanel(panel, true);
         }
-
-
-        function assignPatient(panelPatient) {
-            var id;
-            Abada.Ajax.requestJsonObject({
-                scope: this,
-                method: 'GET',
-                url: getRelativeServerURI('rs/medical/idmedical'),
-                success: function(result) {
-                    id = result;
-
-                },
-                failure: function() {
-
-                }
-            });
-            var patientsGrid = Ext.create('App.patient.js.common.gridPatient', {
-                title: '',
-                i18n: i18n,
-                url: getRelativeServerURI('rs/patient/searchforassignment'),
-                height: 400,
-                width: 800,
-                checkboxse: true,
-                padding: '10 5 5 5',
-                page: 25,
-                listeners: {
-                    afterrender: function() {
-
-                        for (var i = 0; i < patientsGrid.columns.length; i++) {
-
-                            if (patientsGrid.columns[i].dataIndex === 'genre' || patientsGrid.columns[i].dataIndex === 'tlf'
-                                    || patientsGrid.columns[i].dataIndex === 'enabled' || patientsGrid.columns[i].dataIndex === 'address') {
-                                patientsGrid.columns[i].hide()
-                            }
-
-                        }
-
-
-                        patientsGrid.headerCt.insert(patientsGrid.columns.length, Ext.create('Ext.grid.column.Column', {
-                            header: i18n.getMsg('medical.patientGrid.column.identifier'),
-                            text: '',
-                            renderer: renderIdentifier(new Ext.Template('{ids}')),
-                            width: 40,
-                            hidden: false
-                        })
-                                );
-
-                        patientsGrid.getView().refresh();
-
-
-
-                    },
-                    select: function(constructor, record) {
-
-                        doAjaxAssign('add', record);
-
-                    },
-                    deselect: function(constructor, record) {
-
-                        doAjaxAssign('remove', record);
-
-                    }
-                }
-            });
-
-            function renderIdentifier(template) {
-                return function(value, meta, record, rowIndex, colIndex, store) {
-
-                    var ids = record.data.ids;
-
-                    if (ids.length > 0) {
-
-                        for (var i = 0; i < ids.length; i++) {
-
-                            if (ids[i].type.value.toUpperCase() == 'DNI') {
-
-                                return ids[i].type.value.toUpperCase() + ': ' + ids[i].value;
-
-                            }
-
-                        }
-
-                        return ids[0].type.value.toUpperCase() + ': ' + ids[0].value;
-                    } else {
-                        return '';
-                    }
-                };
-            }
-
-
-            function doAjaxAssign(operation, record) {
-                var url = getRelativeServerURI('rs/medical/{idmedical}/{operation}/{idpatient}', {
-                    idmedical: id,
-                    operation: operation,
-                    idpatient: record.data.id
-                });
-                Abada.Ajax.requestJson({
-                    url: url,
-                    scope: this,
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json; charset=UTF-8'
-                    },
-                    failure: function(error) {
-                        if (error && error.reason) {
-                            Ext.Msg.alert(i18n.getMsg('medical.error'), error.reason);
-                        } else
-                            Ext.Msg.alert('', i18n.getMsg('medical.error'));
-                    },
-                    success: function() {
-
-                    }
-                });
-
-            }
-            patientsGrid.getStore().on('load', function(constructor, records) {
-                var medicals;
-                var exit;
-
-                for (var i = 0; i < records.length; i++) {
-
-                    exit = false;
-                    medicals = records[i].data.medicals;
-
-                    for (var z = 0; z < medicals.length && !exit; z++) {
-
-                        if (medicals[z].id == id) {
-
-                            patientsGrid.selModel.select(records[i], true, true);
-
-                            exit = true;
-                        }
-
-                    }
-
-                }
-
-
-            });
-
-            patientsGrid.getStore().load({
-                params: {
-                    start: 0,
-                    limit: 25
-                }
-            });
-
-
-
-            var assignForm = Ext.create('Ext.form.Panel', {
-                monitorValid: true,
-                frame: false,
-                autoScroll: true,
-                items: [patientsGrid]
-            });
-
-
-            var wind = Ext.create('Ext.window.Window', {
-                title: i18n.getMsg('medical.assignPatients'),
-                id: 'assignPatientWindow',
-                closable: true,
-                modal: true,
-                items: [assignForm],
-                listeners: {
-                    close: function() {
-                        panelPatient.getStore().load();
-                    }
-                }
-            });
-
-            wind.show();
-
-            return assignForm;
-
-        }
-
-
 
         modePatient();
     });
