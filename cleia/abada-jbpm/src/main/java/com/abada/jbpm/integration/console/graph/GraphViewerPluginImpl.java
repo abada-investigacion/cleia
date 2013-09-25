@@ -1,17 +1,17 @@
 /**
  * Copyright 2010 JBoss Inc
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package com.abada.jbpm.integration.console.graph;
 
@@ -19,7 +19,8 @@ package com.abada.jbpm.integration.console.graph;
  * #%L
  * Cleia
  * %%
- * Copyright (C) 2013 Abada Servicios Desarrollo (investigacion@abadasoft.com)
+ * Copyright (C) 2013 Abada Servicios Desarrollo
+ * (investigacion@abadasoft.com)
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -36,7 +37,6 @@ package com.abada.jbpm.integration.console.graph;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 import com.abada.jbpm.integration.guvnor.GuvnorUtils;
 import com.abada.jbpm.process.audit.ProcessInstanceDbLog;
 import com.abada.utils.Constants;
@@ -71,10 +71,10 @@ import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 
 /**
- * 
+ *
  * Sustituye a {@link org.jbpm.integration.console.graph.GraphViewerPluginImpl}
  * jbpm 5.4.0.Final compliant
- * 
+ *
  * @author Kris Verlaenen
  * @author katsu
  */
@@ -245,8 +245,12 @@ public class GraphViewerPluginImpl implements AbadaGraphViewerPlugin {
     //<editor-fold defaultstate="collapsed" desc="AbadaGraphViewerPlugin">
     public List<ActiveNodeInfo> getAllActivateNodes(Long processInstanceId) {
         List<ActiveNodeInfo> result = new ArrayList<ActiveNodeInfo>();
+        List<ActiveNodeInfo> aux;
         for (ProcessInstanceLog pil : processInstanceDbLog.findProcessInstancesFrom(processInstanceId)) {
-            result.addAll(this.getActiveNodeInfo(pil.getProcessInstanceId() + Constants.EMPTY_STRING));
+            aux = this.getActiveNodeInfo(pil.getProcessInstanceId() + Constants.EMPTY_STRING);
+            if (aux != null) {
+                result.addAll(aux);
+            }
         }
         return result;
     }
