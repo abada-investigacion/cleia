@@ -119,7 +119,7 @@
     "gridpatient.surname": "Surname",
     "gridpatient.surname1": "Surname 1",
     "gridpatient.genre": "Gender",
-    "gridpatient.birthDay": "birthday",
+    "gridpatient.birthDay": "Birthday",
     "gridpatient.tlf": "Phone",
     "gridpatient.address": "Address",
     "gridpatient.enabled": "Enable",
