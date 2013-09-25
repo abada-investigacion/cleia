@@ -30,11 +30,9 @@ import com.abada.cleia.dao.IdDao;
 import com.abada.cleia.dao.MedicalDao;
 import com.abada.cleia.dao.PatientDao;
 import com.abada.cleia.dao.UserDao;
-import com.abada.cleia.entity.user.Group;
 import com.abada.cleia.entity.user.Id;
 import com.abada.cleia.entity.user.Medical;
 import com.abada.cleia.entity.user.Patient;
-import com.abada.cleia.entity.user.Role;
 import com.abada.springframework.orm.jpa.support.JpaDaoUtils;
 import com.abada.springframework.web.servlet.command.extjs.gridpanel.GridRequest;
 import java.util.ArrayList;
@@ -109,19 +107,9 @@ public class MedicalDaoImpl extends JpaDaoUtils implements MedicalDao {
      * @return
      */
     @Transactional(value = "cleia-txm", readOnly = true)
-    public List<Medical> getMedicalUser(GridRequest filters, String username) {
-        List<Medical> lm = new ArrayList<Medical>();
-        Medical m = (Medical) entityManager.createQuery("select m from Medical m where m.username = :username").setParameter("username", username).getSingleResult();
-        if (m instanceof Medical) {
-            Medical medical = (Medical) m;
-            medical.getPatient().getUser().getGroups().size();
-            medical.getPatient().getUser().getRoles().size();
-            medical.getPatient().getUser().getIds().size();
-            medical.getPatient().getProcessInstances().size();
-            lm.add(medical);
-
-        }
-        return lm;
+    public Long getMedicalUser(String username) {
+         List<Long> result= entityManager.createQuery("select distinct p.id from Medical m  join m.patients p where p.user.username = :username").setParameter("username", username).getResultList();
+         return result.get(0);
 
     }
 

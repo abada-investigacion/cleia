@@ -54,7 +54,7 @@ public interface MedicalDao {
 
     public Long loadSizeAll(GridRequest grequest);
 
-    public List<Medical> getMedicalUser(GridRequest grequest, String username);
+    public Long  getMedicalUser( String username);
 
     public void postMedical(Medical medical) throws Exception;
 
