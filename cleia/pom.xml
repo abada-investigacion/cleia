@@ -29,7 +29,7 @@
                 </db.configuration>
                 <jbpm.console.guvnor.changeset>
                     <![CDATA[
-                    <resource source='http://imasd.abadasoft.com:8080/guvnor-5.5.0/org.drools.guvnor.Guvnor/package/com.abada/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />
+                    <resource source='http://imasd.abadasoft.com:8080/guvnor-5.5.0/org.drools.guvnor.Guvnor/package/org.rs/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />
                     ]]>
                 </jbpm.console.guvnor.changeset>
                 <deploy.path.rest>/cleia-rest</deploy.path.rest>
@@ -66,7 +66,7 @@
                 </db.configuration>
                 <jbpm.console.guvnor.changeset>
                     <![CDATA[
-                    <resource source='http://imasd.abadasoft.com:8080/guvnor-5.5.0/org.drools.guvnor.Guvnor/package/com.abada/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />
+                    <resource source='http://imasd.abadasoft.com:8080/guvnor-5.5.0/org.drools.guvnor.Guvnor/package/org.rs/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />
                     ]]>
                 </jbpm.console.guvnor.changeset>
                 <deploy.path.rest>/cleia-rest</deploy.path.rest>

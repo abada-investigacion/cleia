@@ -113,7 +113,7 @@ Ext.onReady(function() {
                     style: {
                         top: 0
                     },
-                    html: '<a href="main.htm">' +
+                    html: '<a href="main.htm" style=\"height:30px;\">' +
                             '<img alt=\" \" src=\"' + getRelativeURI('/images/logos/dnie.png') + '\" style=\"height:30px;\" />' +
                             '</a>'
                 }, '->'

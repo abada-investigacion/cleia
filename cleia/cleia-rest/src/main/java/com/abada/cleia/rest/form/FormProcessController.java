@@ -111,6 +111,8 @@ public class FormProcessController {
             params.put("patient_genre", patient.getGenre().toString());
             params.put("patient_id", patient.getId());
             params.put("patient_username",patient.getUser().getUsername());
+            params.put("medical_username",request.getUserPrincipal().getName());
+            params.put("server_context_path",request.getContextPath());
 
             ProcessInstanceRef pir = processManagement.newInstance(definitionid, params);            
             if (pir != null) {                                
