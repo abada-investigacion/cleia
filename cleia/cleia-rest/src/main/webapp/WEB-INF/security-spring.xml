@@ -51,7 +51,7 @@
         <property name="authenticationEntryPoint" ref="authenticationEntryPoint"/>
     </bean>
 
-    <bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+    <bean id="authenticationEntryPoint" class="com.abada.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
         <property name="realmName" value="CLEIA Server"/>
     </bean>
     
